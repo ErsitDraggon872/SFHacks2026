@@ -1,6 +1,6 @@
 # GatorSpace
 
-**Describe your event in plain English. GatorSpace checks campus policy, ranks the rooms that fit, and files the paperwork.**
+**GatorSpace checks campus policy, ranks the rooms that fit, and files the paperwork.**
 Routine requests are approved automatically. Risky ones go to Student Activities & Events with a briefing already written.
 
 > The AI interprets intent; deterministic code enforces policy.
