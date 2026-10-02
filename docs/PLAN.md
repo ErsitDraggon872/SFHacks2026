@@ -65,6 +65,7 @@ This is the one authoritative function, server-side only, and it runs as one syn
   - Ranked room cards with a "Why #1" line. Ineligible rooms are grayed out with their conflict.
   - Tier 2: Fix It + permit draft. Tier 3: a distinct "Staff review required" panel listing what GatorSpace prepared.
   - Quota meter: "2.0 / 3.0 hrs today."
+- `/bookings` My bookings: the acting club's bookings, soonest first, with club-side cancellation (frees the slot and daily-cap minutes).
 - `/admin` SA&E queue:
   - Tier 3 briefings with approve/deny.
   - A decision-snapshot log: requestText, extractedEvent, userCorrections, matchedRules, selectedRoom, tier, generatedBrief, timestamp. No model reasoning text is stored.
@@ -237,7 +238,7 @@ One line: **"The AI interprets intent; deterministic code enforces policy."** Th
 | 6 | Tier 1 = all fields resolved + no flags + eligible room + no overlap + cap pass | Tier derivation in `policy.ts`; unit-tested |
 | 7 | Capacity, overlap, and 3-hr cap rechecked at booking | `createBooking()` synchronous read-validate-write |
 | 8 | Local/demo-friendly store + `npm run demo:reset` | File-backed JSON store (no native build); `scripts/demo-reset.ts` |
-| 21 | Split models: 2.5 Flash-Lite extractor, 2.5 Flash writer | Stack section; `lib/llm.ts` env-configurable |
+| 21 | Split models: 3.5 Flash-Lite extractor, 3.8 Flash writer | Stack section; `lib/llm.ts` env-configurable |
 | 22 | Contextual defaults so Tier 1 is reachable | `source: "default"` + attestation checkbox |
 | 23 | Demo date anchor | `normalize.ts` + chrono-node + `DEMO_ANCHOR_DATE` |
 | 24 | Client-side re-evaluation on chip edits | Isomorphic `policy.ts`/`rank.ts` |

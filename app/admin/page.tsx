@@ -10,23 +10,13 @@ export default function AdminPage() {
   const [data, setData] = useState<AdminResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin");
-      if (res.ok) {
-        const json: AdminResponse = await res.json();
-        setData(json);
-      }
-    } catch (err) {
-      console.error("Failed to load admin queue:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    void fetchData();
+    fetch("/api/admin")
+      .then(async (res) => {
+        if (res.ok) setData((await res.json()) as AdminResponse);
+      })
+      .catch((err) => console.error("Failed to load admin queue:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
