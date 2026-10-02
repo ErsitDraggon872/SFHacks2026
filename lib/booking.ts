@@ -5,7 +5,7 @@
  */
 import { ROOMS } from "./data";
 import { newId, readCollection, writeCollection } from "./db";
-import { durationMin } from "./normalize";
+import { anchorDate, durationMin } from "./normalize";
 import { evaluate } from "./policy";
 import { setFact } from "./normalize";
 import type { Booking, BookingRequest, CreateBookingResult } from "./types";
@@ -57,3 +57,23 @@ export function createBooking(req: BookingRequest): CreateBookingResult {
   writeCollection("bookings", [...bookings, booking]);
   return { ok: true, booking, decision };
 }
+
+export type CancelBookingResult = { ok: true; booking: Booking } | { ok: false; status: 404 | 409; error: string };
+
+/**
+ * A club cancels one of its own active, not-yet-past bookings. The policy engine only counts
+ * ACTIVE statuses, so this frees the room slot and the club's daily-cap minutes immediately.
+ */
+export function cancelBooking(bookingId: string, clubId: string): CancelBookingResult {
+  const bookings = readCollection<Booking>("bookings");
+  const booking = bookings.find((b) => b.id === bookingId && b.clubId === clubId);
+  if (!booking) return { ok: false, status: 404, error: "Booking not found for this organization" };
+  if (!CANCELLABLE.includes(booking.status)) return { ok: false, status: 409, error: `Booking is already ${booking.status.replace("_", " ")}` };
+  if (booking.date < anchorDate()) return { ok: false, status: 409, error: "Past bookings can't be cancelled" };
+
+  const cancelled: Booking = { ...booking, status: "cancelled" };
+  writeCollection("bookings", bookings.map((b) => (b.id === bookingId ? cancelled : b)));
+  return { ok: true, booking: cancelled };
+}
+
+const CANCELLABLE: Booking["status"][] = ["confirmed", "pending_permit", "pending_review"];

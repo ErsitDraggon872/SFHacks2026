@@ -54,6 +54,22 @@ export async function fetchAvailability(date: ISODate): Promise<Booking[]> {
   return json<Booking[]>(await fetch(`/api/availability?date=${encodeURIComponent(date)}`));
 }
 
+/** A club's own bookings, soonest first ("My bookings"). */
+export async function fetchClubBookings(clubId: string): Promise<Booking[]> {
+  if (USE_FIXTURES) return (seedBookings as Booking[]).filter((b) => b.clubId === clubId);
+  return json<Booking[]>(await fetch(`/api/bookings?clubId=${encodeURIComponent(clubId)}`));
+}
+
+/** Club cancels one of its own bookings; returns the updated (status "cancelled") booking. */
+export async function cancelClubBooking(id: string, clubId: string): Promise<Booking> {
+  const res = await fetch("/api/bookings", {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ id, clubId, action: "cancel" }),
+  });
+  return (await json<{ booking: Booking }>(res)).booking;
+}
+
 /** Always hits the server: booking is re-validated there no matter what the client decided. */
 export async function submitBooking(req: BookingRequest): Promise<CreateBookingResult> {
   const res = await fetch("/api/bookings", {

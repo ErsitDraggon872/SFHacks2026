@@ -44,6 +44,7 @@ const STATUS_CONFIG: Record<
   permit_pending: { label: "Pending permit", tone: "warn", statusIcon: "warn" },
   pending_review: { label: "Needs staff review", tone: "escalate", statusIcon: "escalate" },
   denied: { label: "Rejected", tone: "block", statusIcon: "block" },
+  cancelled: { label: "Cancelled by club", tone: "neutral", statusIcon: "block" },
 };
 
 export function AdminQueue({ initialData }: AdminQueueProps) {
@@ -445,7 +446,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                 className={cn(
                   "p-4 transition-all",
                   snap.status === "pending_review" && "border-escalate/30 bg-escalate-soft/20",
-                  snap.status === "denied" && "opacity-80 bg-subtle",
+                  (snap.status === "denied" || snap.status === "cancelled") && "opacity-80 bg-subtle",
                 )}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
