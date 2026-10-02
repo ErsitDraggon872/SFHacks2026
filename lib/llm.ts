@@ -1,5 +1,5 @@
 /**
- * GatorSpace LLM Integration — OWNER: C3.
+ * SwampReserve LLM Integration — OWNER: C3.
  * Split models via @google/genai:
  *   - Extractor: gemini-3.5-flash-lite (fast structured JSON parsing into EventDraft)
  *   - Writer: gemini-3.8-flash (high-quality admin explanations, briefings, and permit drafts)
@@ -102,7 +102,7 @@ const EXTRACTOR_SCHEMA = {
   required: ["missingRequiredFields", "ambiguities", "avNeeds", "roomTypeHints"],
 };
 
-const EXTRACTOR_SYSTEM_PROMPT = `You are the event intake extractor for GatorSpace at San Francisco State University (SFSU).
+const EXTRACTOR_SYSTEM_PROMPT = `You are the event intake extractor for SwampReserve at San Francisco State University (SFSU).
 Your task is to parse a student event description into a structured JSON EventDraft according to SFSU facility policies.
 
 CRITICAL RULES:
@@ -161,7 +161,7 @@ const WRITER_SCHEMA = {
   required: ["headline", "explanation", "citedRuleIds"],
 };
 
-const WRITER_SYSTEM_PROMPT = `You are the policy explanation writer for GatorSpace at SFSU.
+const WRITER_SYSTEM_PROMPT = `You are the policy explanation writer for SwampReserve at SFSU.
 You write clear, professional, and explainable summaries of policy decisions for student organizers and SA&E staff.
 
 CRITICAL RULES:

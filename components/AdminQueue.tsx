@@ -586,7 +586,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                     {/* AI Briefing (Tier 3) or Explanation */}
                     {snap.writer && (
                       <div className="space-y-2 rounded-xl bg-subtle p-3 border border-line">
-                        <SectionLabel>GatorSpace Briefing &amp; Assessment</SectionLabel>
+                        <SectionLabel>SwampReserve Briefing &amp; Assessment</SectionLabel>
                         <p className="text-sm font-medium text-ink">{snap.writer.headline}</p>
                         <p className="text-xs leading-relaxed text-ink-2">{snap.writer.explanation}</p>
 

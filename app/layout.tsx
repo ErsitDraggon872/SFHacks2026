@@ -6,8 +6,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "GatorSpace — Room booking for SFSU student orgs",
-  description: "Describe your event. GatorSpace checks campus policy, ranks rooms, and files the paperwork.",
+  title: "SwampReserve — Room booking for SFSU student orgs",
+  description: "Describe your event. SwampReserve checks campus policy, ranks rooms, and files the paperwork.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

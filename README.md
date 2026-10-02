@@ -1,6 +1,6 @@
-# GatorSpace
+# SwampReserve
 
-**Describe your event in plain English. GatorSpace checks campus policy, ranks the rooms that fit, and files the paperwork.**
+**Describe your event in plain English. SwampReserve checks campus policy, ranks the rooms that fit, and files the paperwork.**
 Routine requests are approved automatically. Risky ones go to Student Activities & Events with a briefing already written.
 
 > The AI interprets intent; deterministic code enforces policy.
@@ -60,7 +60,7 @@ text → Gemini extractor → EventDraft → draftToFacts (contextual defaults) 
 
 ## Path to adoption at SFSU
 
-1. **Pilot:** one semester with SA&E on one building, running GatorSpace alongside the current process and comparing decisions.
+1. **Pilot:** one semester with SA&E on one building, running SwampReserve alongside the current process and comparing decisions.
 2. **Identity:** SFSU Shibboleth SSO replaces the "Acting as" club switcher, tied to verified officer rosters.
 3. **Rooms:** sync rooms and live availability from the campus reservation system instead of `data/rooms.json`.
 4. **Policy:** rules are data (`data/policy.json`: effect, scope, office, excerpt), so SA&E can maintain them with a policy editor without touching the AI.

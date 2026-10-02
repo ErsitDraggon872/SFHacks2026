@@ -10,8 +10,8 @@ import seedSnapshots from "../data/snapshots.seed.json";
 
 export type Collection = "bookings" | "snapshots";
 
-// GATORSPACE_RUNTIME_DIR lets tests use a throwaway directory instead of the live demo data.
-const RUNTIME = process.env.GATORSPACE_RUNTIME_DIR || path.join(process.cwd(), "data", "runtime");
+// SWAMPRESERVE_RUNTIME_DIR lets tests use a throwaway directory instead of the live demo data.
+const RUNTIME = process.env.SWAMPRESERVE_RUNTIME_DIR || path.join(process.cwd(), "data", "runtime");
 const SEEDS: Record<Collection, unknown[]> = { bookings: seedBookings, snapshots: seedSnapshots };
 
 function file(name: Collection) {

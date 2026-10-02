@@ -3,7 +3,7 @@
  * PermitDraft — OWNER: C2. Pre-filled permit preview (tier 2/3 when decision.permitsRequired).
  *
  * Looks like a clean paper form inside a Card: header "<permit.name>" + muted "<permit.office>",
- * Pill "Pre-filled by GatorSpace". Two-column label/value grid from permit.fields.
+ * Pill "Pre-filled by SwampReserve". Two-column label/value grid from permit.fields.
  * If `narrative` (writer.permitNarrative) is present, show it under "Event description".
  * Footer muted note: "Fields were filled from your request. You can review them before it's filed."
  * Read-only for the demo.
@@ -29,7 +29,7 @@ export function PermitDraft({ permit, narrative }: PermitDraftProps) {
             <p className="text-xs text-muted">{permit.office} · {ruleLabel(permit.ruleId)}</p>
           </div>
         </div>
-        <Pill tone="neutral">Pre-filled by GatorSpace</Pill>
+        <Pill tone="neutral">Pre-filled by SwampReserve</Pill>
       </div>
 
       <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">

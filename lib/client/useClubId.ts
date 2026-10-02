@@ -6,8 +6,8 @@
 import { useCallback, useSyncExternalStore } from "react";
 import { CLUB_BY_ID } from "@/lib/data";
 
-const KEY = "gatorspace.clubId";
-const EVENT = "gatorspace:club";
+const KEY = "swampreserve.clubId";
+const EVENT = "swampreserve:club";
 const DEFAULT_CLUB = "acm";
 
 // fallback when storage is blocked, so switching still works for this tab
