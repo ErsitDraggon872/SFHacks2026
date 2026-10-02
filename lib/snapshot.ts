@@ -45,7 +45,7 @@ export function listSnapshots(): DecisionSnapshot[] {
   return readCollection<DecisionSnapshot>("snapshots").sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
-export function setSnapshotStatus(id: string, action: "approve" | "deny"): DecisionSnapshot | null {
+export function setSnapshotStatus(id: string, action: "approve" | "deny", message?: string): DecisionSnapshot | null {
   const snaps = readCollection<DecisionSnapshot>("snapshots");
   const snap = snaps.find((s) => s.id === id);
   if (!snap) return null;
