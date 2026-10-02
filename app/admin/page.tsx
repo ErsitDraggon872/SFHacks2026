@@ -242,8 +242,10 @@ export default function AdminPage() {
                         <Pill tone="escalate" icon={<ShieldAlert className="h-3 w-3" />}>
                           Tier 3 · Staff Review
                         </Pill>
-                        <span className="text-sm font-semibold text-ink">{clubName}</span>
-                        <span className="text-xs text-muted">· Room: {snap.selectedRoomId}</span>
+                        <span className="text-sm font-semibold text-ink">{snap.eventName ?? clubName}</span>
+                        <span className="text-xs text-muted">
+                          · {snap.eventName ? `${clubName} · ` : ""}Room: {snap.selectedRoomId}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs text-muted">
                         <Clock className="h-3.5 w-3.5" />
@@ -262,7 +264,12 @@ export default function AdminPage() {
                             {snap.facts.date.value} ({snap.facts.startTime.value}–{snap.facts.endTime.value}) · Headcount: {snap.facts.headcount.value}
                           </span>
                         </div>
-                        <p className="mt-1.5 text-sm italic text-ink-2">&ldquo;{snap.requestText}&rdquo;</p>
+                        {snap.requestText && (
+                          <p className="mt-1.5 text-sm italic text-ink-2">&ldquo;{snap.requestText}&rdquo;</p>
+                        )}
+                        {snap.eventDescription && (
+                          <p className="mt-1.5 text-sm text-ink-2">{snap.eventDescription}</p>
+                        )}
                       </div>
 
                       {/* AI Briefing for Staff */}
@@ -449,8 +456,10 @@ export default function AdminPage() {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <span className="font-semibold text-sm text-ink">{clubName}</span>
-                          <span className="text-xs text-muted">· {snap.selectedRoomId}</span>
+                          <span className="font-semibold text-sm text-ink">{snap.eventName ?? clubName}</span>
+                          <span className="text-xs text-muted">
+                            · {snap.eventName ? `${clubName} · ` : ""}{snap.selectedRoomId}
+                          </span>
                           <Pill tone={snap.tier === 1 ? "pass" : snap.tier === 2 ? "warn" : "escalate"}>
                             Tier {snap.tier}
                           </Pill>
@@ -471,7 +480,13 @@ export default function AdminPage() {
                       </div>
 
                       {/* Request Summary snippet */}
-                      <p className="mt-2 text-xs text-muted line-clamp-1 italic">&ldquo;{snap.requestText}&rdquo;</p>
+                      {snap.eventDescription ? (
+                        <p className="mt-2 text-xs text-muted line-clamp-1">{snap.eventDescription}</p>
+                      ) : (
+                        snap.requestText && (
+                          <p className="mt-2 text-xs text-muted line-clamp-1 italic">&ldquo;{snap.requestText}&rdquo;</p>
+                        )
+                      )}
 
                       {/* User correction summary tag */}
                       <div className="mt-2.5 flex flex-wrap items-center gap-2">

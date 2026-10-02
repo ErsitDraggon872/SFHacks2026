@@ -31,6 +31,8 @@ export function saveSnapshot(req: BookingRequest, booking: Booking, decision: Po
     writer: req.writer,
     bookingId: booking.id,
     status: STATUS[booking.status],
+    eventName: booking.title,
+    eventDescription: booking.description ?? null,
   };
   writeCollection("snapshots", [...readCollection<DecisionSnapshot>("snapshots"), snapshot]);
   const bookings = readCollection<Booking>("bookings");

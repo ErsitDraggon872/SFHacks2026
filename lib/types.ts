@@ -266,6 +266,8 @@ export interface Booking {
   durationMin: number;
   status: BookingStatus;
   title: string;
+  /** Optional officer-written description of the event. */
+  description?: string | null;
   tier: 1 | 2 | 3;
   snapshotId: string | null;
   createdAt: string; // ISO timestamp
@@ -279,6 +281,9 @@ export interface BookingRequest {
   requestText: string | null;
   draft: EventDraft | null;
   writer: WriterOutput | null;
+  /** Officer-entered event name; the server falls back to the extracted summary when blank. */
+  eventName?: string | null;
+  eventDescription?: string | null;
 }
 
 export type CreateBookingResult =
@@ -308,6 +313,8 @@ export interface DecisionSnapshot {
   writer: WriterOutput | null;
   bookingId: string;
   status: SnapshotStatus;
+  eventName?: string | null;
+  eventDescription?: string | null;
 }
 
 // ---------- HTTP ----------
