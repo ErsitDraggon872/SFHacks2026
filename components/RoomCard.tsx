@@ -7,7 +7,8 @@
  * variant "row" (rank 2–5): single compact row: name · building · seats · ranked.why.
  * variant "unavailable": muted/grayed row; name + each ranked.evaluation.conflicts[].message with
  *   its rule id (block tone). No select button.
- * When isTarget: show a small "Selected" Pill instead of the button.
+ * When isTarget: show a small "Selected" Pill instead of the button; a selected row also expands
+ *   to show the same Why line + AV details as the best card.
  * Otherwise (best/row): secondary "Choose" button → onSelect(room.id).
  */
 import { Check, X } from "lucide-react";
@@ -27,7 +28,7 @@ export interface RoomCardProps {
 }
 
 export function RoomCard({ ranked, variant, isTarget, onSelect }: RoomCardProps) {
-  const { room, evaluation, reasons, why } = ranked;
+  const { room, evaluation, why } = ranked;
 
   if (variant === "best") {
     return (
@@ -56,70 +57,40 @@ export function RoomCard({ ranked, variant, isTarget, onSelect }: RoomCardProps)
           </div>
         </div>
 
-        {/* Why #1 */}
-        {reasons.length > 0 && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Why #1</span>
-            {reasons.map((r, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "inline-flex items-center gap-1",
-                  r.kind === "fit" && "text-ink-2",
-                  r.kind === "miss" && "text-warn",
-                  r.kind === "pref" && "text-muted",
-                )}
-              >
-                {r.kind === "fit" && <Check className="h-3.5 w-3.5 text-pass" aria-hidden />}
-                {r.kind === "miss" && <X className="h-3.5 w-3.5 text-warn" aria-hidden />}
-                {r.kind === "pref" && <span aria-hidden>·</span>}
-                <span>{r.label}</span>
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* AV & Room Details */}
-        <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-line pt-3 text-xs text-muted">
-          <span>Equipment: {room.av.length > 0 ? room.av.map(avLabel).join(", ") : "None"}</span>
-          <span>·</span>
-          <span>Hours: {room.hours.open}–{room.hours.close}</span>
-          {room.foodAllowed && (
-            <>
-              <span>·</span>
-              <span>Food allowed</span>
-            </>
-          )}
-        </div>
+        <RoomDetails ranked={ranked} />
       </Card>
     );
   }
 
   if (variant === "row") {
     return (
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm transition-colors hover:bg-subtle">
-        <div className="min-w-0 flex-1 space-y-0.5">
-          <div className="flex flex-wrap items-center gap-2">
-            {ranked.rank !== null && (
-              <span className="font-mono text-xs text-muted">#{ranked.rank}</span>
-            )}
-            <span className="font-medium text-ink">{room.name}</span>
-            <span className="text-xs text-muted">
-              {room.building} · {room.seats} seats
-            </span>
+      <div className={cn("px-4 py-3 text-sm transition-colors", isTarget ? "bg-subtle" : "hover:bg-subtle")}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <div className="flex flex-wrap items-center gap-2">
+              {ranked.rank !== null && (
+                <span className="font-mono text-xs text-muted">#{ranked.rank}</span>
+              )}
+              <span className="font-medium text-ink">{room.name}</span>
+              <span className="text-xs text-muted">
+                {room.building} · {room.seats} seats
+              </span>
+            </div>
+            {why && !isTarget && <p className="truncate text-xs text-muted">{why}</p>}
           </div>
-          {why && <p className="truncate text-xs text-muted">{why}</p>}
+
+          <div className="shrink-0">
+            {isTarget ? (
+              <Pill tone="accent">Selected</Pill>
+            ) : (
+              <Button variant="secondary" size="sm" onClick={() => onSelect(room.id)}>
+                Choose
+              </Button>
+            )}
+          </div>
         </div>
 
-        <div className="shrink-0">
-          {isTarget ? (
-            <Pill tone="accent">Selected</Pill>
-          ) : (
-            <Button variant="secondary" size="sm" onClick={() => onSelect(room.id)}>
-              Choose
-            </Button>
-          )}
-        </div>
+        {isTarget && <RoomDetails ranked={ranked} />}
       </div>
     );
   }
@@ -148,6 +119,50 @@ export function RoomCard({ ranked, variant, isTarget, onSelect }: RoomCardProps)
         </div>
       </div>
     </div>
+  );
+}
+
+/** "Why #N" reasons + equipment/hours line — on the best card and on a selected row. */
+function RoomDetails({ ranked }: { ranked: RankedRoom }) {
+  const { room, reasons } = ranked;
+  return (
+    <>
+      {/* Why #N */}
+      {reasons.length > 0 && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted">Why #{ranked.rank}</span>
+          {reasons.map((r, i) => (
+            <span
+              key={i}
+              className={cn(
+                "inline-flex items-center gap-1",
+                r.kind === "fit" && "text-ink-2",
+                r.kind === "miss" && "text-warn",
+                r.kind === "pref" && "text-muted",
+              )}
+            >
+              {r.kind === "fit" && <Check className="h-3.5 w-3.5 text-pass" aria-hidden />}
+              {r.kind === "miss" && <X className="h-3.5 w-3.5 text-warn" aria-hidden />}
+              {r.kind === "pref" && <span aria-hidden>·</span>}
+              <span>{r.label}</span>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* AV & Room Details */}
+      <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-line pt-3 text-xs text-muted">
+        <span>Equipment: {room.av.length > 0 ? room.av.map(avLabel).join(", ") : "None"}</span>
+        <span>·</span>
+        <span>Hours: {room.hours.open}–{room.hours.close}</span>
+        {room.foodAllowed && (
+          <>
+            <span>·</span>
+            <span>Food allowed</span>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 
