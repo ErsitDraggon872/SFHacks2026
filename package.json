@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "demo:reset": "tsx scripts/demo-reset.ts",
     "fixtures": "tsx scripts/build-fixtures.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@google/genai": "^2.27.0",
