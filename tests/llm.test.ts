@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { extractEvent, writeExplanation } from "../lib/llm";
-import { ROOMS } from "../lib/data";
+import { ROOM_BY_ID, ROOMS } from "../lib/data";
 import { draftToFacts } from "../lib/normalize";
 import { evaluate } from "../lib/policy";
 import type { Booking, EventDraft, EventFacts } from "../lib/types";
@@ -168,6 +168,27 @@ describe("lib/llm.ts — Computer 3 Deliverable", () => {
       expect(writer.briefing?.staffQuestions.length).toBeGreaterThan(0);
       expect(writer.citedRuleIds).toContain("SIZE-02");
       expect(writer.citedRuleIds).toContain("GUEST-01");
+    });
+
+    it("names rooms that would fit but are already booked at that time", async () => {
+      const facts = draftToFacts(
+        {
+          summary: "ACM coding night", headcount: 45, whenPhrase: "Thursday 6-9pm", food: true, foodDescription: "Pizza",
+          amplifiedSound: false, externalGuests: false, guestSpeakers: false, alcohol: false, minors: false, weapons: false,
+          avNeeds: ["projector"], layout: null, roomTypeHints: [], preferredBuilding: "Thornton Hall",
+          missingRequiredFields: [], ambiguities: [],
+        },
+        { text: "ACM coding night" },
+      );
+      const taken: Booking = {
+        id: "t-1", roomId: "CCSC-204", clubId: "premed", date: facts.date.value!, startTime: "18:00", endTime: "21:00",
+        durationMin: 180, status: "confirmed", title: "x", tier: 1, snapshotId: null, createdAt: "2026-10-01T00:00:00.000Z",
+      };
+      const decision = evaluate(facts, { rooms: ROOMS, bookings: [taken], clubId: "acm", attested: false });
+      expect(decision.tier).toBe(2);
+
+      const writer = await writeExplanation(facts, decision);
+      expect(writer.explanation).toContain(`${ROOM_BY_ID["CCSC-204"].name} (6 PM–9 PM) is already booked`);
     });
   });
 });

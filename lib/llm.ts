@@ -14,6 +14,7 @@ import { GoogleGenAI } from "@google/genai";
 import demoCache from "@/data/demo-cache.json";
 import { POLICY_BY_ID, ROOM_BY_ID } from "./data";
 import { WEAPON_CUE } from "./normalize";
+import { bookedElsewhere, bookedSentence, mentionsRoom } from "./client/format";
 import type {
   AiMode,
   AvItem,
@@ -180,7 +181,8 @@ CRITICAL RULES:
      - summary: Concise overview of who, what, when, headcount, and location fit.
      - riskPoints: Array of { ruleId, point } addressing each policy concern.
      - staffQuestions: 2-3 specific questions staff should verify with the organizer.
-4. TONE: Helpful, administrative, precise. Never scold or lecture.`;
+4. bookedRooms lists rooms that would otherwise fit but are already booked at the requested time. If it is non-empty, the explanation MUST name each of those rooms and its booked time in one short sentence (e.g. "Gymnasium 129 is already booked 7 PM–8:30 PM."), because organizers want to know.
+5. TONE: Helpful, administrative, precise. Never scold or lecture.`;
 
 // ---------- Strip Markdown Formatting ----------
 
@@ -379,6 +381,12 @@ function offlinePermitNarrative(facts: EventFacts, decision: PolicyDecision): st
   return parts.length ? parts.join(" ") : null;
 }
 
+/** Organizers want to know which fitting rooms are taken: append any the explanation didn't name. */
+function withBookedNote(explanation: string, decision: PolicyDecision): string {
+  const missing = bookedElsewhere(decision).filter((r) => !mentionsRoom(explanation, r.name));
+  return missing.length ? `${explanation.trim()} ${bookedSentence(missing)}` : explanation;
+}
+
 function writeOffline(facts: EventFacts, decision: PolicyDecision): WriterOutput {
   const citedRuleIds = flaggedRuleIdsOf(decision);
   const permitNarrative = offlinePermitNarrative(facts, decision);
@@ -390,12 +398,12 @@ function writeOffline(facts: EventFacts, decision: PolicyDecision): WriterOutput
     if (decision.permitsRequired.length > 0) {
       explanation += ` Required before confirmation: ${decision.permitsRequired.map((p) => p.name).join(", ")}.`;
     }
-    return { headline: decision.headline, explanation, permitNarrative, briefing: null, citedRuleIds };
+    return { headline: decision.headline, explanation: withBookedNote(explanation, decision), permitNarrative, briefing: null, citedRuleIds };
   }
 
   return {
     headline: "Staff review required — briefing prepared",
-    explanation: `This event requires review by Student Activities & Events${citedRuleIds.length ? ` (${citedRuleIds.map((id) => POLICY_BY_ID[id].title.toLowerCase()).join(", ")})` : ""}. A staff briefing has been prepared.`,
+    explanation: withBookedNote(`This event requires review by Student Activities & Events${citedRuleIds.length ? ` (${citedRuleIds.map((id) => POLICY_BY_ID[id].title.toLowerCase()).join(", ")})` : ""}. A staff briefing has been prepared.`, decision),
     permitNarrative,
     briefing: offlineBriefing(facts, decision),
     citedRuleIds,
@@ -435,7 +443,7 @@ function sanitizeWriterOutput(raw: unknown, facts: EventFacts, decision: PolicyD
 
   return {
     headline: w.headline,
-    explanation: w.explanation,
+    explanation: withBookedNote(w.explanation, decision),
     permitNarrative: nonEmpty(w.permitNarrative) ? w.permitNarrative : null,
     briefing,
     citedRuleIds,
@@ -540,6 +548,7 @@ export async function writeExplanation(facts: EventFacts, decision: PolicyDecisi
       preferredBuilding: facts.preferredBuilding.value,
     },
     policyExcerpts: applicableExcerpts,
+    bookedRooms: bookedElsewhere(decision).map(({ name, time }) => ({ name, time })),
   };
 
   const primaryModel = getWriterModel();
