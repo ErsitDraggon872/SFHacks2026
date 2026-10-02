@@ -21,6 +21,7 @@ export function cleanFacts(overrides: Partial<{ [K in FactField]: EventFacts[K][
     guestSpeakers: false,
     alcohol: false,
     minors: false,
+    weapons: false,
     ...overrides,
   };
   for (const [k, v] of Object.entries(base)) f = setFact(f, k as FactField, v as never);

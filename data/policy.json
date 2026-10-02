@@ -88,6 +88,14 @@
     "office": "Risk Management"
   },
   {
+    "id": "WEAPON-01",
+    "title": "Weapons on campus",
+    "excerpt": "Firearms and other weapons are prohibited on campus except as authorized by University Police. Any event that mentions weapons, including props, replicas, or demonstrations, requires review by University Police before it can be approved.",
+    "effect": "ESCALATE",
+    "scope": "event",
+    "office": "University Police Department"
+  },
+  {
     "id": "HOURS-01",
     "title": "Building hours",
     "excerpt": "Events must begin and end within the building's posted operating hours.",
@@ -122,7 +130,7 @@
   {
     "id": "INFO-01",
     "title": "Safety details confirmed",
-    "excerpt": "A request can be confirmed only after the organizer has stated whether the event involves food, amplified sound, outside guests, guest speakers, alcohol, or minors.",
+    "excerpt": "A request can be confirmed only after the organizer has stated whether the event involves food, amplified sound, outside guests, guest speakers, alcohol, minors, or weapons.",
     "effect": "WARN",
     "scope": "event",
     "office": "Student Activities & Events"

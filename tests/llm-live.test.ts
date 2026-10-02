@@ -25,6 +25,7 @@ const speakerDraft: EventDraft = {
   guestSpeakers: true,
   alcohol: null,
   minors: null,
+  weapons: null,
   avNeeds: ["microphone"],
   layout: "lecture",
   roomTypeHints: [],

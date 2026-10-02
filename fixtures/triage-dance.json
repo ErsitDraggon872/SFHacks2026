@@ -8,10 +8,11 @@
     "food": null,
     "foodDescription": null,
     "amplifiedSound": true,
-    "externalGuests": false,
+    "externalGuests": null,
     "guestSpeakers": null,
     "alcohol": null,
     "minors": null,
+    "weapons": null,
     "avNeeds": [],
     "layout": null,
     "roomTypeHints": [],
@@ -54,7 +55,7 @@
     },
     "externalGuests": {
       "value": false,
-      "source": "ai"
+      "source": "default"
     },
     "guestSpeakers": {
       "value": false,
@@ -65,6 +66,10 @@
       "source": "default"
     },
     "minors": {
+      "value": false,
+      "source": "default"
+    },
+    "weapons": {
       "value": false,
       "source": "default"
     },
@@ -397,9 +402,11 @@
     "unresolved": [],
     "defaultsToAttest": [
       "food",
+      "externalGuests",
       "guestSpeakers",
       "alcohol",
-      "minors"
+      "minors",
+      "weapons"
     ],
     "clubMinutesUsed": 0,
     "clubMinutesCap": 180,
@@ -541,6 +548,10 @@
         {
           "label": "Seats 220 for your 25",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "Sound-isolated",
@@ -950,6 +961,10 @@
           "kind": "fit"
         },
         {
+          "label": "Much larger than needed",
+          "kind": "miss"
+        },
+        {
           "label": "Accessible",
           "kind": "pref"
         }
@@ -1008,6 +1023,10 @@
         {
           "label": "Seats 160 for your 25",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "Accessible",
@@ -1261,5 +1280,5 @@
       "createdAt": "2026-10-01T17:15:00.000Z"
     }
   ],
-  "aiMode": "fallback"
+  "aiMode": "cached"
 }

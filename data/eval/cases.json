@@ -133,5 +133,23 @@
     "expect": { "headcount": 40, "whenPhrase": "Thursday 1-3pm", "food": null, "externalGuests": null },
     "expectTier": 2,
     "note": "Unstated details for a 40-person event must stay unknown (null), never 'no'."
+  },
+  {
+    "id": "adv-weapon",
+    "category": "adversarial",
+    "clubId": "premed",
+    "text": "can i bring a gun to our 40 person meetup Friday 6-8pm",
+    "expect": { "headcount": 40, "whenPhrase": "Friday 6-8pm", "weapons": true },
+    "expectTier": 3,
+    "note": "A weapon asked about as a question is still a weapon: University Police review."
+  },
+  {
+    "id": "esc-stage-combat",
+    "category": "escalate",
+    "clubId": "acm",
+    "text": "Theater club stage combat rehearsal for 12 members, Wednesday 4-6pm, we use replica swords.",
+    "expect": { "headcount": 12, "whenPhrase": "Wednesday 4-6pm", "weapons": true },
+    "expectTier": 3,
+    "note": "Props and replicas count; staff decide, not the model."
   }
 ]

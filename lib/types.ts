@@ -97,6 +97,7 @@ export interface EventFacts {
   guestSpeakers: Fact<Tri>;
   alcohol: Fact<Tri>;
   minors: Fact<Tri>;
+  weapons: Fact<Tri>;
   avNeeds: Fact<AvItem[]>;
   layout: Fact<Layout | null>;
   preferredBuilding: Fact<string | null>; // building name, e.g. "Thornton Hall"
@@ -107,7 +108,7 @@ export interface EventFacts {
 export type FactField = keyof EventFacts;
 
 /** Policy-sensitive fields: null blocks auto-approval. */
-export const SAFETY_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const;
+export const SAFETY_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const;
 export type SafetyField = (typeof SAFETY_FIELDS)[number];
 
 /** Fields required before any decision can be made. */
@@ -131,6 +132,7 @@ export interface EventDraft {
   guestSpeakers: Tri;
   alcohol: Tri;
   minors: Tri;
+  weapons: Tri;
   avNeeds: AvItem[];
   layout: Layout | null;
   roomTypeHints: RoomType[];
@@ -250,7 +252,8 @@ export interface WriterOutput {
   citedRuleIds: string[]; // validated against policy.json; unknown ids stripped
 }
 
-export type AiMode = "live" | "fallback" | "none";
+/** live = Gemini answered · cached = preset replayed from demo-cache · fallback = Gemini failed, offline extractor · none = Quick Filters */
+export type AiMode = "live" | "cached" | "fallback" | "none";
 
 // ---------- bookings & audit ----------
 
@@ -335,6 +338,8 @@ export interface TriageRequest {
   text?: string;
   presetId?: PresetId;
   attested?: boolean;
+  /** presets only: re-extract the preset text with Gemini instead of replaying the cache */
+  live?: boolean;
 }
 
 /** POST /api/triage response */

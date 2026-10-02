@@ -38,6 +38,7 @@ export const QUESTIONS: Record<FactField, string> = {
   guestSpeakers: "Will there be a guest speaker?",
   alcohol: "Will alcohol be present?",
   minors: "Will anyone under 18 attend?",
+  weapons: "Will any weapons, including props or replicas, be at the event?",
   avNeeds: "What equipment do you need?",
   layout: "What room layout do you need?",
   preferredBuilding: "Do you have a preferred building?",
@@ -172,6 +173,7 @@ export function evaluate(facts: EventFacts, ctx: EvaluateContext): PolicyDecisio
   else if (n !== null && n > 50) eventFlags.push(flag("SIZE-01", `${n} attendees — designate an on-site event lead`));
   if (facts.alcohol.value === true) eventFlags.push(flag("ALC-01", "Alcohol requires prior written approval"));
   if (facts.minors.value === true) eventFlags.push(flag("MINOR-01", "Participants under 18 require youth-protection review"));
+  if (facts.weapons.value === true) eventFlags.push(flag("WEAPON-01", "Weapons, props or replicas require University Police review"));
   if (unresolved.length) eventFlags.push(flag("INFO-01", `${unresolved.length} detail${unresolved.length > 1 ? "s" : ""} still need an answer`));
 
   const used = clubMinutes(bookings, clubId, date);

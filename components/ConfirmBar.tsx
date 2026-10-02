@@ -32,6 +32,7 @@ const ASSUMED_NO: Record<SafetyField, string> = {
   guestSpeakers: "no guest speakers",
   alcohol: "no alcohol",
   minors: "no one under 18",
+  weapons: "no weapons",
 };
 
 const RESULT_LABEL = {

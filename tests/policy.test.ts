@@ -106,6 +106,12 @@ describe("rules", () => {
     expect(d.tier).toBe(3);
   });
 
+  it("WEAPON-01 escalates any event involving weapons, props or replicas", () => {
+    const d = run(cleanFacts({ weapons: true }));
+    expect(eventRuleIds(d)).toContain("WEAPON-01");
+    expect(d.tier).toBe(3);
+  });
+
   it("HOURS-01 blocks events outside building hours", () => {
     const d = run(cleanFacts({ startTime: "07:30", endTime: "09:00" }));
     expect(conflictsFor(d, "LIB-286")).toContain("HOURS-01"); // library opens 08:00
@@ -187,7 +193,7 @@ describe("rules", () => {
   });
 
   it("every rule in policy.json is exercised by this suite", () => {
-    const tested = ["CAP-01", "FOOD-01", "FOOD-02", "SOUND-01", "SOUND-02", "GUEST-01", "GUEST-02", "SIZE-01", "SIZE-02", "ALC-01", "MINOR-01", "HOURS-01", "BOOK-01", "ADA-01", "CAP-DAILY-01", "INFO-01"];
+    const tested = ["CAP-01", "FOOD-01", "FOOD-02", "SOUND-01", "SOUND-02", "GUEST-01", "GUEST-02", "SIZE-01", "SIZE-02", "ALC-01", "MINOR-01", "WEAPON-01", "HOURS-01", "BOOK-01", "ADA-01", "CAP-DAILY-01", "INFO-01"];
     expect(POLICY.map((r) => r.id).sort()).toEqual([...tested].sort());
   });
 });
@@ -195,7 +201,7 @@ describe("rules", () => {
 // ---------- invariants ----------
 
 describe("tri-state: unknown is never no", () => {
-  it.each(["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const)(
+  it.each(["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const)(
     "a null %s blocks Tier 1 and submission",
     (field) => {
       const d = run(cleanFacts({ [field]: null }), { attested: true });

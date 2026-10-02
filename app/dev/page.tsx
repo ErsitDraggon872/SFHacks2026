@@ -153,6 +153,7 @@ export default function DevGallery() {
           <QuotaMeter usedMin={120} requestMin={180} capMin={180} />
           <QuotaMeter usedMin={null} requestMin={null} capMin={180} />
           <AiModeBadge mode="live" />
+          <AiModeBadge mode="cached" />
           <AiModeBadge mode="fallback" />
         </div>
       </Section>

@@ -22,9 +22,9 @@ const LAYOUTS: Layout[] = ["lecture", "classroom", "seminar", "open", "lab", "st
 const ROOM_TYPES: RoomType[] = ["lecture_hall", "classroom", "seminar", "multipurpose", "lab", "study_room", "studio"];
 const FACT_FIELDS: FactField[] = [
   "summary", "headcount", "date", "startTime", "endTime", "food", "foodDescription", "amplifiedSound", "externalGuests",
-  "guestSpeakers", "alcohol", "minors", "avNeeds", "layout", "preferredBuilding", "requestedRoomId", "adaRequired",
+  "guestSpeakers", "alcohol", "minors", "weapons", "avNeeds", "layout", "preferredBuilding", "requestedRoomId", "adaRequired",
 ];
-const TRI_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const;
+const TRI_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const;
 
 export const MAX_HEADCOUNT = 2000;
 const MAX_AMBIGUITIES = 5;
@@ -54,6 +54,7 @@ export function emptyDraft(): EventDraft {
     guestSpeakers: null,
     alcohol: null,
     minors: null,
+    weapons: null,
     avNeeds: [],
     layout: null,
     roomTypeHints: [],
@@ -152,6 +153,37 @@ export function sanitizeDraft(raw: unknown): { draft: EventDraft; issues: string
   for (const k of Object.keys(r)) if (!known.has(k)) note(k, "unknown field dropped");
 
   return { draft, issues };
+}
+
+const NEG = String.raw`\b(no|not|without|won't|will not|none|zero|free of)\b[\w\s,'-]{0,24}?`;
+const NEGATION_EVIDENCE: Record<(typeof TRI_FIELDS)[number], RegExp> = {
+  food: new RegExp(`${NEG}\\b(food|snacks?|refreshments|meals?|eating|catering)\\b|\\bfood[- ]free\\b`, "i"),
+  amplifiedSound: new RegExp(`${NEG}\\b(music|speakers?|mics?|microphones?|sound|amplification|dj)\\b|\\b(quiet|unplugged)\\b`, "i"),
+  externalGuests: new RegExp(
+    `${NEG}\\b(outside|external|non-sfsu)?\\s*(guests?|visitors?|public|outsiders)\\b|\\b(members[- ]only|only (sfsu )?members|just (our )?members|closed to the public|sfsu students only)\\b`,
+    "i",
+  ),
+  guestSpeakers: new RegExp(`${NEG}\\b(guest )?speakers?\\b`, "i"),
+  alcohol: new RegExp(`${NEG}\\b(alcohol|drinking|beer|wine|booze)\\b|\\b(alcohol[- ]free|dry event)\\b`, "i"),
+  minors: new RegExp(`${NEG}\\b(minors|kids|children|under[- ]18s?)\\b|\\b(18\\+|21\\+|adults only)`, "i"),
+  weapons: new RegExp(`${NEG}\\b(weapons?|guns?|firearms?|knives|props?)\\b|\\bweapon[- ]free\\b`, "i"),
+};
+
+/**
+ * An AI "no" skips the officer's attestation, so it must be backed by the text ("no food",
+ * "members only", "alcohol-free"). An unbacked false becomes null; draftToFacts() may then
+ * apply a visible, attested default instead. Null text → no evidence → every false is demoted.
+ */
+export function requireNegationEvidence(draft: EventDraft, text: string | null): { draft: EventDraft; issues: string[] } {
+  const issues: string[] = [];
+  const out = { ...draft };
+  for (const field of TRI_FIELDS) {
+    if (out[field] === false && !(text && NEGATION_EVIDENCE[field].test(text))) {
+      out[field] = null;
+      issues.push(`${field}: AI said no without evidence in the text → unknown`);
+    }
+  }
+  return { draft: out, issues };
 }
 
 function tri(v: unknown, note: (why: string) => void): Tri {

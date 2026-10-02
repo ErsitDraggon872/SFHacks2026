@@ -1,6 +1,7 @@
 /**
  * POST /api/triage — OWNER: C3.
- * Presets: served from data/demo-cache.json (or live when key is present), through the deterministic pipeline.
+ * Presets: replayed from data/demo-cache.json (deterministic for the demo), or re-extracted live when
+ * `live: true` and a key is present; either way through the deterministic pipeline.
  * Free text: calls extractEvent() and writeExplanation() from lib/llm.ts.
  */
 import demoCache from "@/data/demo-cache.json";
@@ -24,10 +25,10 @@ export async function POST(request: Request) {
 
     let draft: EventDraft = entry.draft;
     let writer: WriterOutput | null = entry.writer;
-    let aiMode: AiMode = "fallback";
+    let aiMode: AiMode = "cached";
 
-    // If API key is present, attempt live extraction on preset text
-    if (process.env.GEMINI_API_KEY) {
+    // Opt-in (?live=1 on the page): re-extract the preset text with Gemini
+    if (body.live && process.env.GEMINI_API_KEY) {
       try {
         const liveExtract = await extractEvent(entry.input);
         if (liveExtract.aiMode === "live") {

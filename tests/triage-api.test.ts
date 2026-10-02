@@ -32,7 +32,7 @@ describe("POST /api/triage — Route Integration Tests", () => {
     expect(data.presetId).toBe("study");
     expect(data.decision.tier).toBe(1);
     expect(data.ranked.length).toBeGreaterThan(0);
-    expect(data.aiMode).toBe("fallback");
+    expect(data.aiMode).toBe("cached");
     expect(data.writer).toBeNull(); // Tier 1 needs no writer explanation
   });
 
@@ -45,7 +45,7 @@ describe("POST /api/triage — Route Integration Tests", () => {
     expect(data.writer).not.toBeNull();
     expect(data.writer?.headline).toContain("move to a room that allows food");
     expect(data.writer?.permitNarrative).toBeTruthy();
-    expect(data.aiMode).toBe("fallback");
+    expect(data.aiMode).toBe("cached");
   });
 
   it("handles 'speaker' preset (Tier 3 escalated review)", async () => {

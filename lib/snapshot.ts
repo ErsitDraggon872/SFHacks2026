@@ -78,6 +78,7 @@ export function listSnapshots(): DecisionSnapshot[] {
           guestSpeakers: { value: false, source: "default" },
           alcohol: { value: false, source: "default" },
           minors: { value: false, source: "default" },
+          weapons: { value: false, source: "default" },
           avNeeds: { value: [], source: "user" },
           layout: { value: null, source: "user" },
           preferredBuilding: { value: null, source: "user" },

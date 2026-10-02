@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import demoCache from "@/data/demo-cache.json";
-import { emptyDraft, matchBuilding, sanitizeDraft, UNREADABLE_QUESTION } from "@/lib/sanitize";
+import { emptyDraft, matchBuilding, requireNegationEvidence, sanitizeDraft, UNREADABLE_QUESTION } from "@/lib/sanitize";
 import { decide, prepare } from "@/lib/triagePipeline";
 import type { PresetId } from "@/lib/types";
 
@@ -128,7 +128,81 @@ describe("matchBuilding", () => {
   });
 });
 
+describe("requireNegationEvidence", () => {
+  const TRI = ["alcohol", "amplifiedSound", "externalGuests", "food", "guestSpeakers", "minors", "weapons"] as const;
+  const allNo = { ...emptyDraft(), food: false, amplifiedSound: false, externalGuests: false, guestSpeakers: false, alcohol: false, minors: false, weapons: false };
+  /** Which AI "no" answers survive for this text. */
+  const kept = (text: string | null) => {
+    const { draft } = requireNegationEvidence(allNo, text);
+    return TRI.filter((k) => draft[k] === false);
+  };
+
+  it("an AI 'no' the text never states becomes unknown", () => {
+    expect(kept("SF Hacks officer meeting, 5 of us, Friday 12-1pm")).toEqual([]);
+    expect(kept(null)).toEqual([]);
+  });
+
+  it("explicit negations keep their 'no'", () => {
+    expect(kept("Midterm review for 20 members only. No food, no music, no outside guests.")).toEqual(
+      ["amplifiedSound", "externalGuests", "food"],
+    );
+  });
+
+  it.each([
+    ["ACM hack night, 30 members only", "externalGuests"],
+    ["an alcohol-free social", "alcohol"],
+    ["a dry event", "alcohol"],
+    ["adults only, 18+", "minors"],
+    ["quiet study, no speakers needed", "amplifiedSound"],
+    ["no weapons or props", "weapons"],
+  ])("%j backs %s", (text, field) => {
+    expect(kept(text)).toContain(field);
+  });
+
+  it("true and null are never touched", () => {
+    const d = { ...emptyDraft(), food: true, alcohol: null };
+    expect(requireNegationEvidence(d, "pizza").draft).toEqual(d);
+  });
+});
+
 describe("prepare() guards the engine", () => {
+  it.each([
+    "can i bring gun to 40 person event on october 10",
+    "stage combat workshop for 10 with replica swords, Tuesday 3-5pm",
+  ])("a weapon mention is never assumed away: %j", (text) => {
+    // even if the extractor says "no", the weapon cue keeps the field open (asked or escalated)
+    const { facts } = prepare({ ...emptyDraft(), headcount: 10, whenPhrase: "Tuesday 3-5pm", weapons: false }, text);
+    expect(facts.weapons.value).toBeNull();
+    const d = decide(facts, [], "acm", true);
+    expect(d.canSubmit).toBe(false);
+    expect(d.unresolved.map((u) => u.field)).toContain("weapons");
+  });
+
+  it("an extracted weapon escalates to University Police review", () => {
+    const { facts } = prepare({ ...emptyDraft(), headcount: 40, whenPhrase: "October 10 6-8pm", weapons: true }, "can i bring gun to 40 person event");
+    const d = decide(facts, [], "premed", true);
+    expect(d.tier).toBe(3);
+    expect(d.eventFlags.map((f) => f.ruleId)).toContain("WEAPON-01");
+  });
+
+  it("the hero pizza preset lands on Fix It: food conflict in Thornton, no open questions", () => {
+    const e = (demoCache as Record<string, { input: string; draft: unknown }>).pizza;
+    const { facts } = prepare(e.draft, e.input);
+    const d = decide(facts, [], "acm");
+    expect(d.tier).toBe(2);
+    expect(d.unresolved).toEqual([]);
+    expect(d.targetRoomId).toBe("TH-326");
+    expect(d.rooms.find((r) => r.roomId === "TH-326")?.conflicts.map((c) => c.ruleId)).toContain("FOOD-01");
+    expect(d.suggestedRoomId).toBe("CCSC-204");
+    expect(d.defaultsToAttest).toContain("externalGuests");
+  });
+
+  it("an unbacked AI 'no' is demoted, then re-defaulted for attestation", () => {
+    const { draft, facts } = prepare({ ...emptyDraft(), headcount: 5, whenPhrase: "Friday 12-1pm", externalGuests: false }, "officer meeting, 5 of us");
+    expect(draft.externalGuests).toBeNull();
+    expect(facts.externalGuests).toEqual({ value: false, source: "default" });
+  });
+
   it("a garbage extractor response becomes a Tier 2 'needs info' decision instead of throwing", () => {
     const { draft, facts } = prepare({ headcount: "lots", food: "idk", avNeeds: "all of it", tier: 1 }, "some text");
     expect(draft.ambiguities).toEqual([]);

@@ -25,8 +25,24 @@ describe("resolveWhen", () => {
     expect(resolveWhen("Thursday", ANCHOR)).toHaveProperty("ambiguity");
   });
 
-  it("a start with no end → asks for the end time", () => {
-    expect(resolveWhen("Thursday at 6pm", ANCHOR)).toEqual({ ambiguity: "What time does the event end?" });
+  it("a start with no end → asks for the end time, keeping the day and start", () => {
+    expect(resolveWhen("Thursday at 6pm", ANCHOR)).toEqual({
+      ambiguity: "What time does the event end?",
+      field: "endTime",
+      date: "2026-10-08",
+      startTime: "18:00",
+    });
+  });
+
+  it('a date with no time keeps the date: "october 10" → 2026-10-10, asks for the start', () => {
+    expect(resolveWhen("october 10", ANCHOR)).toMatchObject({ field: "startTime", date: "2026-10-10" });
+    expect(resolveWhen("Thursday", ANCHOR)).toMatchObject({ field: "startTime", date: "2026-10-08" });
+  });
+
+  it("a time with no day never guesses the day", () => {
+    const r = resolveWhen("at 6pm", ANCHOR);
+    expect(r).toMatchObject({ field: "date" });
+    expect(r).not.toHaveProperty("date");
   });
 
   it("unparseable or empty text → ambiguity", () => {
@@ -50,6 +66,7 @@ const draft = (p: Partial<EventDraft> = {}): EventDraft => ({
   guestSpeakers: null,
   alcohol: null,
   minors: null,
+  weapons: null,
   avNeeds: [],
   layout: null,
   roomTypeHints: [],
@@ -69,7 +86,7 @@ describe("draftToFacts", () => {
 
   it("small, plain events get every safety field defaulted to false (for attestation)", () => {
     const f = draftToFacts(draft(), { text: "Study session for 8", anchor: ANCHOR });
-    for (const k of ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const) {
+    for (const k of ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const) {
       expect(f[k]).toEqual({ value: false, source: "default" });
     }
   });
@@ -79,6 +96,19 @@ describe("draftToFacts", () => {
     expect(f.food).toEqual({ value: null, source: "ai" });
     expect(f.externalGuests).toEqual({ value: null, source: "ai" });
     expect(f.alcohol.source).toBe("default");
+  });
+
+  it('"members" lets outside guests default at any size, unless a guest cue is present', () => {
+    const members = draftToFacts(draft({ headcount: 45 }), { text: "coding night for 45 members", anchor: ANCHOR });
+    expect(members.externalGuests).toEqual({ value: false, source: "default" });
+    expect(members.food).toEqual({ value: null, source: "ai" }); // the size rule still holds for food
+    const withGuests = draftToFacts(draft({ headcount: 45 }), { text: "45 members and their guests", anchor: ANCHOR });
+    expect(withGuests.externalGuests.value).toBeNull();
+  });
+
+  it('a "community room" is a place, not a guest cue', () => {
+    expect(draftToFacts(draft(), { text: "practice in the Village community room", anchor: ANCHOR }).externalGuests.source).toBe("default");
+    expect(draftToFacts(draft(), { text: "a community meetup", anchor: ANCHOR }).externalGuests.value).toBeNull();
   });
 
   it("text cues prevent a default", () => {
@@ -101,9 +131,16 @@ describe("draftToFacts", () => {
     expect(f.alcohol).toEqual({ value: false, source: "ai" });
   });
 
-  it("an ambiguous time phrase leaves date/time null", () => {
+  it('a date-only phrase fills the date and leaves the times to ask ("40 person event on october 10")', () => {
+    const f = draftToFacts(draft({ whenPhrase: "october 10" }), { anchor: ANCHOR });
+    expect(f.date).toEqual({ value: "2026-10-10", source: "ai" });
+    expect(f.startTime.value).toBeNull();
+    expect(f.endTime.value).toBeNull();
+  });
+
+  it("an ambiguous time phrase keeps the named day but leaves the times null", () => {
     const f = draftToFacts(draft({ whenPhrase: "Thursday from six to nine" }), { anchor: ANCHOR });
-    expect(f.date.value).toBeNull();
+    expect(f.date.value).toBe("2026-10-08");
     expect(f.startTime.value).toBeNull();
     expect(f.endTime.value).toBeNull();
   });

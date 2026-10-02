@@ -21,6 +21,8 @@ export function anchorDate(): ISODate {
 }
 
 export type ResolvedWhen = { date: ISODate; startTime: HHMM; endTime: HHMM; durationMin: number };
+/** What's still missing, plus whatever the phrase did pin down ("October 10" → date, no times). */
+export type WhenAmbiguity = { ambiguity: string; field: "date" | "startTime" | "endTime"; date?: ISODate; startTime?: HHMM };
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -38,24 +40,27 @@ export function durationMin(start: HHMM | null, end: HHMM | null): number | null
  * Resolve a raw phrase like "Thursday 6–9pm" against the demo anchor (a Monday).
  * Never guesses: anything uncertain comes back as an ambiguity question.
  */
-export function resolveWhen(phrase: string, anchor: ISODate = anchorDate()): ResolvedWhen | { ambiguity: string } {
+export function resolveWhen(phrase: string, anchor: ISODate = anchorDate()): ResolvedWhen | WhenAmbiguity {
   const cleaned = phrase.replace(/[–—]/g, "-").trim();
-  if (!cleaned) return { ambiguity: "What day and time is the event?" };
+  if (!cleaned) return { ambiguity: "What day and time is the event?", field: "date" };
   const ref = new Date(`${anchor}T09:00:00`);
   const result = chrono.parse(cleaned, ref, { forwardDate: true })[0];
-  if (!result) return { ambiguity: `We couldn't read "${phrase}". What day and time is the event?` };
+  if (!result) return { ambiguity: `We couldn't read "${phrase}". What day and time is the event?`, field: "date" };
 
   const s = result.start;
-  if (!s.isCertain("hour")) return { ambiguity: `What time does the event start on ${fmtDay(s)}?` };
-  if (!result.end || !result.end.isCertain("hour")) return { ambiguity: "What time does the event end?" };
+  // keep a day the phrase actually names (not one chrono filled in from the anchor)
+  const dayKnown = s.isCertain("day") || s.isCertain("weekday");
+  const date = dayKnown ? `${s.get("year")}-${pad(s.get("month")!)}-${pad(s.get("day")!)}` : undefined;
+  if (!date) return { ambiguity: "What day is the event?", field: "date" };
+  if (!s.isCertain("hour")) return { ambiguity: `What time does the event start on ${fmtDay(s)}?`, field: "startTime", date };
+  const startTime = `${pad(s.get("hour")!)}:${pad(s.get("minute") ?? 0)}`;
+  if (!result.end || !result.end.isCertain("hour")) return { ambiguity: "What time does the event end?", field: "endTime", date, startTime };
 
   const e = result.end;
-  const date = `${s.get("year")}-${pad(s.get("month")!)}-${pad(s.get("day")!)}`;
-  const startTime = `${pad(s.get("hour")!)}:${pad(s.get("minute") ?? 0)}`;
   const endTime = `${pad(e.get("hour")!)}:${pad(e.get("minute") ?? 0)}`;
   const dur = toMinutes(endTime) - toMinutes(startTime);
-  if (dur <= 0) return { ambiguity: "The end time is before the start time. When does the event end?" };
-  if (dur > MAX_DURATION_MIN) return { ambiguity: "Events are limited to 6 hours. Can you shorten the time range?" };
+  if (dur <= 0) return { ambiguity: "The end time is before the start time. When does the event end?", field: "endTime", date };
+  if (dur > MAX_DURATION_MIN) return { ambiguity: "Events are limited to 6 hours. Can you shorten the time range?", field: "endTime", date };
   return { date, startTime, endTime, durationMin: dur };
 }
 
@@ -82,6 +87,7 @@ export function emptyFacts(): EventFacts {
     guestSpeakers: f<boolean | null>(null, "user"),
     alcohol: f<boolean | null>(null, "user"),
     minors: f<boolean | null>(null, "user"),
+    weapons: f<boolean | null>(null, "user"),
     avNeeds: f([], "user"),
     layout: f(null, "user"),
     preferredBuilding: f<string | null>(null, "user"),
@@ -90,12 +96,18 @@ export function emptyFacts(): EventFacts {
   };
 }
 
+/** Shared with the offline extractor. Broad on purpose: a false hit only asks the officer. */
+export const WEAPON_CUE =
+  /\b(guns?|firearms?|rifles?|pistols?|handguns?|shotguns?|weapons?|knife|knives|blades?|swords?|machetes?|tasers?|stun guns?|pepper spray|mace|ammo|ammunition|explosives?|airsoft|paintball|replicas?)\b/i;
+
 const CUES = {
   food: /\b(food|pizza|snacks?|dinner|lunch|breakfast|brunch|cater(ing|ed)?|potluck|boba|coffee|donuts?|refreshments|bbq|tacos?)\b/i,
-  externalGuests: /\b(public|open to (all|everyone)|community|alumni|recruiters?|guests?|visitors?|other schools|networking|mixer|career fair|families|parents)\b/i,
+  externalGuests: /\b(public|open to (all|everyone)|community(?!\s+(room|center|centre))|alumni|recruiters?|guests?|visitors?|other schools|networking|mixer|career fair|families|parents)\b/i,
   // "speaker" means a loudspeaker here, not a guest speaker
   amplifiedSound: /\b(dj|music|(?<!guest )speakers?(?! from)|sound system|concert|performance|band|karaoke|party|dance)\b/i,
   guestSpeakers: /\b(guest speakers?|keynote|panel(ists?)?|speaker from|invited speaker|talk by)\b/i,
+  // code-side backstop: any mention means the AI's answer is needed, never an assumed "no"
+  weapons: WEAPON_CUE,
 };
 
 const SMALL_EVENT = 25;
@@ -104,13 +116,17 @@ const SMALL_EVENT = 25;
  * LLM draft → EventFacts. Applies contextual defaults (source "default") so small, plain
  * events can reach Tier 1 — the officer must attest to every defaulted value.
  *  - alcohol, minors: default false unless mentioned.
+ *  - weapons: default false when nothing in the text mentions one.
  *  - amplifiedSound, guestSpeakers: default false when no cue in the text.
- *  - food, externalGuests: default false only for small events (≤25) with no cue.
+ *  - food: default false only for small events (≤25) with no cue.
+ *  - externalGuests: default false for small events, or any size when the text says "members",
+ *    with no guest cue.
  */
 export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: ISODate } = {}): EventFacts {
   const text = `${opts.text ?? ""} ${draft.summary ?? ""} ${draft.foodDescription ?? ""}`;
   const when = draft.whenPhrase ? resolveWhen(draft.whenPhrase, opts.anchor) : null;
-  const resolved = when && !("ambiguity" in when) ? when : null;
+  // a partial phrase ("October 10") still fills in what it names; the rest stays null and gets asked
+  const resolved: Partial<ResolvedWhen> | null = when;
   const small = draft.headcount !== null && draft.headcount <= SMALL_EVENT;
 
   const tri = (v: boolean | null, canDefault: boolean): Fact<boolean | null> =>
@@ -125,10 +141,11 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
     food: tri(draft.food, small && !CUES.food.test(text)),
     foodDescription: f(draft.foodDescription),
     amplifiedSound: tri(draft.amplifiedSound, !CUES.amplifiedSound.test(text)),
-    externalGuests: tri(draft.externalGuests, small && !CUES.externalGuests.test(text)),
+    externalGuests: tri(draft.externalGuests, (small || /\bmembers\b/i.test(text)) && !CUES.externalGuests.test(text)),
     guestSpeakers: tri(draft.guestSpeakers, !CUES.guestSpeakers.test(text)),
     alcohol: tri(draft.alcohol, true),
     minors: tri(draft.minors, true),
+    weapons: tri(draft.weapons, !CUES.weapons.test(text)),
     avNeeds: f(draft.avNeeds),
     layout: f(draft.layout),
     preferredBuilding: f(draft.preferredBuilding),
@@ -138,10 +155,10 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
 }
 
 /** Ambiguity from the time phrase, if any (merged into clarifying questions by the API). */
-export function whenAmbiguity(draft: EventDraft, anchor?: ISODate): string | null {
+export function whenAmbiguity(draft: EventDraft, anchor?: ISODate): Pick<WhenAmbiguity, "ambiguity" | "field"> | null {
   if (!draft.whenPhrase) return null;
   const r = resolveWhen(draft.whenPhrase, anchor);
-  return "ambiguity" in r ? r.ambiguity : null;
+  return "ambiguity" in r ? { ambiguity: r.ambiguity, field: r.field } : null;
 }
 
 /** Return a copy of facts with one field set by the user. */

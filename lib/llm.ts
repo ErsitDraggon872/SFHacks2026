@@ -13,6 +13,7 @@
 import { GoogleGenAI } from "@google/genai";
 import demoCache from "@/data/demo-cache.json";
 import { POLICY_BY_ID, ROOM_BY_ID } from "./data";
+import { WEAPON_CUE } from "./normalize";
 import type {
   AiMode,
   AvItem,
@@ -60,6 +61,7 @@ const EXTRACTOR_SCHEMA = {
     guestSpeakers: { type: "BOOLEAN", nullable: true },
     alcohol: { type: "BOOLEAN", nullable: true },
     minors: { type: "BOOLEAN", nullable: true },
+    weapons: { type: "BOOLEAN", nullable: true },
     avNeeds: {
       type: "ARRAY",
       items: {
@@ -104,7 +106,8 @@ Your task is to parse a student event description into a structured JSON EventDr
 
 CRITICAL RULES:
 1. NEVER invent or assume values. If a field is not explicitly mentioned or directly stated in the text, use null.
-2. TRI-STATE POLICY FIELDS (food, amplifiedSound, externalGuests, guestSpeakers, alcohol, minors):
+2. TRI-STATE POLICY FIELDS (food, amplifiedSound, externalGuests, guestSpeakers, alcohol, minors, weapons):
+   - weapons: true for any firearm, knife, or other weapon, including props, replicas, airsoft or demonstrations, even when phrased as a question ("can I bring a gun?").
    - true: explicitly mentioned or clearly stated as occurring
    - false: explicitly stated as NOT occurring (e.g. "no alcohol", "members only, no outside guests")
    - null: unmentioned, uncertain, or ambiguous
@@ -169,7 +172,7 @@ CRITICAL RULES:
    - briefing: Must be null.
 3. For Tier 3 (Escalated review required):
    - headline: "Staff review required — briefing prepared"
-   - explanation: Explain why staff review is required (e.g., event size > 100, external speakers, alcohol, minors).
+   - explanation: Explain why staff review is required (e.g., event size > 100, external speakers, alcohol, minors, weapons).
    - permitNarrative: Pre-filled narrative if applicable.
    - briefing: An executive briefing for Student Activities & Events staff including:
      - summary: Concise overview of who, what, when, headcount, and location fit.
@@ -271,6 +274,7 @@ function extractOffline(text: string): EventDraft {
   const guestSpeakers = triState(text, /\b(guest speakers?|panel(?:ists)?|keynote|talk by)\b/i);
   const alcohol = triState(text, /\b(alcohol|beer|wine|cocktails?|bar service)\b/i, /\b(no alcohol|alcohol-free|dry event)\b/i);
   const minors = triState(text, /\b(minors?|youth|k-12|high school(?:ers)?|under 18)\b/i);
+  const weapons = triState(text, WEAPON_CUE, /\bno\s+(weapons?|guns?|firearms?)\b/i);
 
   const avNeeds: AvItem[] = [];
   if (/\bprojectors?\b/i.test(text)) avNeeds.push("projector");
@@ -319,6 +323,7 @@ function extractOffline(text: string): EventDraft {
     guestSpeakers,
     alcohol,
     minors,
+    weapons,
     avNeeds,
     layout: null,
     roomTypeHints: [],
@@ -526,6 +531,7 @@ export async function writeExplanation(facts: EventFacts, decision: PolicyDecisi
       guestSpeakers: facts.guestSpeakers.value,
       alcohol: facts.alcohol.value,
       minors: facts.minors.value,
+      weapons: facts.weapons.value,
       avNeeds: facts.avNeeds.value,
       preferredBuilding: facts.preferredBuilding.value,
     },

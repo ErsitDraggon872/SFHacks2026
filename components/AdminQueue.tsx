@@ -13,12 +13,10 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
-  Clock,
   Filter,
   MessageSquare,
   RefreshCw,
   Search,
-  ShieldAlert,
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -27,6 +25,9 @@ import { cn } from "@/lib/client/cn";
 import { FACT_LABEL, fmtDate, fmtFactValue, fmtTime } from "@/lib/client/format";
 import { CLUB_BY_ID, ROOM_BY_ID } from "@/lib/data";
 import type { AdminResponse, DecisionSnapshot, FactField, SnapshotStatus } from "@/lib/types";
+
+/** Labeled assumption, not a measurement: staff minutes to read and check one request by hand. */
+const REVIEW_MIN_ASSUMED = 15;
 
 export interface AdminQueueProps {
   initialData?: AdminResponse | null;
@@ -139,7 +140,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
     });
   };
 
-  const snapshots = data?.log ?? [];
+  const snapshots = useMemo(() => data?.log ?? [], [data]);
   const counts = useMemo(() => {
     const auto = snapshots.filter((s) => s.status === "auto_approved").length;
     const pending = snapshots.filter((s) => s.status === "pending_review").length;
@@ -153,7 +154,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
       denied,
       approved,
       total: snapshots.length,
-      hoursSaved: (auto * 15) / 60,
+      hoursSaved: ((auto + permit) * REVIEW_MIN_ASSUMED) / 60,
     };
   }, [snapshots]);
 
@@ -248,6 +249,11 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
           <p className="mt-1 text-xs text-muted">EHS &amp; guest filings</p>
         </Card>
       </div>
+      <p className="-mt-3 text-xs text-muted">
+        Estimated manual review avoided: {counts.auto + counts.permit} requests × {REVIEW_MIN_ASSUMED} min ≈{" "}
+        {Number.isInteger(counts.hoursSaved) ? counts.hoursSaved : counts.hoursSaved.toFixed(1)} hrs
+        <span className="text-faint"> · assumption: {REVIEW_MIN_ASSUMED} min per manual SA&amp;E review</span>
+      </p>
 
       {/* Control Bar: Filter Tabs & Search */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-line pb-4">
@@ -628,6 +634,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                             "guestSpeakers",
                             "alcohol",
                             "minors",
+                            "weapons",
                             "avNeeds",
                             "layout",
                           ] as FactField[]
@@ -635,7 +642,8 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                           <div key={field} className="rounded-lg bg-sunken p-2">
                             <div className="text-[10px] text-muted">{FACT_LABEL[field]}</div>
                             <div className="font-medium text-ink">
-                              {fmtFactValue(field, snap.facts[field].value)}
+                              {/* older snapshots predate some fields */}
+                              {snap.facts[field] ? fmtFactValue(field, snap.facts[field].value) : "—"}
                             </div>
                           </div>
                         ))}
