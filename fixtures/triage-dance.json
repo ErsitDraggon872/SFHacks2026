@@ -2,6 +2,9 @@
   "requestText": "Dance practice for 25 of our members Thursday 9:30-11pm at the Village community room, we'll bring a speaker for music.",
   "presetId": "dance",
   "draft": {
+    "summary": "Dance practice",
+    "headcount": 25,
+    "whenPhrase": "Thursday 9:30-11pm",
     "food": null,
     "foodDescription": null,
     "amplifiedSound": true,
@@ -14,10 +17,7 @@
     "roomTypeHints": [],
     "preferredBuilding": "Village at Centennial Square",
     "missingRequiredFields": [],
-    "ambiguities": [],
-    "summary": "Dance practice",
-    "headcount": 25,
-    "whenPhrase": "Thursday 9:30-11pm"
+    "ambiguities": []
   },
   "facts": {
     "summary": {

@@ -89,6 +89,12 @@ describe("draftToFacts", () => {
     expect(f.guestSpeakers.value).toBeNull();
   });
 
+  it('"guest speaker" is not an amplified-sound cue, but "a speaker for music" is', () => {
+    expect(draftToFacts(draft(), { text: "workshop with a guest speaker", anchor: ANCHOR }).amplifiedSound.source).toBe("default");
+    expect(draftToFacts(draft(), { text: "talk by a speaker from UCSF", anchor: ANCHOR }).amplifiedSound.source).toBe("default");
+    expect(draftToFacts(draft(), { text: "we'll bring a speaker", anchor: ANCHOR }).amplifiedSound.value).toBeNull();
+  });
+
   it("explicit extractor answers beat defaults", () => {
     const f = draftToFacts(draft({ food: true, alcohol: false }), { anchor: ANCHOR });
     expect(f.food).toEqual({ value: true, source: "ai" });

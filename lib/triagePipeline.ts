@@ -6,10 +6,15 @@ import { ROOMS } from "./data";
 import { draftToFacts, whenAmbiguity } from "./normalize";
 import { evaluate } from "./policy";
 import { rankRooms } from "./rank";
+import { sanitizeDraft } from "./sanitize";
 import type { AiMode, Booking, EventDraft, EventFacts, PolicyDecision, PresetId, TriageResponse, WriterOutput } from "./types";
 
-/** Step 1: draft → facts (adds the time-phrase ambiguity, if any, to the draft). */
-export function prepare(draft: EventDraft, text: string | null): { draft: EventDraft; facts: EventFacts } {
+/**
+ * Step 1: draft → facts. Accepts raw extractor output: it is sanitized first (lib/sanitize.ts),
+ * then the time-phrase ambiguity, if any, is added to the draft.
+ */
+export function prepare(raw: unknown, text: string | null): { draft: EventDraft; facts: EventFacts } {
+  const { draft } = sanitizeDraft(raw);
   const amb = whenAmbiguity(draft);
   const full = amb ? { ...draft, ambiguities: [...draft.ambiguities, { field: "date" as const, question: amb }] } : draft;
   return { draft: full, facts: draftToFacts(full, { text: text ?? undefined }) };

@@ -93,7 +93,8 @@ export function emptyFacts(): EventFacts {
 const CUES = {
   food: /\b(food|pizza|snacks?|dinner|lunch|breakfast|brunch|cater(ing|ed)?|potluck|boba|coffee|donuts?|refreshments|bbq|tacos?)\b/i,
   externalGuests: /\b(public|open to (all|everyone)|community|alumni|recruiters?|guests?|visitors?|other schools|networking|mixer|career fair|families|parents)\b/i,
-  amplifiedSound: /\b(dj|music|speakers?|sound system|concert|performance|band|karaoke|party|dance)\b/i,
+  // "speaker" means a loudspeaker here, not a guest speaker
+  amplifiedSound: /\b(dj|music|(?<!guest )speakers?(?! from)|sound system|concert|performance|band|karaoke|party|dance)\b/i,
   guestSpeakers: /\b(guest speakers?|keynote|panel(ists?)?|speaker from|invited speaker|talk by)\b/i,
 };
 
