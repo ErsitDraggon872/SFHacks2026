@@ -304,6 +304,38 @@ describe("Fix It", () => {
   });
 });
 
+describe("decision output", () => {
+  it("is pure and deterministic: same inputs, same decision, inputs untouched", () => {
+    const facts = cleanFacts({ headcount: 45, food: true });
+    const bookings = [booking({ roomId: "CCSC-204", startTime: "14:00", endTime: "17:00" })];
+    const snapshot = JSON.stringify({ facts, bookings });
+    const a = run(facts, { bookings });
+    const b = run(facts, { bookings });
+    expect(a).toEqual(b);
+    expect(JSON.stringify({ facts, bookings })).toBe(snapshot);
+  });
+
+  it("checklist rows describe the target room", () => {
+    const d = run(cleanFacts({ headcount: 45, food: true, requestedRoomId: "TH-326" }));
+    const row = (id: string) => d.applicableRules.find((r) => r.ruleId === id);
+    expect(row("CAP-01")).toMatchObject({ status: "pass", detail: "45 attendees ≤ 52 fire capacity" });
+    expect(row("FOOD-01")?.status).toBe("block");
+    expect(row("FOOD-02")?.status).toBe("permit");
+    expect(row("BOOK-01")?.status).toBe("pass");
+    expect(row("CAP-DAILY-01")).toMatchObject({ status: "pass", detail: "2 hrs of 3 hrs daily limit" });
+  });
+
+  it("headline names the one change needed when Fix It applies", () => {
+    const d = run(cleanFacts({ headcount: 45, food: true, requestedRoomId: "TH-326" }));
+    expect(d.headline).toBe("Needs one change: food isn't allowed in Thornton Hall 326");
+  });
+
+  it("headline leads with the hard block when the daily cap is hit", () => {
+    const d = run(cleanFacts({ startTime: "10:00", endTime: "14:00" }));
+    expect(d.headline).toBe(d.hardBlocks[0].message);
+  });
+});
+
 // ---------- presets reproduce fixtures ----------
 
 describe("presets", () => {
