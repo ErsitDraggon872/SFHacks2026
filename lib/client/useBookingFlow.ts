@@ -24,6 +24,7 @@ import type {
   WriterOutput,
 } from "@/lib/types";
 import { FIXTURES, fetchAvailability, fixtureFromUrl, submitBooking, triage } from "./triageClient";
+import { useClubId } from "./useClubId";
 import type { SearchMode } from "@/components/SearchHero";
 
 export type Phase = "idle" | "loading" | "results";
@@ -53,7 +54,7 @@ export function initialFilterFacts(): EventFacts {
 }
 
 export function useBookingFlow() {
-  const [clubId, setClubId] = useState("acm");
+  const [clubId, setClubId] = useClubId();
   const [mode, setMode] = useState<SearchMode>("describe");
   const [text, setText] = useState("");
   const [phase, setPhase] = useState<Phase>("idle");
@@ -151,7 +152,7 @@ export function useBookingFlow() {
       setMode("describe");
       void run({ clubId: p.clubId, presetId: p.id });
     },
-    [run],
+    [run, setClubId],
   );
 
   const runText = useCallback(() => {

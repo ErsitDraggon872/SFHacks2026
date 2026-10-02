@@ -26,6 +26,6 @@ export async function POST(request: Request) {
     return Response.json({ error: "snapshotId and action (approve|deny) required" }, { status: 400 });
   }
   const snap = setSnapshotStatus(body.snapshotId, body.action, body.message);
-  if (!snap) return Response.json({ error: "Snapshot not found" }, { status: 404 });
+  if (!snap) return Response.json({ error: "Snapshot not found, or the club already cancelled this booking" }, { status: 404 });
   return Response.json(snap);
 }

@@ -12,7 +12,7 @@ const STATUS: Record<Booking["status"], SnapshotStatus> = {
   pending_permit: "permit_pending",
   pending_review: "pending_review",
   denied: "denied",
-  cancelled: "denied",
+  cancelled: "cancelled",
 };
 
 export function saveSnapshot(req: BookingRequest, booking: Booking, decision: PolicyDecision): DecisionSnapshot {
@@ -90,14 +90,7 @@ export function listSnapshots(): DecisionSnapshot[] {
         tier: b.tier,
         writer: null,
         bookingId: b.id,
-        status:
-          b.status === "confirmed"
-            ? "auto_approved"
-            : b.status === "pending_permit"
-              ? "permit_pending"
-              : b.status === "pending_review"
-                ? "pending_review"
-                : "denied",
+        status: STATUS[b.status],
       };
     });
 
@@ -137,6 +130,9 @@ export function setSnapshotStatus(id: string, action: "approve" | "deny", messag
     }
   }
 
+  // a club-cancelled booking is final: re-approving would skip the overlap/cap re-check
+  if (snap.status === "cancelled") return null;
+
   const status: SnapshotStatus = action === "approve" ? "approved" : "denied";
   const sentMessage = message ? { text: message, action, sentAt: new Date().toISOString() } : undefined;
   const history = snap.messageHistory ?? [];
@@ -170,4 +166,14 @@ export function setSnapshotStatus(id: string, action: "approve" | "deny", messag
     );
   }
   return updatedSnap;
+}
+
+/** Mirror a club's cancellation onto its audit snapshot (synthesized seed snapshots pick it up from the booking). */
+export function markSnapshotCancelled(bookingId: string) {
+  const snaps = readCollection<DecisionSnapshot>("snapshots");
+  if (!snaps.some((s) => s.bookingId === bookingId)) return;
+  writeCollection(
+    "snapshots",
+    snaps.map((s) => (s.bookingId === bookingId ? { ...s, status: "cancelled" as const } : s)),
+  );
 }

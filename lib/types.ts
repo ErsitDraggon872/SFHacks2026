@@ -296,7 +296,7 @@ export interface UserCorrection {
   userValue: unknown;
 }
 
-export type SnapshotStatus = "auto_approved" | "permit_pending" | "pending_review" | "approved" | "denied";
+export type SnapshotStatus = "auto_approved" | "permit_pending" | "pending_review" | "approved" | "denied" | "cancelled";
 
 export interface AdminMessage {
   text: string;

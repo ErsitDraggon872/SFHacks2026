@@ -13,7 +13,7 @@ vi.mock("@/lib/db", () => ({
   newId: (prefix: string) => `${prefix}-test-${++idSeq}`,
 }));
 
-const { createBooking } = await import("@/lib/booking");
+const { cancelBooking, createBooking } = await import("@/lib/booking");
 
 const bookings = () => (store.bookings ?? []) as Booking[];
 
@@ -108,5 +108,42 @@ describe("createBooking", () => {
 
   it("rejects unknown rooms", () => {
     expect(createBooking(req({ roomId: "NOPE-1" }))).toMatchObject({ ok: false, decision: null });
+  });
+});
+
+describe("cancelBooking", () => {
+  it("cancels the club's own booking and frees the room for anyone", () => {
+    const first = createBooking(req());
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    // the slot is now taken for another club
+    expect(createBooking(req({ clubId: "premed" })).ok).toBe(false);
+
+    const res = cancelBooking(first.booking.id, "acm");
+    expect(res.ok && res.booking.status).toBe("cancelled");
+    expect(bookings().find((b) => b.id === first.booking.id)?.status).toBe("cancelled");
+    expect(createBooking(req({ clubId: "premed" })).ok).toBe(true);
+  });
+
+  it("returns the club's daily-cap minutes", () => {
+    // 3-hr cap: two 2-hr bookings on the same day can't both stand
+    const a = createBooking(req());
+    expect(a.ok).toBe(true);
+    const later = { startTime: "19:00", endTime: "21:00" } as const;
+    expect(createBooking(req({ facts: cleanFacts(later) })).ok).toBe(false);
+    if (!a.ok) return;
+    cancelBooking(a.booking.id, "acm");
+    expect(createBooking(req({ facts: cleanFacts(later) })).ok).toBe(true);
+  });
+
+  it("refuses another club's booking, double cancels, and past bookings", () => {
+    const res = createBooking(req());
+    if (!res.ok) throw new Error("setup failed");
+    expect(cancelBooking(res.booking.id, "premed")).toMatchObject({ ok: false, status: 404 });
+    expect(cancelBooking(res.booking.id, "acm").ok).toBe(true);
+    expect(cancelBooking(res.booking.id, "acm")).toMatchObject({ ok: false, status: 409 });
+
+    store.bookings = [booking({ id: "old", clubId: "acm", date: "2026-09-01", roomId: "LIB-286", startTime: "10:00", endTime: "11:00" })];
+    expect(cancelBooking("old", "acm")).toMatchObject({ ok: false, status: 409 });
   });
 });

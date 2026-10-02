@@ -12,6 +12,9 @@ export function TopBar({ right }: { right?: ReactNode }) {
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3">
           {right}
+          <Link href="/bookings" className="whitespace-nowrap rounded-full px-3 py-1 text-sm text-ink-2 hover:bg-sunken hover:text-ink">
+            My bookings
+          </Link>
           <Link href="/admin" className="rounded-full px-3 py-1 text-sm text-ink-2 hover:bg-sunken hover:text-ink">
             Admin
           </Link>
