@@ -64,7 +64,7 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
     const res = await adminPost(new Request("http://localhost:3000/api/admin", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ snapshotId: "snap-seed-4", action: "deny" }),
+      body: JSON.stringify({ snapshotId: "snap-booking-seed-4", action: "deny" }),
     }));
     expect(res.status).toBe(200);
     const bookings = readCollection<Booking>("bookings");
