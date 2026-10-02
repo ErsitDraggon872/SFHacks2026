@@ -8,7 +8,7 @@
     "food": true,
     "foodDescription": "Pizza",
     "amplifiedSound": null,
-    "externalGuests": false,
+    "externalGuests": null,
     "guestSpeakers": null,
     "alcohol": null,
     "minors": null,
@@ -56,7 +56,7 @@
     },
     "externalGuests": {
       "value": false,
-      "source": "ai"
+      "source": "default"
     },
     "guestSpeakers": {
       "value": false,
@@ -403,6 +403,7 @@
     "unresolved": [],
     "defaultsToAttest": [
       "amplifiedSound",
+      "externalGuests",
       "guestSpeakers",
       "alcohol",
       "minors"
@@ -504,6 +505,10 @@
         {
           "label": "Seats 220 for your 45",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "Food permitted",
@@ -698,63 +703,6 @@
     },
     {
       "room": {
-        "id": "BUS-120",
-        "name": "Business Building 120",
-        "building": "Business Building",
-        "buildingCode": "BUS",
-        "type": "lecture_hall",
-        "layout": "lecture",
-        "seats": 160,
-        "fireCapacity": 180,
-        "av": [
-          "projector",
-          "microphone",
-          "speakers",
-          "video_conf"
-        ],
-        "foodAllowed": false,
-        "nearResidence": false,
-        "soundIsolated": false,
-        "adaAccessible": true,
-        "hours": {
-          "open": "07:00",
-          "close": "22:00"
-        }
-      },
-      "evaluation": {
-        "roomId": "BUS-120",
-        "eligible": false,
-        "conflicts": [
-          {
-            "ruleId": "FOOD-01",
-            "effect": "BLOCK_ROOM",
-            "scope": "room",
-            "message": "Food isn't allowed in Business Building 120",
-            "roomId": "BUS-120"
-          }
-        ],
-        "warnings": []
-      },
-      "rank": null,
-      "reasons": [
-        {
-          "label": "Seats 160 for your 45",
-          "kind": "fit"
-        },
-        {
-          "label": "Projector",
-          "kind": "fit"
-        },
-        {
-          "label": "Accessible",
-          "kind": "pref"
-        }
-      ],
-      "avMissing": [],
-      "why": "Food isn't allowed in Business Building 120"
-    },
-    {
-      "room": {
         "id": "FA-290",
         "name": "Fine Arts 290",
         "building": "Fine Arts Building",
@@ -810,6 +758,67 @@
         "projector"
       ],
       "why": "Food isn't allowed in Fine Arts 290"
+    },
+    {
+      "room": {
+        "id": "BUS-120",
+        "name": "Business Building 120",
+        "building": "Business Building",
+        "buildingCode": "BUS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 160,
+        "fireCapacity": 180,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BUS-120",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Business Building 120",
+            "roomId": "BUS-120"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 160 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Food isn't allowed in Business Building 120"
     },
     {
       "room": {
@@ -1309,5 +1318,5 @@
       "createdAt": "2026-10-01T17:15:00.000Z"
     }
   ],
-  "aiMode": "fallback"
+  "aiMode": "cached"
 }

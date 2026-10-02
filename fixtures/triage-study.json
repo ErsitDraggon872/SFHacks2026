@@ -476,53 +476,6 @@
     },
     {
       "room": {
-        "id": "TH-326",
-        "name": "Thornton Hall 326",
-        "building": "Thornton Hall",
-        "buildingCode": "TH",
-        "type": "classroom",
-        "layout": "classroom",
-        "seats": 48,
-        "fireCapacity": 52,
-        "av": [
-          "projector",
-          "whiteboard"
-        ],
-        "foodAllowed": false,
-        "nearResidence": false,
-        "soundIsolated": false,
-        "adaAccessible": true,
-        "hours": {
-          "open": "07:00",
-          "close": "22:00"
-        }
-      },
-      "evaluation": {
-        "roomId": "TH-326",
-        "eligible": true,
-        "conflicts": [],
-        "warnings": []
-      },
-      "rank": 6,
-      "reasons": [
-        {
-          "label": "Seats 48 for your 8",
-          "kind": "fit"
-        },
-        {
-          "label": "Whiteboard",
-          "kind": "fit"
-        },
-        {
-          "label": "Accessible",
-          "kind": "pref"
-        }
-      ],
-      "avMissing": [],
-      "why": "Seats 48 for your 8 · Whiteboard · Accessible"
-    },
-    {
-      "room": {
         "id": "TH-411",
         "name": "Thornton Hall 411",
         "building": "Thornton Hall",
@@ -551,7 +504,7 @@
         "conflicts": [],
         "warnings": []
       },
-      "rank": 7,
+      "rank": 6,
       "reasons": [
         {
           "label": "Seats 30 for your 8",
@@ -570,6 +523,57 @@
         "whiteboard"
       ],
       "why": "Seats 30 for your 8 · Accessible"
+    },
+    {
+      "room": {
+        "id": "TH-326",
+        "name": "Thornton Hall 326",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 48,
+        "fireCapacity": 52,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-326",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 7,
+      "reasons": [
+        {
+          "label": "Seats 48 for your 8",
+          "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
+        },
+        {
+          "label": "Whiteboard",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 48 for your 8 · Whiteboard · Accessible"
     },
     {
       "room": {
@@ -605,6 +609,10 @@
         {
           "label": "Seats 40 for your 8",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "No whiteboard",
@@ -657,6 +665,10 @@
           "kind": "fit"
         },
         {
+          "label": "Much larger than needed",
+          "kind": "miss"
+        },
+        {
           "label": "No whiteboard",
           "kind": "miss"
         },
@@ -705,6 +717,10 @@
         {
           "label": "Seats 50 for your 8",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "No whiteboard",
@@ -757,6 +773,10 @@
           "kind": "fit"
         },
         {
+          "label": "Much larger than needed",
+          "kind": "miss"
+        },
+        {
           "label": "No whiteboard",
           "kind": "miss"
         },
@@ -804,6 +824,10 @@
         {
           "label": "Seats 80 for your 8",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "No whiteboard",
@@ -855,6 +879,10 @@
         {
           "label": "Seats 160 for your 8",
           "kind": "fit"
+        },
+        {
+          "label": "Much larger than needed",
+          "kind": "miss"
         },
         {
           "label": "No whiteboard",
@@ -909,6 +937,10 @@
           "kind": "fit"
         },
         {
+          "label": "Much larger than needed",
+          "kind": "miss"
+        },
+        {
           "label": "No whiteboard",
           "kind": "miss"
         },
@@ -940,5 +972,5 @@
       "createdAt": "2026-10-01T17:20:00.000Z"
     }
   ],
-  "aiMode": "fallback"
+  "aiMode": "cached"
 }

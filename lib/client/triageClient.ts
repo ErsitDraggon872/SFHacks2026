@@ -30,6 +30,11 @@ export function fixtureFromUrl(): FixtureName | null {
   return name && name in FIXTURES ? (name as FixtureName) : null;
 }
 
+/** `?live=1` makes preset buttons call Gemini instead of replaying the demo cache (client only). */
+export function liveFromUrl(): boolean {
+  return typeof window !== "undefined" && new URLSearchParams(window.location.search).get("live") === "1";
+}
+
 export class ApiError extends Error {}
 
 async function json<T>(res: Response): Promise<T> {

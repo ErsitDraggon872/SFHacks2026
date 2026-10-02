@@ -23,7 +23,7 @@ import type {
   TriageResponse,
   WriterOutput,
 } from "@/lib/types";
-import { FIXTURES, fetchAvailability, fixtureFromUrl, submitBooking, triage } from "./triageClient";
+import { FIXTURES, fetchAvailability, fixtureFromUrl, liveFromUrl, submitBooking, triage } from "./triageClient";
 import { useClubId } from "./useClubId";
 import type { SearchMode } from "@/components/SearchHero";
 
@@ -94,10 +94,11 @@ export function useBookingFlow() {
     setPhase("results");
   }, []);
 
-  // ?fixture=pizza → jump straight into a results state (UI development)
+  // ?fixture=pizza → jump straight into a results state (UI development). The URL is only known
+  // after hydration, so this can't be initial state; defer the load out of the effect body.
   useEffect(() => {
     const name = fixtureFromUrl();
-    if (name) load(structuredClone(FIXTURES[name]));
+    if (name) queueMicrotask(() => load(structuredClone(FIXTURES[name])));
   }, [load]);
 
   // keep the bookings snapshot in sync when the user changes the date
@@ -150,7 +151,7 @@ export function useBookingFlow() {
       setClubId(p.clubId);
       setText(p.text);
       setMode("describe");
-      void run({ clubId: p.clubId, presetId: p.id });
+      void run({ clubId: p.clubId, presetId: p.id, live: liveFromUrl() });
     },
     [run, setClubId],
   );

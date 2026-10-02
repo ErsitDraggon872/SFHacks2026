@@ -28,7 +28,7 @@ function build(id: PresetId, override?: (f: EventFacts) => EventFacts): TriageRe
     decision,
     writer: entry.writer,
     bookings,
-    aiMode: "fallback",
+    aiMode: "cached",
   });
 }
 

@@ -1374,5 +1374,5 @@
     ]
   },
   "bookingsForDate": [],
-  "aiMode": "fallback"
+  "aiMode": "cached"
 }

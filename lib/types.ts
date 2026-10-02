@@ -250,7 +250,8 @@ export interface WriterOutput {
   citedRuleIds: string[]; // validated against policy.json; unknown ids stripped
 }
 
-export type AiMode = "live" | "fallback" | "none";
+/** live = Gemini answered · cached = preset replayed from demo-cache · fallback = Gemini failed, offline extractor · none = Quick Filters */
+export type AiMode = "live" | "cached" | "fallback" | "none";
 
 // ---------- bookings & audit ----------
 
@@ -335,6 +336,8 @@ export interface TriageRequest {
   text?: string;
   presetId?: PresetId;
   attested?: boolean;
+  /** presets only: re-extract the preset text with Gemini instead of replaying the cache */
+  live?: boolean;
 }
 
 /** POST /api/triage response */
