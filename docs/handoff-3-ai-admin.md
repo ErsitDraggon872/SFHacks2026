@@ -36,8 +36,8 @@ At T+15m, C1 also commits `fixtures/triage-{study,pizza,speaker,dance}.json`, wh
 ### Handoff 3: Computer 3 (Gemini) — AI Specialist & Admin Portal Lead
 **Owns:** `lib/llm.ts`, `lib/snapshot.ts`, `app/api/**`, `app/admin/page.tsx`, `data/demo-cache.json`, `scripts/demo-reset.ts`, `.env.example`.
 1. `llm.ts` with `@google/genai`:
-   - Extractor `gemini-2.5-flash-lite` with a strict `responseSchema` matching `EventDraft` (tri-state nulls, raw time phrase, `missingRequiredFields`, `ambiguities`). The prompt says never invent values and use null when unmentioned. Only event text is sent: no names, no club.
-   - Writer `gemini-2.5-flash` receives only structured facts + decision + cited rule excerpts. Rule IDs not in `policy.json` get stripped.
+   - Extractor `gemini-3.5-flash-lite` with a strict `responseSchema` matching `EventDraft` (tri-state nulls, raw time phrase, `missingRequiredFields`, `ambiguities`). The prompt says never invent values and use null when unmentioned. Only event text is sent: no names, no club.
+   - Writer `gemini-3.8-flash` receives only structured facts + decision + cited rule excerpts. Rule IDs not in `policy.json` get stripped.
    - Fallback chain: Flash → Flash-Lite → `demo-cache.json`. Models are configured via `GEMINI_EXTRACTOR_MODEL` / `GEMINI_WRITER_MODEL`.
 2. `demo-cache.json`: full extractor + writer outputs for all 4 presets. `presetId` requests use the cache when there's no key or the API errors, and `aiMode` reports `"live"` or `"fallback"`.
 3. API routes per the contract. `/api/triage` runs extract → `draftToFacts` → `evaluate` → `rankRooms` → writer (T2/T3 only). `/api/bookings` calls `createBooking` and saves a `DecisionSnapshot`.

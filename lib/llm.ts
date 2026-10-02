@@ -1,8 +1,8 @@
 /**
  * GatorSpace LLM Integration — OWNER: C3.
  * Split models via @google/genai:
- *   - Extractor: gemini-2.5-flash-lite (fast structured JSON parsing into EventDraft)
- *   - Writer: gemini-2.5-flash (high-quality admin explanations, briefings, and permit drafts)
+ *   - Extractor: gemini-3.5-flash-lite (fast structured JSON parsing into EventDraft)
+ *   - Writer: gemini-3.8-flash (high-quality admin explanations, briefings, and permit drafts)
  *
  * Fallback chain: Primary Model → Secondary Model → demo-cache.json / deterministic fallback.
  * Strictly enforces:
@@ -28,8 +28,8 @@ import type {
 type CacheEntry = { input: string; clubId: string; expectedTier?: number; draft: EventDraft; writer: WriterOutput | null };
 const CACHE = demoCache as unknown as Record<PresetId, CacheEntry>;
 
-const DEFAULT_EXTRACTOR_MODEL = "gemini-2.5-flash-lite";
-const DEFAULT_WRITER_MODEL = "gemini-2.5-flash";
+const DEFAULT_EXTRACTOR_MODEL = "gemini-3.5-flash-lite";
+const DEFAULT_WRITER_MODEL = "gemini-3.8-flash";
 
 function getExtractorModel(): string {
   return process.env.GEMINI_EXTRACTOR_MODEL || DEFAULT_EXTRACTOR_MODEL;
@@ -451,7 +451,7 @@ export async function extractEvent(text: string): Promise<{ draft: EventDraft; a
   }
 
   const primaryModel = getExtractorModel();
-  const modelsToTry = [primaryModel, "gemini-2.5-flash"].filter((m, i, arr) => arr.indexOf(m) === i);
+  const modelsToTry = [primaryModel, "gemini-3.8-flash"].filter((m, i, arr) => arr.indexOf(m) === i);
 
   for (const model of modelsToTry) {
     try {
@@ -533,7 +533,7 @@ export async function writeExplanation(facts: EventFacts, decision: PolicyDecisi
   };
 
   const primaryModel = getWriterModel();
-  const modelsToTry = [primaryModel, "gemini-2.5-flash-lite"].filter((m, i, arr) => arr.indexOf(m) === i);
+  const modelsToTry = [primaryModel, "gemini-3.5-flash-lite"].filter((m, i, arr) => arr.indexOf(m) === i);
 
   for (const model of modelsToTry) {
     try {
