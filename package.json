@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "demo:reset": "tsx scripts/demo-reset.ts",
     "fixtures": "tsx scripts/build-fixtures.ts",
+    "eval": "tsx scripts/eval-extractor.ts",
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
