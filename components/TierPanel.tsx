@@ -20,7 +20,7 @@
  *
  * Tier 3:
  *   - Visibly different: escalate-soft background, ShieldAlert icon, title "Staff review required".
- *   - NO Fix It. List "GatorSpace prepared": room candidates, policy citations, event summary,
+ *   - NO Fix It. List "SwampReserve prepared": room candidates, policy citations, event summary,
  *     staff questions (from writer.briefing).
  *   - Primary "Send to Student Activities & Events" → onSubmit (disabled unless canSubmit).
  *
@@ -179,7 +179,7 @@ export function TierPanel({
       {/* Tier 3: Staff review briefing details (NO Fix It) */}
       {isTier3 && (
         <div className="mt-4 space-y-3 rounded-xl border border-line bg-surface p-4">
-          <SectionLabel>GatorSpace prepared for Student Activities &amp; Events</SectionLabel>
+          <SectionLabel>SwampReserve prepared for Student Activities &amp; Events</SectionLabel>
 
           {writer?.briefing?.summary && (
             <p className="text-sm text-ink-2">{writer.briefing.summary}</p>

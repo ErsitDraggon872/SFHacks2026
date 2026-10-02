@@ -8,7 +8,7 @@ export function TopBar({ right }: { right?: ReactNode }) {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4">
         <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
           <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-accent" />
-          GatorSpace
+          SwampReserve
         </Link>
         <nav className="flex items-center gap-2 sm:gap-3">
           {right}

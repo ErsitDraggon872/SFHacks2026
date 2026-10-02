@@ -4,4 +4,4 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-process.env.GATORSPACE_RUNTIME_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "gatorspace-vitest-"));
+process.env.SWAMPRESERVE_RUNTIME_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "swampreserve-vitest-"));

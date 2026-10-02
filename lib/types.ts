@@ -1,5 +1,5 @@
 /**
- * GatorSpace shared contract. OWNER: Computer 1.
+ * SwampReserve shared contract. OWNER: Computer 1.
  * Frozen at T+15m — announce any change to the team before pushing.
  *
  * Pipeline:

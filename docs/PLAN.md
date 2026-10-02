@@ -1,6 +1,6 @@
-# Plan: GatorSpace — AI Event Compliance & Room Triage for SFSU
+# Plan: SwampReserve — AI Event Compliance & Room Triage for SFSU
 
-> **GatorSpace turns an event description into an explainable, policy-checked booking decision. Routine requests are approved automatically, and risky ones go to staff with the paperwork already done.**
+> **SwampReserve turns an event description into an explainable, policy-checked booking decision. Routine requests are approved automatically, and risky ones go to staff with the paperwork already done.**
 > Core principle: **the AI interprets intent; deterministic code enforces policy.** Gemini never runs after the point where authorization is decided.
 
 ## Context
@@ -63,7 +63,7 @@ This is the one authoritative function, server-side only, and it runs as one syn
   - Tier badge.
   - Compliance checklist with a citation on every row ("✓ CAP-01 · 45 ≤ 52 fire capacity"). Clicking a citation opens the policy excerpt.
   - Ranked room cards with a "Why #1" line. Ineligible rooms are grayed out with their conflict.
-  - Tier 2: Fix It + permit draft. Tier 3: a distinct "Staff review required" panel listing what GatorSpace prepared.
+  - Tier 2: Fix It + permit draft. Tier 3: a distinct "Staff review required" panel listing what SwampReserve prepared.
   - Quota meter: "2.0 / 3.0 hrs today."
 - `/bookings` My bookings: the acting club's bookings, soonest first, with club-side cancellation (frees the slot and daily-cap minutes).
 - `/admin` SA&E queue:
@@ -76,7 +76,7 @@ This is the one authoritative function, server-side only, and it runs as one syn
 Reference is devin.ai: white background, near-black text, large tight sans headline, black pill primary button + outlined secondary, hairline gray borders, generous whitespace, small muted helper text. No gradients and no heavy color.
 - **Tokens:** `bg-white`, text `neutral-950` / muted `neutral-500`, borders `neutral-200`, primary button `bg-neutral-950 text-white rounded-full`. Font is Geist (already in the scaffold). SFSU purple `#463077` is used **only** as a small accent (logo mark, focus ring, selected tab underline). Status colors are muted green/amber/red, always paired with an icon.
 - **Single centered column** (`max-w-3xl mx-auto`), with one thing to look at at a time.
-- **Top bar** (thin bottom border): `GatorSpace` wordmark on the left. On the right, the club switcher, quota pill ("2.0 / 3.0 hrs"), and an "Admin" link. The illustrative-policy disclaimer is one small muted line under the top bar.
+- **Top bar** (thin bottom border): `SwampReserve` wordmark on the left. On the right, the club switcher, quota pill ("2.0 / 3.0 hrs"), and an "Admin" link. The illustrative-policy disclaimer is one small muted line under the top bar.
 - **Empty state (hero):** headline "Book a room for your event." plus a one-line muted subhead. Below that is a **big centered search box**, which is the focal point: rounded-2xl, border, subtle shadow, a multiline textarea that grows, and a black "Find rooms →" button inside it. A small `Describe | Filters` segmented toggle sits above the box, and the 4 presets are gray pills below it.
 - **Results state:** the search box animates up to the top (stays editable), and below it, in order:
   1. **"Understood" chip row**: AI / edited / assumed styles, click a chip to edit.
