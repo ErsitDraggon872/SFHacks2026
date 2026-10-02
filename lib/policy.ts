@@ -4,7 +4,7 @@
  * OWNER: C1.
  */
 import { CLUB_BY_ID, getRule } from "./data";
-import { durationMin, toMinutes } from "./normalize";
+import { anchorDate, durationMin, isHHMM, isHeadcount, isISODate, toMinutes } from "./normalize";
 import { compareFit } from "./rank";
 import {
   DAILY_CAP_MIN,
@@ -150,8 +150,16 @@ function permitsFor(facts: EventFacts, room: Room | null, clubId: string): Permi
 
 const RESULT_STATUS = { BLOCK_ROOM: "block", BLOCK_REQUEST: "block", REQUIRE_PERMIT: "permit", WARN: "warn", ESCALATE: "escalate" } as const;
 
-export function evaluate(facts: EventFacts, ctx: EvaluateContext): PolicyDecision {
+export function evaluate(rawFacts: EventFacts, ctx: EvaluateContext): PolicyDecision {
   const { rooms, bookings, clubId, attested } = ctx;
+  // Untrusted input: malformed values become null (→ unresolved), never NaN comparisons.
+  const facts: EventFacts = {
+    ...rawFacts,
+    headcount: { ...rawFacts.headcount, value: isHeadcount(rawFacts.headcount.value) ? rawFacts.headcount.value : null },
+    date: { ...rawFacts.date, value: isISODate(rawFacts.date.value) ? rawFacts.date.value : null },
+    startTime: { ...rawFacts.startTime, value: isHHMM(rawFacts.startTime.value) ? rawFacts.startTime.value : null },
+    endTime: { ...rawFacts.endTime, value: isHHMM(rawFacts.endTime.value, true) ? rawFacts.endTime.value : null },
+  };
   const n = facts.headcount.value;
   const date = facts.date.value;
   const reqMin = durationMin(facts.startTime.value, facts.endTime.value);
@@ -160,6 +168,9 @@ export function evaluate(facts: EventFacts, ctx: EvaluateContext): PolicyDecisio
   const unresolved: Unresolved[] = [];
   for (const field of [...REQUIRED_FIELDS, ...SAFETY_FIELDS]) {
     if (facts[field].value === null) unresolved.push({ field, question: QUESTIONS[field] });
+  }
+  if (date !== null && date < anchorDate()) {
+    unresolved.push({ field: "date", question: "That date has already passed. What day is the event?" });
   }
   if (reqMin !== null && reqMin <= 0) unresolved.push({ field: "endTime", question: "The end time is before the start time. When does it end?" });
   // alcohol / weapons defaults are a given (IMPLIED_NO_FIELDS), not something the officer attests to

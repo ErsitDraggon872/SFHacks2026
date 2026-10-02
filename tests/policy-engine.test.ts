@@ -4,6 +4,7 @@ import { resolveWhen, setFact, emptyFacts } from "../lib/normalize";
 import { evaluate } from "../lib/policy";
 import { isOversized, rankRooms } from "../lib/rank";
 import type { Booking } from "../lib/types";
+import { cleanFacts, run } from "./helpers";
 
 describe("Deterministic Policy Engine & Normalization Tests", () => {
   it("resolves 'Thursday 6-9pm' to 2026-10-08 18:00-21:00 against demo anchor (2026-10-05)", () => {
@@ -103,6 +104,39 @@ describe("Deterministic Policy Engine & Normalization Tests", () => {
     const decision = evaluate(facts, { rooms: ROOMS, bookings: existingBookings, clubId: "acm", attested: true });
     expect(decision.hardBlocks.some((b) => b.ruleId === "CAP-DAILY-01")).toBe(true);
     expect(decision.canSubmit).toBe(false);
+  });
+});
+
+describe("malformed and past inputs become unresolved, never booked", () => {
+  it("flags a past date and blocks submit", () => {
+    const decision = run(cleanFacts({ date: "2026-10-01" }), { attested: true });
+    expect(decision.unresolved.map((u) => u.field)).toContain("date");
+    expect(decision.canSubmit).toBe(false);
+  });
+
+  it("does not flag the anchor date itself", () => {
+    const decision = run(cleanFacts({ date: "2026-10-05" }), { attested: true });
+    expect(decision.unresolved.map((u) => u.field)).not.toContain("date");
+  });
+
+  it("treats malformed times as unresolved with no NaN minutes", () => {
+    const decision = run(cleanFacts({ startTime: "x", endTime: "y" }), { attested: true });
+    expect(decision.unresolved.map((u) => u.field)).toContain("startTime");
+    expect(decision.canSubmit).toBe(false);
+    expect(decision.requestMinutes).toBeNull();
+    expect(Number.isNaN(decision.requestMinutes)).toBe(false);
+  });
+
+  it("rejects impossible calendar dates", () => {
+    const decision = run(cleanFacts({ date: "2026-02-30" }), { attested: true });
+    expect(decision.unresolved.map((u) => u.field)).toContain("date");
+  });
+
+  it("rejects non-integer and non-positive headcounts", () => {
+    for (const headcount of [2.5, -3]) {
+      const decision = run(cleanFacts({ headcount }), { attested: true });
+      expect(decision.unresolved.map((u) => u.field)).toContain("headcount");
+    }
   });
 });
 

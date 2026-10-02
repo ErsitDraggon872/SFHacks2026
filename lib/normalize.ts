@@ -28,6 +28,23 @@ export type WhenAmbiguity = { ambiguity: string; field: "date" | "startTime" | "
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** "YYYY-MM-DD" that is also a real calendar date ("2026-02-30" is not). */
+export function isISODate(s: unknown): s is ISODate {
+  if (typeof s !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const [y, m, d] = s.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+}
+
+/** "HH:MM" 00:00–23:59; "24:00" only where end-of-day is legal (endTime). */
+export function isHHMM(s: unknown, allowEndOfDay = false): s is HHMM {
+  return typeof s === "string" && (/^([01]\d|2[0-3]):[0-5]\d$/.test(s) || (allowEndOfDay && s === "24:00"));
+}
+
+export function isHeadcount(n: unknown): n is number {
+  return typeof n === "number" && Number.isInteger(n) && n > 0;
+}
+
 export function toMinutes(t: HHMM): number {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;

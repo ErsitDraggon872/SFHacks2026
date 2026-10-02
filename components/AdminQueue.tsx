@@ -59,6 +59,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
     message: string;
   } | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [actionError, setActionError] = useState<{ snapshotId: string; text: string } | null>(null);
   const [lastNotification, setLastNotification] = useState<{
     clubName: string;
     action: "approve" | "deny";
@@ -85,6 +86,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
   const handleAction = async () => {
     if (!activeAction) return;
     setSubmitting(true);
+    setActionError(null);
     const { snapshot, action, message } = activeAction;
     const club = CLUB_BY_ID[snapshot.clubId]?.name ?? snapshot.clubId;
 
@@ -108,9 +110,12 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
         });
         setActiveAction(null);
         await fetchAdminData();
+      } else {
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        setActionError({ snapshotId: snapshot.id, text: body?.error ?? "Couldn't update this request" });
       }
     } catch {
-      // handle error
+      setActionError({ snapshotId: snapshot.id, text: "Couldn't update this request" });
     } finally {
       setSubmitting(false);
     }
@@ -121,6 +126,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
     const eventName = snap.eventName ?? snap.facts.summary.value ?? snap.requestText ?? "Your event";
     const dateStr = snap.facts.date.value ? fmtDate(snap.facts.date.value) : "your requested date";
     const defaultMsg = `Notice from Student Activities & Events: Your booking for "${eventName}" in ${room} on ${dateStr} has been rejected. Reason: `;
+    setActionError(null);
     setActiveAction({
       snapshot: snap,
       action: "deny",
@@ -133,6 +139,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
     const eventName = snap.eventName ?? snap.facts.summary.value ?? snap.requestText ?? "Your event";
     const dateStr = snap.facts.date.value ? fmtDate(snap.facts.date.value) : "your requested date";
     const defaultMsg = `Notice from Student Activities & Events: Your booking for "${eventName}" in ${room} on ${dateStr} has been reviewed and approved. Please ensure all campus safety policies and room reset guidelines are followed.`;
+    setActionError(null);
     setActiveAction({
       snapshot: snap,
       action: "approve",
@@ -556,6 +563,12 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                       >
                         Re-open / Approve
                       </Button>
+                    )}
+
+                    {actionError?.snapshotId === snap.id && (
+                      <p role="alert" className="basis-full text-xs text-block">
+                        {actionError.text}
+                      </p>
                     )}
                   </div>
                 </div>

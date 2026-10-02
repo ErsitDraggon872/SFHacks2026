@@ -179,6 +179,77 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
     );
   });
 
+  it("re-approving a denied booking is refused with 409 when the slot was taken", async () => {
+    writeCollection("bookings", [
+      { id: "b-1", roomId: "LIB-286", clubId: "acm", date: "2026-10-20", startTime: "16:00", endTime: "18:00",
+        durationMin: 120, status: "denied", title: "x", tier: 2, snapshotId: "s-1", createdAt: "2026-10-01T00:00:00.000Z" },
+      { id: "b-2", roomId: "LIB-286", clubId: "premed", date: "2026-10-20", startTime: "17:00", endTime: "19:00",
+        durationMin: 120, status: "confirmed", title: "y", tier: 1, snapshotId: null, createdAt: "2026-10-01T00:00:00.000Z" },
+    ] as Booking[]);
+    const seed = listSnapshots()[0];
+    writeCollection("snapshots", [
+      { ...seed, id: "s-1", bookingId: "b-1", clubId: "acm", selectedRoomId: "LIB-286", status: "denied",
+        facts: { ...seed.facts, date: { value: "2026-10-20", source: "user" }, startTime: { value: "16:00", source: "user" } } },
+    ] as DecisionSnapshot[]);
+
+    const res = await adminPost(new Request("http://localhost:3000/api/admin", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ snapshotId: "s-1", action: "approve" }),
+    }));
+    expect(res.status).toBe(409);
+    expect(readCollection<Booking>("bookings").find((b) => b.id === "b-1")?.status).toBe("denied");
+    expect(readCollection<DecisionSnapshot>("snapshots").find((s) => s.id === "s-1")?.status).toBe("denied");
+    resetCollection("bookings");
+    resetCollection("snapshots");
+  });
+
+  it("re-approving a denied booking succeeds when nothing took the slot", async () => {
+    writeCollection("bookings", [
+      { id: "b-1", roomId: "LIB-286", clubId: "acm", date: "2026-10-20", startTime: "16:00", endTime: "18:00",
+        durationMin: 120, status: "denied", title: "x", tier: 2, snapshotId: "s-1", createdAt: "2026-10-01T00:00:00.000Z" },
+    ] as Booking[]);
+    const seed = listSnapshots()[0];
+    writeCollection("snapshots", [
+      { ...seed, id: "s-1", bookingId: "b-1", clubId: "acm", selectedRoomId: "LIB-286", status: "denied",
+        facts: { ...seed.facts, date: { value: "2026-10-20", source: "user" }, startTime: { value: "16:00", source: "user" } } },
+    ] as DecisionSnapshot[]);
+
+    const res = await adminPost(new Request("http://localhost:3000/api/admin", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ snapshotId: "s-1", action: "approve" }),
+    }));
+    expect(res.status).toBe(200);
+    expect(readCollection<Booking>("bookings").find((b) => b.id === "b-1")?.status).toBe("confirmed");
+    resetCollection("bookings");
+    resetCollection("snapshots");
+  });
+
+  it("re-approving a denied booking is refused with 409 when it would bust the daily cap", async () => {
+    writeCollection("bookings", [
+      { id: "b-1", roomId: "LIB-286", clubId: "acm", date: "2026-10-20", startTime: "16:00", endTime: "18:00",
+        durationMin: 120, status: "denied", title: "x", tier: 2, snapshotId: "s-1", createdAt: "2026-10-01T00:00:00.000Z" },
+      { id: "b-3", roomId: "TH-326", clubId: "acm", date: "2026-10-20", startTime: "09:00", endTime: "11:00",
+        durationMin: 120, status: "confirmed", title: "y", tier: 1, snapshotId: null, createdAt: "2026-10-01T00:00:00.000Z" },
+    ] as Booking[]);
+    const seed = listSnapshots()[0];
+    writeCollection("snapshots", [
+      { ...seed, id: "s-1", bookingId: "b-1", clubId: "acm", selectedRoomId: "LIB-286", status: "denied",
+        facts: { ...seed.facts, date: { value: "2026-10-20", source: "user" }, startTime: { value: "16:00", source: "user" } } },
+    ] as DecisionSnapshot[]);
+
+    const res = await adminPost(new Request("http://localhost:3000/api/admin", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ snapshotId: "s-1", action: "approve" }),
+    }));
+    expect(res.status).toBe(409);
+    expect(readCollection<Booking>("bookings").find((b) => b.id === "b-1")?.status).toBe("denied");
+    resetCollection("bookings");
+    resetCollection("snapshots");
+  });
+
   it("seed history snapshots hold their room: double-booking one is blocked", async () => {
     resetCollection("bookings");
     resetCollection("snapshots");
