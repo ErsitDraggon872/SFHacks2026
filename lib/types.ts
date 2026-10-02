@@ -298,6 +298,12 @@ export interface UserCorrection {
 
 export type SnapshotStatus = "auto_approved" | "permit_pending" | "pending_review" | "approved" | "denied";
 
+export interface AdminMessage {
+  text: string;
+  action: "approve" | "deny";
+  sentAt: string;
+}
+
 /** Structured audit record. Never stores model reasoning text. */
 export interface DecisionSnapshot {
   id: string;
@@ -315,6 +321,8 @@ export interface DecisionSnapshot {
   status: SnapshotStatus;
   eventName?: string | null;
   eventDescription?: string | null;
+  adminMessage?: string | null;
+  messageHistory?: AdminMessage[];
 }
 
 // ---------- HTTP ----------
@@ -354,6 +362,7 @@ export interface AdminResponse {
 export interface AdminActionRequest {
   snapshotId: string;
   action: "approve" | "deny";
+  message?: string;
 }
 
 export const DAILY_CAP_MIN = 180;
