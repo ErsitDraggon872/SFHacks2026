@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { GET as adminGet, POST as adminPost } from "../app/api/admin/route";
 import { POST as bookingsPost } from "../app/api/bookings/route";
 import { listSnapshots } from "../lib/snapshot";
+import { cleanFacts } from "./helpers";
 import { readCollection, resetCollection, writeCollection } from "../lib/db";
 import type { AdminResponse, Booking, BookingRequest, DecisionSnapshot } from "../lib/types";
 
@@ -44,7 +45,7 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
     expect(updated.status).toBe("approved");
   });
 
-  it("denying a seed snapshot never changes an unrelated booking", async () => {
+  it("denying a seed snapshot only denies its own backing booking", async () => {
     const before = readCollection<Booking>("bookings");
     for (const snap of listSnapshots().filter((s) => s.id.startsWith("snap-history-"))) {
       const req = new Request("http://localhost:3000/api/admin", {
@@ -54,7 +55,14 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
       });
       expect((await adminPost(req)).status).toBe(200);
     }
-    expect(readCollection<Booking>("bookings")).toEqual(before);
+    // each history snapshot denies only its own backing booking
+    const after = readCollection<Booking>("bookings");
+    for (const b of after) {
+      const prev = before.find((p) => p.id === b.id)!;
+      expect(b).toEqual(b.id.startsWith("history-") ? { ...prev, status: "denied" } : prev);
+    }
+    resetCollection("bookings");
+    resetCollection("snapshots");
   });
 
   it("synthesized booking snapshots have unique ids and deny their own booking", async () => {
@@ -169,5 +177,37 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
       "snapshots",
       readCollection<DecisionSnapshot>("snapshots").filter((s) => s.id !== body.booking.snapshotId),
     );
+  });
+
+  it("seed history snapshots hold their room: double-booking one is blocked", async () => {
+    resetCollection("bookings");
+    resetCollection("snapshots");
+    const history = listSnapshots().find((s) => s.id === "snap-history-1")!;
+    const bookingReq: BookingRequest = {
+      clubId: "dance",
+      roomId: history.selectedRoomId!,
+      facts: cleanFacts({
+        summary: "Dance group dancing",
+        headcount: 20,
+        date: history.facts.date.value,
+        startTime: history.facts.startTime.value,
+        endTime: history.facts.endTime.value,
+        requestedRoomId: history.selectedRoomId,
+      }),
+      attested: true,
+      requestText: "Dance group dancing",
+      draft: null,
+      writer: null,
+    };
+    const res = await bookingsPost(new Request("http://localhost:3000/api/bookings", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(bookingReq),
+    }));
+    const body = await res.json();
+    expect(body.ok).toBe(false);
+    expect(body.errors.map((e: { ruleId: string }) => e.ruleId)).toContain("BOOK-01");
+    resetCollection("bookings");
+    resetCollection("snapshots");
   });
 });
