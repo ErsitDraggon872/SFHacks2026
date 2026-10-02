@@ -46,7 +46,7 @@
     "selectedRoomId": "LIB-460",
     "tier": 1,
     "writer": null,
-    "bookingId": "seed-5",
+    "bookingId": "history-1",
     "status": "auto_approved"
   },
   {
@@ -108,7 +108,7 @@
       "briefing": null,
       "citedRuleIds": ["FOOD-01", "FOOD-02"]
     },
-    "bookingId": "seed-1",
+    "bookingId": "history-2",
     "status": "permit_pending"
   },
   {
@@ -190,7 +190,7 @@
       },
       "citedRuleIds": ["SIZE-02", "GUEST-01", "GUEST-02"]
     },
-    "bookingId": "seed-2",
+    "bookingId": "history-3",
     "status": "pending_review"
   }
 ]

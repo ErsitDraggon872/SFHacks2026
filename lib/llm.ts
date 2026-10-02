@@ -12,17 +12,15 @@
  */
 import { GoogleGenAI } from "@google/genai";
 import demoCache from "@/data/demo-cache.json";
-import { POLICY_BY_ID } from "./data";
+import { POLICY_BY_ID, ROOM_BY_ID } from "./data";
 import type {
   AiMode,
   AvItem,
   EventDraft,
   EventFacts,
   FactField,
-  Layout,
   PolicyDecision,
   PresetId,
-  RoomType,
   Tri,
   WriterOutput,
 } from "./types";
@@ -189,120 +187,138 @@ function parseJsonClean(text: string): unknown {
   return JSON.parse(cleaned);
 }
 
+// ---------- Timeout ----------
+
+const MODEL_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS) || 8000;
+
+/** Runs one model call with a hard deadline so a slow API can't hang /api/triage. */
+async function withTimeout<T>(run: (signal: AbortSignal) => Promise<T>, ms = MODEL_TIMEOUT_MS): Promise<T> {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      controller.abort();
+      reject(new Error(`Model call timed out after ${ms}ms`));
+    }, ms);
+  });
+  try {
+    return await Promise.race([run(controller.signal), deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // ---------- Offline Heuristic Fallback Extractor ----------
 
-function extractOffline(text: string): EventDraft {
-  const trimmedLower = text.trim().toLowerCase();
-  const lower = trimmedLower;
+const PEOPLE_WORDS = "people|persons|ppl|folks|attendees|members|students|guests|participants";
 
-  // 1. Exact match on preset input or preset ID
-  for (const presetKey of ["study", "pizza", "dance", "speaker"] as PresetId[]) {
+/** Headcount from explicit phrasing only ("30 people", "25 of our members", "for 80"), never the first stray number. */
+function parseHeadcount(text: string): number | null {
+  const patterns = [
+    new RegExp(`\\b(\\d{1,4})\\s*(?:${PEOPLE_WORDS})\\b`, "i"),
+    new RegExp(`\\b(\\d{1,4})\\s+of\\s+(?:our|the|my)\\s+(?:${PEOPLE_WORDS})\\b`, "i"),
+    /\b(?:headcount|capacity|expecting|expect)\s*(?:of|:)?\s*(?:about|around|~)?\s*(\d{1,4})\b/i,
+    // "for 80", but not "for 6-9pm", "for 6pm", "for 2 hours"
+    /\bfor\s+(?:about\s+|around\s+|~\s*|up\s+to\s+)?(\d{1,4})\b(?!\s*(?::|-|–|—|to\b|am\b|pm\b|a\.m|p\.m|hours?\b|hrs?\b|minutes?\b|mins?\b))/i,
+  ];
+  for (const re of patterns) {
+    const m = text.match(re);
+    if (m) return parseInt(m[1], 10);
+  }
+  return null;
+}
+
+/** Tri-state from text: false when explicitly negated, true when mentioned, null otherwise. */
+function triState(text: string, positive: RegExp, negative?: RegExp): Tri {
+  if (negative?.test(text)) return false;
+  return positive.test(text) ? true : null;
+}
+
+function extractOffline(text: string): EventDraft {
+  const lower = text.trim().toLowerCase();
+
+  // Exact preset text only. A keyword match must not pull in a preset's draft: that would
+  // invent headcounts and times the user never gave.
+  for (const presetKey of Object.keys(CACHE) as PresetId[]) {
     const entry = CACHE[presetKey];
-    if (entry && (trimmedLower === entry.input.trim().toLowerCase() || trimmedLower === presetKey)) {
+    if (entry && lower === entry.input.trim().toLowerCase()) {
       return structuredClone(entry.draft);
     }
   }
 
-  // 2. High-confidence domain keywords
-  // Check dance before speaker because dance preset text mentions "a speaker for music"
-  if (trimmedLower.includes("dance")) {
-    return structuredClone(CACHE.dance.draft);
-  }
-  if (
-    trimmedLower.includes("guest speaker") ||
-    trimmedLower.includes("speaker panel") ||
-    (trimmedLower.includes("pre-med") && trimmedLower.includes("ucsf"))
-  ) {
-    return structuredClone(CACHE.speaker.draft);
-  }
-  if (trimmedLower.includes("pizza") || (trimmedLower.includes("acm") && trimmedLower.includes("thornton"))) {
-    return structuredClone(CACHE.pizza.draft);
-  }
-  if (trimmedLower.includes("whiteboard") && (trimmedLower.includes("study") || trimmedLower.includes("library"))) {
-    return structuredClone(CACHE.study.draft);
-  }
+  const headcount = parseHeadcount(text);
 
-  // Hero test case: "networking dinner for 80"
-  if (lower.includes("networking") && (lower.includes("dinner") || lower.includes("80"))) {
-    const countMatch = text.match(/\b(\d+)\b/);
-    const count = countMatch ? parseInt(countMatch[1], 10) : 80;
-    return {
-      summary: "Networking dinner",
-      headcount: count,
-      whenPhrase: null,
-      food: true,
-      foodDescription: "Dinner catering",
-      amplifiedSound: null,
-      externalGuests: null,
-      guestSpeakers: null,
-      alcohol: null,
-      minors: null,
-      avNeeds: [],
-      layout: null,
-      roomTypeHints: [],
-      preferredBuilding: null,
-      missingRequiredFields: ["date", "startTime", "endTime"] as FactField[],
-      ambiguities: [
-        { field: "date" as FactField, question: "What date and time will the dinner take place?" },
-        { field: "externalGuests" as FactField, question: "Will anyone attending be unaffiliated with SFSU?" },
-        { field: "alcohol" as FactField, question: "Will alcohol be served at this event?" },
-      ],
-    };
-  }
-
-  // Generic heuristic extractor for free text
-  const headcountMatch = text.match(/\b(\d{1,4})\s*(?:people|attendees|members|students|guests|participants)?\b/i);
-  const headcount = headcountMatch ? parseInt(headcountMatch[1], 10) : null;
-
-  // Extract time phrase
   const whenMatch = text.match(
-    /\b(?:mon|tue|wed|thu|fri|sat|sun|monday|tuesday|wednesday|thursday|friday|saturday|sunday)?\s*(?:from\s*)?\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|–|—|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i,
+    /\b(?:(?:mon|tue|tues|wed|thu|thur|thurs|fri|sat|sun)(?:day)?\s+)?(?:from\s*)?\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|–|—|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i,
   );
   const whenPhrase = whenMatch ? whenMatch[0].trim() : null;
 
-  const hasFood = /\b(food|pizza|snacks?|dinner|lunch|catering|refreshments|boba)\b/i.test(text);
-  const hasSound = /\b(dj|music|speaker|amplified|microphone|mic|dance)\b/i.test(text);
-  const hasGuests = /\b(public|guests?|external|alumni|community|recruiters?)\b/i.test(text);
-  const hasSpeakers = /\b(guest speaker|panel|keynote|talk by)\b/i.test(text);
-  const hasAlcohol = /\b(alcohol|beer|wine|cocktails?)\b/i.test(text);
-  const hasMinors = /\b(minors?|youth|k-12|high school)\b/i.test(text);
+  const food = triState(
+    text,
+    /\b(food|pizza|snacks?|dinner|lunch|breakfast|catering|catered|refreshments|boba|banquet)\b/i,
+    /\bno\s+(food|snacks|refreshments)\b/i,
+  );
+  const amplifiedSound = triState(
+    text,
+    /\b(dj|music|amplified|microphones?|mics?|sound system|band|karaoke)\b/i,
+    /\bno\s+(music|amplified sound|amplification)\b/i,
+  );
+  const externalGuests = triState(
+    text,
+    /\b(public|external|alumni|community members|recruiters?|non-sfsu|outside guests|guest speakers?)\b/i,
+    /\b(members only|no outside guests|sfsu students only|students only)\b/i,
+  );
+  const guestSpeakers = triState(text, /\b(guest speakers?|panel(?:ists)?|keynote|talk by)\b/i);
+  const alcohol = triState(text, /\b(alcohol|beer|wine|cocktails?|bar service)\b/i, /\b(no alcohol|alcohol-free|dry event)\b/i);
+  const minors = triState(text, /\b(minors?|youth|k-12|high school(?:ers)?|under 18)\b/i);
 
   const avNeeds: AvItem[] = [];
-  if (/\b(projector)\b/i.test(text)) avNeeds.push("projector");
-  if (/\b(mic|microphone)\b/i.test(text)) avNeeds.push("microphone");
-  if (/\b(whiteboard)\b/i.test(text)) avNeeds.push("whiteboard");
-  if (/\b(speakers?)\b/i.test(text) && !avNeeds.includes("microphone")) avNeeds.push("speakers");
+  if (/\bprojectors?\b/i.test(text)) avNeeds.push("projector");
+  if (/\b(microphones?|mics?)\b/i.test(text)) avNeeds.push("microphone");
+  if (/\bwhiteboards?\b/i.test(text)) avNeeds.push("whiteboard");
+  if (/\b(speakers?\s+for\s+(?:music|sound|audio)|sound system)\b/i.test(text)) avNeeds.push("speakers");
 
   const missing: FactField[] = [];
   const ambiguities: { field: FactField | null; question: string }[] = [];
+  const ask = (field: FactField, question: string) => {
+    if (!ambiguities.some((a) => a.field === field)) ambiguities.push({ field, question });
+  };
 
   if (headcount === null) {
     missing.push("headcount");
-    ambiguities.push({ field: "headcount", question: "How many people are expected to attend?" });
+    ask("headcount", "How many people are expected to attend?");
   }
   if (!whenPhrase) {
     missing.push("date", "startTime", "endTime");
-    ambiguities.push({ field: "date", question: "What date and time range is the event scheduled for?" });
+    ask("date", "What date and time range is the event scheduled for?");
   }
 
-  if (lower.includes("dinner") || lower.includes("banquet")) {
-    ambiguities.push({ field: "food", question: "Will food be provided by an approved vendor?" });
+  const social = /\b(dinner|banquet|reception|gala|social|mixer|party|networking)\b/i.test(text);
+  const outwardFacing = /\b(networking|mixer|career|community|fair|reception|showcase|open house)\b/i.test(text);
+
+  if (food === true && /\b(dinner|banquet|reception|catering|catered)\b/i.test(text)) {
+    ask("food", "Will food be provided by a licensed vendor?");
   }
-  if (headcount && headcount > 50 && !hasGuests) {
-    ambiguities.push({ field: "externalGuests", question: "Will any attendees be unaffiliated with SFSU?" });
+  if (externalGuests === null && (outwardFacing || (headcount !== null && headcount > 50))) {
+    ask("externalGuests", "Will any attendees be unaffiliated with SFSU?");
   }
+  if (alcohol === null && social) {
+    ask("alcohol", "Will alcohol be served at this event?");
+  }
+
+  const summary = text.split(/[.,;!?]|\s+for\s+/i)[0].trim().slice(0, 60) || null;
 
   return {
-    summary: text.slice(0, 50).trim(),
+    summary,
     headcount,
     whenPhrase,
-    food: hasFood ? true : null,
-    foodDescription: hasFood ? "Food mentioned in description" : null,
-    amplifiedSound: hasSound ? true : null,
-    externalGuests: hasGuests ? true : null,
-    guestSpeakers: hasSpeakers ? true : null,
-    alcohol: hasAlcohol ? true : null,
-    minors: hasMinors ? true : null,
+    food,
+    foodDescription: food === true ? "Food mentioned in description" : null,
+    amplifiedSound,
+    externalGuests,
+    guestSpeakers,
+    alcohol,
+    minors,
     avNeeds,
     layout: null,
     roomTypeHints: [],
@@ -314,99 +330,108 @@ function extractOffline(text: string): EventDraft {
 
 // ---------- Deterministic Offline Writer ----------
 
-function writeOffline(facts: EventFacts, decision: PolicyDecision): WriterOutput {
-  const validRuleIds = new Set(Object.keys(POLICY_BY_ID));
+function flaggedRuleIdsOf(decision: PolicyDecision): string[] {
+  return [...new Set(decision.applicableRules.filter((r) => r.status !== "pass").map((r) => r.ruleId))].filter(
+    (id) => id in POLICY_BY_ID,
+  );
+}
 
-  // Check preset match first
-  for (const presetKey of ["pizza", "speaker", "dance"] as PresetId[]) {
-    const entry = CACHE[presetKey];
-    if (entry?.writer) {
-      if (
-        (presetKey === "pizza" && facts.food.value === true && decision.tier === 2) ||
-        (presetKey === "speaker" && (facts.headcount.value ?? 0) > 100 && decision.tier === 3) ||
-        (presetKey === "dance" && facts.amplifiedSound.value === true && decision.tier === 2)
-      ) {
-        const out = structuredClone(entry.writer);
-        out.citedRuleIds = out.citedRuleIds.filter((id) => validRuleIds.has(id));
-        return out;
-      }
-    }
-  }
+function roomLabel(roomId: string | null): string | null {
+  if (!roomId) return null;
+  return ROOM_BY_ID[roomId]?.name ?? roomId;
+}
 
-  const flaggedRuleIds = [
-    ...new Set(decision.applicableRules.filter((r) => r.status !== "pass").map((r) => r.ruleId)),
-  ].filter((id) => validRuleIds.has(id));
-
-  if (decision.tier === 2) {
-    const needsFoodPermit = decision.permitsRequired.some((p) => p.permitId === "EHS_TEMP_FOOD");
-    const permitNarrative = needsFoodPermit
-      ? `${facts.summary.value || "Student event"} for ~${facts.headcount.value ?? 30} attendees. Food will be sourced from a licensed vendor ready-to-serve.`
-      : null;
-
-    let explanation = decision.headline;
-    if (decision.suggestedRoomId) {
-      explanation += ` Consider switching to ${decision.suggestedRoomId} to resolve room conflicts.`;
-    }
-    if (decision.permitsRequired.length > 0) {
-      explanation += ` A permit (${decision.permitsRequired.map((p) => p.name).join(", ")}) is required before confirmation.`;
-    }
-
-    return {
-      headline: decision.headline,
-      explanation,
-      permitNarrative,
-      briefing: null,
-      citedRuleIds: flaggedRuleIds,
-    };
-  }
-
-  // Tier 3
-  const riskPoints = flaggedRuleIds.map((ruleId) => {
+/** Built from this event's own facts and decision only, never another preset's text. */
+function offlineBriefing(facts: EventFacts, decision: PolicyDecision): NonNullable<WriterOutput["briefing"]> {
+  const riskPoints = flaggedRuleIdsOf(decision).map((ruleId) => {
     const rule = POLICY_BY_ID[ruleId];
-    return {
-      ruleId,
-      point: rule ? `${rule.title}: ${rule.excerpt}` : "Policy review required",
-    };
+    return { ruleId, point: `${rule.title}: ${rule.excerpt}` };
   });
-
-  const staffQuestions = decision.unresolved.length > 0
-    ? decision.unresolved.map((u) => u.question)
-    : [
-        "Is the event open to non-SFSU attendees?",
-        "Has an on-site safety lead been designated?",
-      ];
-
+  const staffQuestions =
+    decision.unresolved.length > 0
+      ? decision.unresolved.map((u) => u.question)
+      : ["Is the event open to non-SFSU attendees?", "Has an on-site safety lead been designated?"];
+  const time = facts.startTime.value ? `${facts.startTime.value}–${facts.endTime.value ?? "?"}` : null;
+  const when = [facts.date.value, time].filter(Boolean).join(" ");
   return {
-    headline: "Staff review required — briefing prepared",
-    explanation: `This event requires review by Student Activities & Events (${flaggedRuleIds.join(", ") || "Safety Review"}). A staff briefing has been prepared.`,
-    permitNarrative: null,
-    briefing: {
-      summary: `${facts.summary.value || "Event"} requested for ${facts.headcount.value || "unspecified"} attendees on ${facts.date.value || "selected date"}.`,
-      riskPoints,
-      staffQuestions,
-    },
-    citedRuleIds: flaggedRuleIds,
+    summary: `${facts.summary.value || "Event"} for ${facts.headcount.value ?? "an unspecified number of"} attendees${when ? ` on ${when}` : ""}.`,
+    riskPoints,
+    staffQuestions,
   };
 }
 
-// ---------- Sanitize Rule Citations ----------
+function offlinePermitNarrative(facts: EventFacts, decision: PolicyDecision): string | null {
+  const parts: string[] = [];
+  const what = `${facts.summary.value || "Student event"} for about ${facts.headcount.value ?? "an unspecified number of"} attendees`;
+  if (decision.permitsRequired.some((p) => p.permitId === "EHS_TEMP_FOOD")) {
+    parts.push(`${what}. Food (${facts.foodDescription.value || "as described"}) will be sourced ready-to-serve from a licensed vendor.`);
+  }
+  if (decision.permitsRequired.some((p) => p.permitId === "GUEST_SPEAKER")) {
+    parts.push(`${parts.length ? "The event" : what} includes invited guest speakers; speaker details will be provided to SA&E.`);
+  }
+  return parts.length ? parts.join(" ") : null;
+}
 
-function sanitizeWriterOutput(writer: WriterOutput): WriterOutput {
-  const validRuleIds = new Set(Object.keys(POLICY_BY_ID));
-  const citedRuleIds = (writer.citedRuleIds || []).filter((id) => validRuleIds.has(id));
+function writeOffline(facts: EventFacts, decision: PolicyDecision): WriterOutput {
+  const citedRuleIds = flaggedRuleIdsOf(decision);
+  const permitNarrative = offlinePermitNarrative(facts, decision);
 
-  let briefing = writer.briefing;
-  if (briefing && briefing.riskPoints) {
+  if (decision.tier !== 3) {
+    let explanation = decision.headline;
+    const suggested = roomLabel(decision.suggestedRoomId);
+    if (suggested) explanation += ` Consider switching to ${suggested} to resolve the room conflict.`;
+    if (decision.permitsRequired.length > 0) {
+      explanation += ` Required before confirmation: ${decision.permitsRequired.map((p) => p.name).join(", ")}.`;
+    }
+    return { headline: decision.headline, explanation, permitNarrative, briefing: null, citedRuleIds };
+  }
+
+  return {
+    headline: "Staff review required — briefing prepared",
+    explanation: `This event requires review by Student Activities & Events (${citedRuleIds.join(", ") || "safety review"}). A staff briefing has been prepared.`,
+    permitNarrative,
+    briefing: offlineBriefing(facts, decision),
+    citedRuleIds,
+  };
+}
+
+// ---------- Validate & Sanitize Writer Output ----------
+
+const nonEmpty = (v: unknown): v is string => typeof v === "string" && v.trim().length > 0;
+
+/**
+ * Model output is untrusted: require the fields the UI renders, drop unknown rule IDs, and make the
+ * briefing match the tier (Tier 2: none, Tier 3: always present). Throws if unusable.
+ */
+function sanitizeWriterOutput(raw: unknown, facts: EventFacts, decision: PolicyDecision): WriterOutput {
+  const w = (raw ?? {}) as Partial<WriterOutput>;
+  if (!nonEmpty(w.headline) || !nonEmpty(w.explanation)) {
+    throw new Error("Writer output missing headline or explanation");
+  }
+  const valid = (id: unknown): id is string => typeof id === "string" && id in POLICY_BY_ID;
+  const citedRuleIds = Array.isArray(w.citedRuleIds) ? [...new Set(w.citedRuleIds.filter(valid))] : [];
+
+  let briefing: WriterOutput["briefing"] = null;
+  if (decision.tier === 3) {
+    const b = w.briefing;
+    const riskPoints = Array.isArray(b?.riskPoints)
+      ? b.riskPoints.filter((rp) => valid(rp?.ruleId) && nonEmpty(rp?.point))
+      : [];
+    const staffQuestions = Array.isArray(b?.staffQuestions) ? b.staffQuestions.filter(nonEmpty) : [];
+    const fallback = offlineBriefing(facts, decision);
     briefing = {
-      ...briefing,
-      riskPoints: briefing.riskPoints.filter((rp) => validRuleIds.has(rp.ruleId)),
+      summary: nonEmpty(b?.summary) ? b.summary : fallback.summary,
+      riskPoints: riskPoints.length ? riskPoints : fallback.riskPoints,
+      staffQuestions: staffQuestions.length ? staffQuestions : fallback.staffQuestions,
     };
   }
 
   return {
-    ...writer,
-    citedRuleIds,
+    headline: w.headline,
+    explanation: w.explanation,
+    permitNarrative: nonEmpty(w.permitNarrative) ? w.permitNarrative : null,
     briefing,
+    citedRuleIds,
   };
 }
 
@@ -416,7 +441,7 @@ function sanitizeWriterOutput(writer: WriterOutput): WriterOutput {
 
 /**
  * Extract an EventDraft from free-form user text.
- * Uses gemini-2.5-flash-lite with fallback to Flash and then demo cache / offline parser.
+ * Uses the extractor model with fallback to Flash, then the offline parser.
  * Only event description text is sent (privacy-preserving).
  */
 export async function extractEvent(text: string): Promise<{ draft: EventDraft; aiMode: AiMode }> {
@@ -430,27 +455,24 @@ export async function extractEvent(text: string): Promise<{ draft: EventDraft; a
 
   for (const model of modelsToTry) {
     try {
-      const response = await client.models.generateContent({
-        model,
-        contents: text,
-        config: {
-          systemInstruction: EXTRACTOR_SYSTEM_PROMPT,
-          responseMimeType: "application/json",
-          responseSchema: EXTRACTOR_SCHEMA as unknown as Record<string, unknown>,
-        },
-      });
+      const response = await withTimeout((abortSignal) =>
+        client.models.generateContent({
+          model,
+          contents: text,
+          config: {
+            systemInstruction: EXTRACTOR_SYSTEM_PROMPT,
+            responseMimeType: "application/json",
+            responseSchema: EXTRACTOR_SCHEMA as unknown as Record<string, unknown>,
+            abortSignal,
+          },
+        }),
+      );
 
       const responseText = response.text;
       if (!responseText) continue;
 
-      const parsed = parseJsonClean(responseText) as EventDraft;
-      // Ensure required arrays exist
-      parsed.avNeeds = parsed.avNeeds || [];
-      parsed.roomTypeHints = parsed.roomTypeHints || [];
-      parsed.missingRequiredFields = parsed.missingRequiredFields || [];
-      parsed.ambiguities = parsed.ambiguities || [];
-
-      return { draft: parsed, aiMode: "live" };
+      // Raw on purpose: prepare() (lib/sanitize.ts) validates and normalizes the draft.
+      return { draft: parseJsonClean(responseText) as EventDraft, aiMode: "live" };
     } catch (err) {
       console.warn(`Extraction with ${model} failed:`, err);
     }
@@ -462,7 +484,7 @@ export async function extractEvent(text: string): Promise<{ draft: EventDraft; a
 /**
  * Write a policy explanation, briefing, and permit narrative based on structured facts and decision.
  * Receives ONLY structured facts + decision + cited rule excerpts (no club or personal data).
- * Any cited rule IDs not present in policy.json are strictly stripped.
+ * Output is validated; cited rule IDs not present in policy.json are stripped.
  */
 export async function writeExplanation(facts: EventFacts, decision: PolicyDecision): Promise<WriterOutput> {
   const client = getClient();
@@ -515,21 +537,23 @@ export async function writeExplanation(facts: EventFacts, decision: PolicyDecisi
 
   for (const model of modelsToTry) {
     try {
-      const response = await client.models.generateContent({
-        model,
-        contents: JSON.stringify(payload),
-        config: {
-          systemInstruction: WRITER_SYSTEM_PROMPT,
-          responseMimeType: "application/json",
-          responseSchema: WRITER_SCHEMA as unknown as Record<string, unknown>,
-        },
-      });
+      const response = await withTimeout((abortSignal) =>
+        client.models.generateContent({
+          model,
+          contents: JSON.stringify(payload),
+          config: {
+            systemInstruction: WRITER_SYSTEM_PROMPT,
+            responseMimeType: "application/json",
+            responseSchema: WRITER_SCHEMA as unknown as Record<string, unknown>,
+            abortSignal,
+          },
+        }),
+      );
 
       const responseText = response.text;
       if (!responseText) continue;
 
-      const parsed = parseJsonClean(responseText) as WriterOutput;
-      return sanitizeWriterOutput(parsed);
+      return sanitizeWriterOutput(parseJsonClean(responseText), facts, decision);
     } catch (err) {
       console.warn(`Writer with ${model} failed:`, err);
     }

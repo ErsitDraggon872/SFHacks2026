@@ -6,7 +6,6 @@
 import { newId, readCollection, writeCollection } from "./db";
 import { diffCorrections, draftToFacts } from "./normalize";
 import type { Booking, BookingRequest, DecisionSnapshot, PolicyDecision, SnapshotStatus } from "./types";
-import seedSnapshots from "../data/snapshots.seed.json";
 
 const STATUS: Record<Booking["status"], SnapshotStatus> = {
   confirmed: "auto_approved",
@@ -43,12 +42,7 @@ export function saveSnapshot(req: BookingRequest, booking: Booking, decision: Po
 }
 
 export function listSnapshots(): DecisionSnapshot[] {
-  let snaps = readCollection<DecisionSnapshot>("snapshots");
-  if (snaps.length === 0 && seedSnapshots && seedSnapshots.length > 0) {
-    writeCollection("snapshots", seedSnapshots as DecisionSnapshot[]);
-    snaps = seedSnapshots as DecisionSnapshot[];
-  }
-  return snaps.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return readCollection<DecisionSnapshot>("snapshots").sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export function setSnapshotStatus(id: string, action: "approve" | "deny"): DecisionSnapshot | null {
@@ -57,10 +51,20 @@ export function setSnapshotStatus(id: string, action: "approve" | "deny"): Decis
   if (!snap) return null;
   const status: SnapshotStatus = action === "approve" ? "approved" : "denied";
   writeCollection("snapshots", snaps.map((s) => (s.id === id ? { ...s, status } : s)));
+  // Only touch the booking this snapshot describes. Seed snapshots are history-only, and a stale or
+  // mismatched id must never confirm or cancel someone else's booking.
   const bookings = readCollection<Booking>("bookings");
-  writeCollection(
-    "bookings",
-    bookings.map((b) => (b.id === snap.bookingId ? { ...b, status: action === "approve" ? "confirmed" : "denied" } : b)),
-  );
+  const isSnapshotBooking = (b: Booking) =>
+    b.id === snap.bookingId &&
+    b.roomId === snap.selectedRoomId &&
+    b.clubId === snap.clubId &&
+    b.date === snap.facts.date.value &&
+    b.startTime === snap.facts.startTime.value;
+  if (bookings.some(isSnapshotBooking)) {
+    writeCollection(
+      "bookings",
+      bookings.map((b) => (isSnapshotBooking(b) ? { ...b, status: action === "approve" ? "confirmed" : "denied" } : b)),
+    );
+  }
   return { ...snap, status };
 }

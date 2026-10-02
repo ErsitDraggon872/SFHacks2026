@@ -65,6 +65,36 @@ describe("lib/llm.ts — Computer 3 Deliverable", () => {
       expect(fieldsAsked).toContain("externalGuests");
       expect(fieldsAsked).toContain("alcohol");
     });
+
+    it("reads headcount from people phrasing, not the first number in a time range", async () => {
+      const { draft } = await extractEvent("Board game night Thursday 6-9pm for 30 people");
+      expect(draft.headcount).toBe(30);
+      expect(draft.whenPhrase).toBe("Thursday 6-9pm");
+    });
+
+    it("does not treat 'for 2 hours' or 'for 6pm' as a headcount", async () => {
+      expect((await extractEvent("Officer meeting for 2 hours on Friday")).draft.headcount).toBeNull();
+      expect((await extractEvent("Book a room for 6pm Friday")).draft.headcount).toBeNull();
+    });
+
+    it("does not pull a preset's facts in on a keyword match", async () => {
+      const { draft } = await extractEvent("Dance practice for 5 people Monday 2-3pm");
+      expect(draft.headcount).toBe(5);
+      expect(draft.whenPhrase).toBe("Monday 2-3pm");
+      expect(draft.amplifiedSound).toBeNull();
+      expect(draft.preferredBuilding).toBeNull();
+
+      const pizza = await extractEvent("Pizza social, 12 students");
+      expect(pizza.draft.headcount).toBe(12);
+      expect(pizza.draft.preferredBuilding).toBeNull();
+      expect(pizza.draft.avNeeds).toEqual([]);
+    });
+
+    it("reads explicit negations as false", async () => {
+      const { draft } = await extractEvent("Members only mixer, no alcohol, 20 people Friday 5-7pm");
+      expect(draft.alcohol).toBe(false);
+      expect(draft.externalGuests).toBe(false);
+    });
   });
 
   describe("writeExplanation", () => {

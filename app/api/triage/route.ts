@@ -42,13 +42,10 @@ export async function POST(request: Request) {
     const { draft: preparedDraft, facts } = prepare(draft, entry.input);
     const decision = decide(facts, bookings, body.clubId, body.attested ?? false);
 
-    if (aiMode === "live" && decision.tier > 1) {
-      try {
-        writer = await writeExplanation(facts, decision);
-      } catch (err) {
-        console.warn("Live preset writer failed, using cache writer:", err);
-        writer = entry.writer;
-      }
+    // The cached writer was written for the cached draft, so a live draft always gets its own
+    // writer (live, or the offline writer built from these facts). writeExplanation never throws.
+    if (aiMode === "live") {
+      writer = decision.tier > 1 ? await writeExplanation(facts, decision) : null;
     }
 
     return Response.json(
