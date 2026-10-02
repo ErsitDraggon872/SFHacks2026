@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { ROOMS } from "../lib/data";
-import { resolveWhen, setFact, emptyFacts, toMinutes } from "../lib/normalize";
+import { resolveWhen, setFact, emptyFacts } from "../lib/normalize";
 import { evaluate } from "../lib/policy";
-import type { Booking, EventFacts } from "../lib/types";
+import { isOversized, rankRooms } from "../lib/rank";
+import type { Booking } from "../lib/types";
 
 describe("Deterministic Policy Engine & Normalization Tests", () => {
   it("resolves 'Thursday 6-9pm' to 2026-10-08 18:00-21:00 against demo anchor (2026-10-05)", () => {
     const res = resolveWhen("Thursday 6-9pm", "2026-10-05");
-    expect("date" in res).toBe(true);
-    if ("date" in res) {
+    expect("durationMin" in res).toBe(true);
+    if ("durationMin" in res) {
       expect(res.date).toBe("2026-10-08");
       expect(res.startTime).toBe("18:00");
       expect(res.endTime).toBe("21:00");
@@ -100,5 +101,30 @@ describe("Deterministic Policy Engine & Normalization Tests", () => {
     const decision = evaluate(facts, { rooms: ROOMS, bookings: existingBookings, clubId: "acm", attested: true });
     expect(decision.hardBlocks.some((b) => b.ruleId === "CAP-DAILY-01")).toBe(true);
     expect(decision.canSubmit).toBe(false);
+  });
+});
+
+describe("rankRooms: oversized rooms", () => {
+  it("a snug room beats a cavernous one, even when only the big room has the requested AV", () => {
+    let facts = emptyFacts();
+    facts = setFact(facts, "headcount", 8);
+    facts = setFact(facts, "date", "2026-10-07");
+    facts = setFact(facts, "startTime", "14:00");
+    facts = setFact(facts, "endTime", "16:00");
+    facts = setFact(facts, "avNeeds", ["microphone"]); // only 60+ seat rooms have mics
+    const decision = evaluate(facts, { rooms: ROOMS, bookings: [], clubId: "study", attested: true });
+    const ranked = rankRooms(facts, decision, ROOMS).filter((r) => r.rank !== null);
+
+    expect(isOversized(ranked[0].room, 8)).toBe(false);
+    const hall = ranked.find((r) => r.room.id === "BUS-120")!;
+    expect(hall.rank!).toBeGreaterThan(ranked[0].rank!);
+    expect(hall.reasons).toContainEqual({ label: "Much larger than needed", kind: "miss" });
+  });
+
+  it("small groups get slack: 40 seats for 10 is not oversized, 41 is", () => {
+    const room = (seats: number) => ({ ...ROOMS[0], seats });
+    expect(isOversized(room(40), 10)).toBe(false);
+    expect(isOversized(room(41), 10)).toBe(true);
+    expect(isOversized(room(500), null)).toBe(false);
   });
 });
