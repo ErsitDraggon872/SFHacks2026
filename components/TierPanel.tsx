@@ -31,7 +31,7 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button, Card, Checkbox, Pill, SectionLabel, StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
-import { FACT_LABEL, fmtDate, fmtTime } from "@/lib/client/format";
+import { FACT_LABEL, bookedElsewhere, bookedSentence, fmtDate, fmtTime, mentionsRoom } from "@/lib/client/format";
 import { ROOM_BY_ID, ruleLabel } from "@/lib/data";
 import { avLabel } from "@/lib/rank";
 import type { CreateBookingResult, PolicyDecision, Room, RuleStatus, WriterOutput } from "@/lib/types";
@@ -90,6 +90,8 @@ export function TierPanel({
   const status = bannerStatus(decision);
   const assumedList = decision.defaultsToAttest.map((f) => FACT_LABEL[f].toLowerCase()).join(", ");
   const hasHardBlocks = decision.hardBlocks.length > 0;
+  // the writer is told about booked rooms; only repeat the ones its explanation left out (Tier 1 has no writer)
+  const booked = bookedElsewhere(decision).filter((r) => !mentionsRoom(writer?.explanation, r.name));
 
   return (
     <Card
@@ -114,6 +116,11 @@ export function TierPanel({
             </h2>
             {writer?.explanation && (
               <p className="text-sm leading-relaxed text-ink-2">{writer.explanation}</p>
+            )}
+            {booked.length > 0 && (
+              <p className="text-sm text-muted">
+                Also checked: {bookedSentence(booked)}
+              </p>
             )}
           </div>
         </div>
