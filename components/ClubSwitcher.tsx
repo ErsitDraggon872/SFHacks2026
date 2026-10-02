@@ -4,6 +4,7 @@
  * Compact select/menu: muted "Acting as" + club.short, chevron. Lists `clubs` by name.
  * onChange(clubId). Accessible name "Acting as organization".
  */
+import { ChevronDown } from "lucide-react";
 import type { Club } from "@/lib/types";
 
 export interface ClubSwitcherProps {
@@ -13,19 +14,26 @@ export interface ClubSwitcherProps {
 }
 
 export function ClubSwitcher({ clubs, clubId, onChange }: ClubSwitcherProps) {
-  // functional stub so the page works today; C2 restyles
   return (
-    <select
-      aria-label="Acting as organization"
-      value={clubId}
-      onChange={(e) => onChange(e.target.value)}
-      className="rounded-full border border-dashed border-line-strong bg-subtle px-3 py-1 text-sm"
-    >
-      {clubs.map((c) => (
-        <option key={c.id} value={c.id}>
-          {c.short}
-        </option>
-      ))}
-    </select>
+    <div className="relative inline-flex items-center rounded-full border border-line bg-surface px-3 py-1 text-xs transition-colors hover:bg-subtle">
+      <span className="mr-1.5 text-muted">Acting as</span>
+      <select
+        aria-label="Acting as organization"
+        value={clubId}
+        onChange={(e) => onChange(e.target.value)}
+        className="cursor-pointer appearance-none bg-transparent pr-4 font-medium text-ink outline-none"
+      >
+        {clubs.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.short} — {c.name}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        aria-hidden
+        className="pointer-events-none absolute right-2.5 h-3.5 w-3.5 text-muted"
+      />
+    </div>
   );
 }
+
