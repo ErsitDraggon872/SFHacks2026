@@ -1,6 +1,7 @@
-/** npm run demo:reset — restore bookings from seed and clear snapshots. OWNER: C3 (initial version by C1). */
-import { resetCollection } from "../lib/db";
+/** npm run demo:reset — restore bookings and snapshots from seed. OWNER: C3. */
+import { resetCollection, writeCollection } from "../lib/db";
+import seedSnapshots from "../data/snapshots.seed.json";
 
 resetCollection("bookings");
-resetCollection("snapshots");
-console.log("Demo data reset: bookings restored from seed, snapshots cleared.");
+writeCollection("snapshots", seedSnapshots);
+console.log("Demo data reset: bookings and snapshots restored from seed.");

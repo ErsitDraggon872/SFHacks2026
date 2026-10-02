@@ -1,0 +1,196 @@
+[
+  {
+    "id": "snap-seed-1",
+    "createdAt": "2026-10-01T17:20:00.000Z",
+    "clubId": "study",
+    "requestText": "Study group for 8 people on Wednesday 4-6pm, we just need a whiteboard. Library if possible.",
+    "draft": {
+      "summary": "Study group",
+      "headcount": 8,
+      "whenPhrase": "Wednesday 4-6pm",
+      "food": null,
+      "foodDescription": null,
+      "amplifiedSound": null,
+      "externalGuests": null,
+      "guestSpeakers": null,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": ["whiteboard"],
+      "layout": null,
+      "roomTypeHints": ["study_room"],
+      "preferredBuilding": "J. Paul Leonard Library",
+      "missingRequiredFields": [],
+      "ambiguities": []
+    },
+    "facts": {
+      "summary": { "value": "Study group", "source": "ai" },
+      "headcount": { "value": 8, "source": "ai" },
+      "date": { "value": "2026-10-07", "source": "ai" },
+      "startTime": { "value": "16:00", "source": "ai" },
+      "endTime": { "value": "18:00", "source": "ai" },
+      "food": { "value": false, "source": "default" },
+      "foodDescription": { "value": null, "source": "ai" },
+      "amplifiedSound": { "value": false, "source": "default" },
+      "externalGuests": { "value": false, "source": "default" },
+      "guestSpeakers": { "value": false, "source": "default" },
+      "alcohol": { "value": false, "source": "default" },
+      "minors": { "value": false, "source": "default" },
+      "avNeeds": { "value": ["whiteboard"], "source": "ai" },
+      "layout": { "value": null, "source": "ai" },
+      "preferredBuilding": { "value": "J. Paul Leonard Library", "source": "ai" },
+      "requestedRoomId": { "value": "LIB-460", "source": "user" },
+      "adaRequired": { "value": false, "source": "ai" }
+    },
+    "userCorrections": [],
+    "matchedRules": [],
+    "selectedRoomId": "LIB-460",
+    "tier": 1,
+    "writer": null,
+    "bookingId": "seed-5",
+    "status": "auto_approved"
+  },
+  {
+    "id": "snap-seed-2",
+    "createdAt": "2026-10-01T17:00:00.000Z",
+    "clubId": "acm",
+    "requestText": "ACM coding night for 45 members Thursday 6-9pm in Thornton. We'll have pizza and need a projector.",
+    "draft": {
+      "summary": "ACM coding night",
+      "headcount": 45,
+      "whenPhrase": "Thursday 6-9pm",
+      "food": true,
+      "foodDescription": "Pizza",
+      "amplifiedSound": null,
+      "externalGuests": false,
+      "guestSpeakers": null,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": ["projector"],
+      "layout": null,
+      "roomTypeHints": [],
+      "preferredBuilding": "Thornton Hall",
+      "missingRequiredFields": [],
+      "ambiguities": []
+    },
+    "facts": {
+      "summary": { "value": "ACM coding night", "source": "ai" },
+      "headcount": { "value": 45, "source": "ai" },
+      "date": { "value": "2026-10-08", "source": "ai" },
+      "startTime": { "value": "18:00", "source": "ai" },
+      "endTime": { "value": "21:00", "source": "ai" },
+      "food": { "value": true, "source": "ai" },
+      "foodDescription": { "value": "Pizza", "source": "ai" },
+      "amplifiedSound": { "value": false, "source": "default" },
+      "externalGuests": { "value": false, "source": "ai" },
+      "guestSpeakers": { "value": false, "source": "default" },
+      "alcohol": { "value": false, "source": "default" },
+      "minors": { "value": false, "source": "default" },
+      "avNeeds": { "value": ["projector"], "source": "ai" },
+      "layout": { "value": null, "source": "ai" },
+      "preferredBuilding": { "value": "Thornton Hall", "source": "ai" },
+      "requestedRoomId": { "value": "CCSC-204", "source": "user" },
+      "adaRequired": { "value": false, "source": "ai" }
+    },
+    "userCorrections": [
+      {
+        "field": "requestedRoomId",
+        "aiValue": null,
+        "userValue": "CCSC-204"
+      }
+    ],
+    "matchedRules": ["FOOD-01", "FOOD-02"],
+    "selectedRoomId": "CCSC-204",
+    "tier": 2,
+    "writer": {
+      "headline": "Almost there — move to a room that allows food",
+      "explanation": "Your coding night fits Thornton Hall 326 on size and equipment, but classrooms in Thornton don't allow food (FOOD-01). Cesar Chavez Student Center 204 seats 60, allows food, and has a projector, so everything else stays the same. Because you're serving pizza, a Temporary Food Permit (FOOD-02) is required — we've pre-filled it from your request.",
+      "permitNarrative": "ACM will host a coding night for approximately 45 student members. Pizza will be ordered from a licensed vendor and delivered ready to serve; no on-site cooking. Leftovers will be removed and the room reset by 9:00 PM.",
+      "briefing": null,
+      "citedRuleIds": ["FOOD-01", "FOOD-02"]
+    },
+    "bookingId": "seed-1",
+    "status": "permit_pending"
+  },
+  {
+    "id": "snap-seed-3",
+    "createdAt": "2026-10-01T17:05:00.000Z",
+    "clubId": "premed",
+    "requestText": "Pre-Med Society panel with 150 attendees and two guest speakers from UCSF, Tuesday 5-7pm. We need mics and a projector.",
+    "draft": {
+      "summary": "Pre-Med Society speaker panel",
+      "headcount": 150,
+      "whenPhrase": "Tuesday 5-7pm",
+      "food": null,
+      "foodDescription": null,
+      "amplifiedSound": true,
+      "externalGuests": true,
+      "guestSpeakers": true,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": ["microphone", "projector"],
+      "layout": "lecture",
+      "roomTypeHints": [],
+      "preferredBuilding": null,
+      "missingRequiredFields": [],
+      "ambiguities": [
+        {
+          "field": "food",
+          "question": "Will food or refreshments be served at the panel?"
+        }
+      ]
+    },
+    "facts": {
+      "summary": { "value": "Pre-Med Society speaker panel", "source": "ai" },
+      "headcount": { "value": 150, "source": "ai" },
+      "date": { "value": "2026-10-06", "source": "ai" },
+      "startTime": { "value": "17:00", "source": "ai" },
+      "endTime": { "value": "19:00", "source": "ai" },
+      "food": { "value": null, "source": "ai" },
+      "foodDescription": { "value": null, "source": "ai" },
+      "amplifiedSound": { "value": true, "source": "ai" },
+      "externalGuests": { "value": true, "source": "ai" },
+      "guestSpeakers": { "value": true, "source": "ai" },
+      "alcohol": { "value": false, "source": "default" },
+      "minors": { "value": false, "source": "default" },
+      "avNeeds": { "value": ["microphone", "projector"], "source": "ai" },
+      "layout": { "value": "lecture", "source": "ai" },
+      "preferredBuilding": { "value": null, "source": "ai" },
+      "requestedRoomId": { "value": "BH-101", "source": "user" },
+      "adaRequired": { "value": false, "source": "ai" }
+    },
+    "userCorrections": [],
+    "matchedRules": ["SIZE-02", "GUEST-01", "GUEST-02"],
+    "selectedRoomId": "BH-101",
+    "tier": 3,
+    "writer": {
+      "headline": "Staff review required — briefing prepared",
+      "explanation": "This panel is larger than 100 people (SIZE-02) and includes speakers from outside SFSU (GUEST-01), so it needs a staff review before confirmation. We've prepared a briefing for Student Activities & Events and pre-filled the speaker registration (GUEST-02).",
+      "permitNarrative": "Two guest speakers from UCSF will present on careers in medicine, followed by audience Q&A.",
+      "briefing": {
+        "summary": "Pre-Med Society requests a 2-hour speaker panel on Tuesday, Oct 6 (5–7 PM) for ~150 attendees with two external speakers from UCSF. Burk Hall 101 fits on capacity and AV.",
+        "riskPoints": [
+          {
+            "ruleId": "SIZE-02",
+            "point": "150 expected attendees — confirm staffing and check-in plan."
+          },
+          {
+            "ruleId": "GUEST-01",
+            "point": "External speakers on campus — confirm whether the event is open to the public."
+          },
+          {
+            "ruleId": "GUEST-02",
+            "point": "Speaker registration pre-filled; speaker names still needed."
+          }
+        ],
+        "staffQuestions": [
+          "Is the event open to non-SFSU attendees beyond the two speakers?",
+          "Will refreshments be served? (Not stated in the request.)",
+          "Who is the on-site event lead?"
+        ]
+      },
+      "citedRuleIds": ["SIZE-02", "GUEST-01", "GUEST-02"]
+    },
+    "bookingId": "seed-2",
+    "status": "pending_review"
+  }
+]
