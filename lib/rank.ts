@@ -2,8 +2,8 @@
  * Explainable, lexicographic room ranking. Never decides eligibility or tier — it only orders
  * rooms using the PolicyDecision. Isomorphic. OWNER: C1.
  *
- * Order: (1) eligible  (2) seats everyone  (3) has all requested AV  (4) layout match
- *        (5) smallest adequate room  (6) preferences (building, ADA)
+ * Order: (1) eligible  (2) seats everyone  (3) not way oversized  (4) has all requested AV
+ *        (5) layout match  (6) smallest adequate room  (7) preferences (building, ADA)
  */
 import type { AvItem, EventFacts, PolicyDecision, RankReason, RankedRoom, Room } from "./types";
 
@@ -27,10 +27,16 @@ export function avMissing(room: Room, facts: EventFacts): AvItem[] {
  * Fit comparator ignoring policy eligibility (used by policy.ts to pick the "intended" room
  * in a preferred building, and as the tie-breaker chain here). Negative = a is better.
  */
+/** A room is "way oversized" past 3× the headcount (with slack for tiny groups). */
+export function isOversized(room: Room, n: number | null): boolean {
+  return n !== null && n > 0 && room.seats > Math.max(3 * n, n + 30);
+}
+
 export function compareFit(a: Room, b: Room, facts: EventFacts): number {
   const n = facts.headcount.value ?? 0;
   const keys = (r: Room): number[] => [
     r.seats >= n ? 0 : 1,
+    isOversized(r, n) ? 1 : 0, // a snug room beats a cavernous one, even with an AV/layout miss
     avMissing(r, facts).length,
     facts.layout.value && r.layout !== facts.layout.value ? 1 : 0,
     r.seats >= n ? r.seats : 10_000 - r.seats, // smallest adequate first; if none adequate, biggest first
@@ -52,6 +58,7 @@ function reasonsFor(room: Room, facts: EventFacts): RankReason[] {
         ? { label: `Seats ${room.seats} for your ${n}`, kind: "fit" }
         : { label: `Only ${room.seats} seats for ${n}`, kind: "miss" },
     );
+    if (isOversized(room, n)) out.push({ label: `Much larger than needed`, kind: "miss" });
   }
   if (facts.food.value === true && room.foodAllowed) out.push({ label: "Food permitted", kind: "fit" });
   const missing = avMissing(room, facts);
