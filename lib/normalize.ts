@@ -43,42 +43,94 @@ export function durationMin(start: HHMM | null, end: HHMM | null): number | null
  * Never guesses: anything uncertain comes back as an ambiguity question.
  */
 export function resolveWhen(phrase: string, anchor: ISODate = anchorDate()): ResolvedWhen | WhenAmbiguity {
-  const cleaned = phrase.replace(/[–—]/g, "-").trim();
+  const cleaned = cleanWhen(phrase);
   if (!cleaned) return { ambiguity: "What day and time is the event?", field: "date" };
-  const ref = new Date(`${anchor}T09:00:00`);
-  const result = chrono.parse(cleaned, ref, { forwardDate: true })[0];
-  if (!result) return { ambiguity: `We couldn't read "${phrase}". What day and time is the event?`, field: "date" };
+  const results = parseWhen(cleaned, anchor);
+  const ordinal = cleaned.match(ORDINAL_DAY);
+  if (!results.length && !ordinal) return { ambiguity: `We couldn't read "${phrase}". What day and time is the event?`, field: "date" };
 
-  const s = result.start;
-  // keep a day the phrase actually names (not one chrono filled in from the anchor)
-  const dayKnown = s.isCertain("day") || s.isCertain("weekday");
-  const date = dayKnown ? `${s.get("year")}-${pad(s.get("month")!)}-${pad(s.get("day")!)}` : undefined;
+  // chrono often splits one phrase ("Oct 24" + "at 6pm" + "9pm"): take the day and the times
+  // from whichever matches carry them. Only a day the phrase names counts, never the anchor's.
+  const named = results.find((r) => r.start.isCertain("day"));
+  const weekday = results.find((r) => r.start.isCertain("weekday"));
+  const date = named ? isoOf(named.start) : (ordinal && nextDayOfMonth(Number(ordinal[1]), anchor)) || (weekday ? isoOf(weekday.start) : undefined);
   if (!date) return { ambiguity: "What day is the event?", field: "date" };
-  if (!s.isCertain("hour")) return { ambiguity: `What time does the event start on ${fmtDay(s)}?`, field: "startTime", date };
-  const startTime = `${pad(s.get("hour")!)}:${pad(s.get("minute") ?? 0)}`;
-  if (!result.end || !result.end.isCertain("hour")) return { ambiguity: "What time does the event end?", field: "endTime", date, startTime };
 
-  const e = result.end;
-  const endTime = `${pad(e.get("hour")!)}:${pad(e.get("minute") ?? 0)}`;
-  const dur = toMinutes(endTime) - toMinutes(startTime);
+  const times = results.flatMap((r) => [r.start, r.end]).filter((c): c is chrono.ParsedComponents => !!c?.isCertain("hour"));
+  if (!times.length) return { ambiguity: `What time does the event start on ${fmtDay(date)}?`, field: "startTime", date };
+  const forMin = durationOf(cleaned);
+  let startMin = minutesOf(times[0]);
+  const endMin = times[1] ? minutesOf(times[1]) : forMin !== null ? startMin + forMin : null;
+  // "starts at 6 and ends at 9pm": a start with no am/pm takes the end's pm when that keeps it first
+  if (endMin !== null && !times[0].isCertain("meridiem") && startMin < 720 && startMin + 720 < endMin) startMin += 720;
+  const startTime = hhmm(startMin);
+  if (endMin === null) return { ambiguity: "What time does the event end?", field: "endTime", date, startTime };
+
+  const dur = endMin - startMin;
+  if (endMin > 24 * 60) return { ambiguity: "Events must end by midnight. When does the event end?", field: "endTime", date };
   if (dur <= 0) return { ambiguity: "The end time is before the start time. When does the event end?", field: "endTime", date };
   if (dur > MAX_DURATION_MIN) return { ambiguity: "Events are limited to 6 hours. Can you shorten the time range?", field: "endTime", date };
-  return { date, startTime, endTime, durationMin: dur };
+  return { date, startTime, endTime: hhmm(endMin), durationMin: dur };
 }
 
 /**
  * The date/time phrase as written in free text ("on october 24 2026", "Thursday 6-9pm"), or null.
- * Only a phrase that names a day counts: a bare number ("for 8 people") is never read as a time.
+ * Only text that names a day counts: a bare number ("for 8 people") is never read as a time.
+ * Times written apart from the day ("on October 24. It starts at 6pm and ends at 9pm") are kept.
  */
 export function findWhenPhrase(text: string, anchor: ISODate = anchorDate()): string | null {
-  const ref = new Date(`${anchor}T09:00:00`);
-  const hit = chrono.parse(text.replace(/[–—]/g, "-"), ref, { forwardDate: true })
-    .find((r) => r.start.isCertain("day") || r.start.isCertain("weekday"));
-  return hit ? hit.text : null;
+  const cleaned = cleanWhen(text);
+  const results = parseWhen(cleaned, anchor);
+  const ordinal = ORDINAL_DAY.exec(cleaned);
+  const names = (r: chrono.ParsedResult) => r.start.isCertain("day") || r.start.isCertain("weekday");
+  if (!ordinal && !results.some(names)) return null;
+  const parts = results.filter((r) => names(r) || r.start.isCertain("hour")).map((r) => ({ at: r.index, text: r.text }));
+  if (ordinal) parts.push({ at: ordinal.index, text: ordinal[0] });
+  const dur = DURATION.exec(cleaned);
+  if (dur) parts.push({ at: dur.index, text: dur[0] });
+  return parts.sort((a, b) => a.at - b.at).map((p) => p.text).join(", ");
 }
 
-function fmtDay(s: chrono.ParsedComponents) {
-  return `${s.get("month")}/${s.get("day")}`;
+/** "the 24th" with no month: chrono skips it. */
+const ORDINAL_DAY = /\bthe\s+(\d{1,2})(?:st|nd|rd|th)\b/i;
+const DURATION = /\bfor\s+(\d+(?:\.\d+)?|an?|one|two|three|four|five|six)\s+(hours?|hrs?|minutes?|mins?)\b/i;
+const WORD_NUM: Record<string, number> = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+
+function cleanWhen(s: string) {
+  // chrono reads "between 6 and 9pm" as just "9pm"
+  return s.replace(/[–—]/g, "-").replace(/\bbetween\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s+and\s+/gi, "from $1 to ").trim();
+}
+
+/** chrono matches, minus durations ("for 3 hours"), which it reads as a clock time. */
+function parseWhen(cleaned: string, anchor: ISODate) {
+  const ref = new Date(`${anchor}T09:00:00`);
+  return chrono.parse(cleaned, ref, { forwardDate: true }).filter((r) => !/\b(hours?|hrs?|minutes?|mins?)\b/i.test(r.text));
+}
+
+function durationOf(s: string): number | null {
+  const m = DURATION.exec(s);
+  if (!m) return null;
+  const n = WORD_NUM[m[1].toLowerCase()] ?? Number(m[1]);
+  return Math.round(/^h/i.test(m[2]) ? n * 60 : n);
+}
+
+/** The next date on or after the anchor falling on this day of the month. */
+function nextDayOfMonth(day: number, anchor: ISODate): ISODate | undefined {
+  const [y, m, d] = anchor.split("-").map(Number);
+  for (let i = day >= d ? 0 : 1; i < 3; i++) {
+    const dt = new Date(y, m - 1 + i, day);
+    if (dt.getDate() === day) return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(day)}`;
+  }
+  return undefined;
+}
+
+const isoOf = (c: chrono.ParsedComponents): ISODate => `${c.get("year")}-${pad(c.get("month")!)}-${pad(c.get("day")!)}`;
+const minutesOf = (c: chrono.ParsedComponents) => c.get("hour")! * 60 + (c.get("minute") ?? 0);
+const hhmm = (min: number): HHMM => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
+
+function fmtDay(date: ISODate) {
+  const [, m, d] = date.split("-").map(Number);
+  return `${m}/${d}`;
 }
 
 // ---------- facts helpers ----------
