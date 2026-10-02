@@ -3,9 +3,11 @@
  * OWNER: C3 — C1 wrote this minimal working version; extend freely, keep the DecisionSnapshot shape.
  * Never stores model reasoning text: only inputs, extracted facts, corrections, rules, and outputs.
  */
+import { ROOM_BY_ID } from "./data";
 import { newId, readCollection, writeCollection } from "./db";
-import { diffCorrections, draftToFacts } from "./normalize";
-import type { Booking, BookingRequest, DecisionSnapshot, PolicyDecision, SnapshotStatus } from "./types";
+import { diffCorrections, draftToFacts, toMinutes } from "./normalize";
+import { fmtHrs } from "./policy";
+import { DAILY_CAP_MIN, type Booking, type BookingRequest, type DecisionSnapshot, type PolicyDecision, type SnapshotStatus } from "./types";
 
 const STATUS: Record<Booking["status"], SnapshotStatus> = {
   confirmed: "auto_approved",
@@ -107,7 +109,19 @@ export function listSnapshots(): DecisionSnapshot[] {
   return uniqueSnaps.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
-export function setSnapshotStatus(id: string, action: "approve" | "deny", message?: string): DecisionSnapshot | null {
+export type SetSnapshotStatusResult =
+  | { ok: true; snapshot: DecisionSnapshot }
+  | { ok: false; status: 404 | 409; error: string };
+
+const NOT_FOUND: SetSnapshotStatusResult = {
+  ok: false,
+  status: 404,
+  error: "Snapshot not found, or the club already cancelled this booking",
+};
+
+const ACTIVE_STATUSES: Booking["status"][] = ["confirmed", "pending_permit", "pending_review"];
+
+export function setSnapshotStatus(id: string, action: "approve" | "deny", message?: string): SetSnapshotStatusResult {
   const snaps = readCollection<DecisionSnapshot>("snapshots");
   const bookings = readCollection<Booking>("bookings");
   let snap = snaps.find((s) => s.id === id || s.bookingId === id);
@@ -121,18 +135,48 @@ export function setSnapshotStatus(id: string, action: "approve" | "deny", messag
         `snap-${b.id}` === id ||
         id.startsWith(`snap-booking-${b.id}`),
     );
-    if (!booking) return null;
+    if (!booking) return NOT_FOUND;
     const all = listSnapshots();
     snap = all.find((s) => s.id === id || s.bookingId === booking.id);
     if (snap) {
       snaps.push(snap);
     } else {
-      return null;
+      return NOT_FOUND;
     }
   }
 
   // a club-cancelled booking is final: re-approving would skip the overlap/cap re-check
-  if (snap.status === "cancelled") return null;
+  if (snap.status === "cancelled") return NOT_FOUND;
+
+  // Only touch the booking this snapshot describes. Seed snapshots are history-only, and a stale or
+  // mismatched id must never confirm or cancel someone else's booking.
+  const isSnapshotBooking = (b: Booking) =>
+    b.id === snap.bookingId &&
+    b.roomId === snap.selectedRoomId &&
+    b.clubId === snap.clubId &&
+    b.date === snap.facts.date.value &&
+    b.startTime === snap.facts.startTime.value;
+  const backing = bookings.find(isSnapshotBooking);
+
+  // Re-approving an inactive (denied) booking must re-run the overlap/cap checks: the slot and the
+  // club's daily minutes may have been taken by someone else while it was denied.
+  if (action === "approve" && backing && !ACTIVE_STATUSES.includes(backing.status)) {
+    const others = bookings.filter((b) => b.id !== backing.id && b.date === backing.date && ACTIVE_STATUSES.includes(b.status));
+    const clash = others.find(
+      (b) =>
+        b.roomId === backing.roomId &&
+        toMinutes(b.startTime) < toMinutes(backing.endTime) &&
+        toMinutes(backing.startTime) < toMinutes(b.endTime),
+    );
+    if (clash) {
+      const room = ROOM_BY_ID[clash.roomId]?.name ?? clash.roomId;
+      return { ok: false, status: 409, error: `${room} is now booked ${clash.startTime}–${clash.endTime}; it can't be re-approved` };
+    }
+    const used = others.filter((b) => b.clubId === backing.clubId).reduce((sum, b) => sum + b.durationMin, 0);
+    if (used + backing.durationMin > DAILY_CAP_MIN) {
+      return { ok: false, status: 409, error: `Re-approving this would bring the organization to ${fmtHrs(used + backing.durationMin)} on ${backing.date} (limit ${fmtHrs(DAILY_CAP_MIN)})` };
+    }
+  }
 
   const status: SnapshotStatus = action === "approve" ? "approved" : "denied";
   const sentMessage = message ? { text: message, action, sentAt: new Date().toISOString() } : undefined;
@@ -152,21 +196,13 @@ export function setSnapshotStatus(id: string, action: "approve" | "deny", messag
   }
   writeCollection("snapshots", updatedSnaps);
 
-  // Only touch the booking this snapshot describes. Seed snapshots are history-only, and a stale or
-  // mismatched id must never confirm or cancel someone else's booking.
-  const isSnapshotBooking = (b: Booking) =>
-    b.id === snap.bookingId &&
-    b.roomId === snap.selectedRoomId &&
-    b.clubId === snap.clubId &&
-    b.date === snap.facts.date.value &&
-    b.startTime === snap.facts.startTime.value;
-  if (bookings.some(isSnapshotBooking)) {
+  if (backing) {
     writeCollection(
       "bookings",
       bookings.map((b) => (isSnapshotBooking(b) ? { ...b, status: action === "approve" ? "confirmed" : "denied" } : b)),
     );
   }
-  return updatedSnap;
+  return { ok: true, snapshot: updatedSnap };
 }
 
 /** Mirror a club's cancellation onto its audit snapshot (synthesized seed snapshots pick it up from the booking). */

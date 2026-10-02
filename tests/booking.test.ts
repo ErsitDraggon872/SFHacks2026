@@ -106,6 +106,18 @@ describe("createBooking", () => {
     expect(bookings()).toHaveLength(0);
   });
 
+  it("refuses a past date even when attested", () => {
+    const res = createBooking(req({ facts: cleanFacts({ date: "2026-10-01" }), attested: true }));
+    expect(res.ok).toBe(false);
+    expect(bookings()).toHaveLength(0);
+  });
+
+  it("refuses malformed times even when attested", () => {
+    const res = createBooking(req({ facts: cleanFacts({ startTime: "x", endTime: "y" }), attested: true }));
+    expect(res.ok).toBe(false);
+    expect(bookings()).toHaveLength(0);
+  });
+
   it("rejects unknown rooms", () => {
     expect(createBooking(req({ roomId: "NOPE-1" }))).toMatchObject({ ok: false, decision: null });
   });
