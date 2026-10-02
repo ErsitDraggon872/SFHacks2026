@@ -10,7 +10,7 @@
  * Also show `ambiguities` from the AI draft as muted notes (dedupe by field with `questions`).
  * Must be keyboard accessible; focus the first unanswered control when it appears.
  */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Card, Input, StatusIcon } from "@/components/ui";
 import type { EditFact } from "@/lib/client/uiTypes";
 import { SAFETY_FIELDS, type Ambiguity, type EventFacts, type FactField, type SafetyField, type Unresolved } from "@/lib/types";
@@ -24,6 +24,27 @@ export interface ClarifyingQuestionsProps {
 
 const IS_SAFETY = (f: FactField | null): f is SafetyField =>
   f !== null && (SAFETY_FIELDS as readonly string[]).includes(f);
+
+/**
+ * The browser emits a full value on the first year keystroke ("2" → 0002-10-10). Answering
+ * removes this row, so keep the half-typed date local and commit only once the year is complete.
+ */
+function DateAnswer({ label, onAnswer }: { label: string; onAnswer: (v: string) => void }) {
+  const [draft, setDraft] = useState("");
+  return (
+    <Input
+      type="date"
+      value={draft}
+      aria-label={label}
+      onChange={(e) => {
+        const v = e.target.value;
+        setDraft(v);
+        if (Number(v.slice(0, 4)) >= 2000) onAnswer(v);
+      }}
+      className="w-40"
+    />
+  );
+}
 
 export function ClarifyingQuestions({ questions, ambiguities, facts, onAnswer }: ClarifyingQuestionsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -101,15 +122,7 @@ export function ClarifyingQuestions({ questions, ambiguities, facts, onAnswer }:
                 </form>
               )}
 
-              {field === "date" && (
-                <Input
-                  type="date"
-                  value={facts.date.value ?? ""}
-                  aria-label={q.question}
-                  onChange={(e) => onAnswer("date", e.target.value || null)}
-                  className="w-40"
-                />
-              )}
+              {field === "date" && <DateAnswer label={q.question} onAnswer={(v) => onAnswer("date", v)} />}
 
               {(field === "startTime" || field === "endTime") && (
                 <Input

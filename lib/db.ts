@@ -31,9 +31,23 @@ export function readCollection<T>(name: Collection): T[] {
 
 export function writeCollection<T>(name: Collection, rows: T[]) {
   fs.mkdirSync(RUNTIME, { recursive: true });
+  const body = JSON.stringify(rows, null, 2) + "\n";
   const tmp = `${file(name)}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(rows, null, 2) + "\n");
-  fs.renameSync(tmp, file(name));
+  fs.writeFileSync(tmp, body);
+  // Windows refuses to rename over a file another process has open (editor, antivirus, a second
+  // dev server): retry briefly, then fall back to a direct write rather than failing the request.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      fs.renameSync(tmp, file(name));
+      return;
+    } catch (e) {
+      const code = (e as NodeJS.ErrnoException).code;
+      if (code !== "EPERM" && code !== "EBUSY" && code !== "EACCES") throw e;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20 * (attempt + 1));
+    }
+  }
+  fs.writeFileSync(file(name), body);
+  fs.rmSync(tmp, { force: true });
 }
 
 export function newId(prefix: string) {
