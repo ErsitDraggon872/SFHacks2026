@@ -173,6 +173,8 @@ At T+15m, C1 also commits `fixtures/triage-{study,pizza,speaker,dance}.json`, wh
 - Until the C1 shell lands, C2 builds its components in isolation against `fixtures/*.json`.
 
 ### Frontend foundation C1 delivers, so C2 only fills in component bodies
+
+> **Status: delivered.** The final prop signatures are in `docs/frontend-guide.md` and in each component file. They supersede the sketch below (e.g. `RoomCard` takes `variant` + `onSelect`, and `TierPanel` takes `onSubmit` + `result`).
 1. **Typed component stubs, already mounted.** Every C2 component exists as a file with its final props interface, a JSDoc comment saying exactly what it renders and which interactions it has, and a placeholder body (`<Placeholder name="FactChips" />`, a dashed gray box). Each stub is already imported and placed in the right slot in `app/page.tsx`, with props passed from page state. C2 never edits the page or the wiring, only the component bodies.
    ```ts
    FactChips({ facts, draft, onEdit(field, value) })

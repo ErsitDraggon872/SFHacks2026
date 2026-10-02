@@ -5,13 +5,12 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-
-const RUNTIME = path.join(process.cwd(), "data", "runtime");
-const SEEDS: Record<string, string> = {
-  bookings: path.join(process.cwd(), "data", "bookings.seed.json"),
-};
+import seedBookings from "../data/bookings.seed.json";
 
 export type Collection = "bookings" | "snapshots";
+
+const RUNTIME = path.join(process.cwd(), "data", "runtime");
+const SEEDS: Partial<Record<Collection, unknown[]>> = { bookings: seedBookings };
 
 function file(name: Collection) {
   return path.join(RUNTIME, `${name}.json`);
@@ -20,8 +19,7 @@ function file(name: Collection) {
 /** Copy seed data into data/runtime (used on first read and by `npm run demo:reset`). */
 export function resetCollection(name: Collection) {
   fs.mkdirSync(RUNTIME, { recursive: true });
-  const seed = SEEDS[name];
-  fs.writeFileSync(file(name), seed && fs.existsSync(seed) ? fs.readFileSync(seed, "utf8") : "[]\n");
+  fs.writeFileSync(file(name), JSON.stringify(SEEDS[name] ?? [], null, 2) + "\n");
 }
 
 export function readCollection<T>(name: Collection): T[] {

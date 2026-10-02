@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * GatorSpace design tokens (OWNER: C1). Clean, mostly white, Devin-style.
+ * Use the Tailwind names (bg-surface, text-ink, text-muted, border-line, text-accent, ...).
+ * SFSU purple is an ACCENT only: logo mark, focus ring, selected tab. Never large fills.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-surface: #ffffff;
+  --color-subtle: #fafafa; /* page sections, hover rows */
+  --color-sunken: #f4f4f5; /* pills, chips, inputs */
+  --color-line: #e5e5e5; /* hairline borders */
+  --color-line-strong: #d4d4d4;
+  --color-ink: #0a0a0a; /* primary text + primary buttons */
+  --color-ink-2: #404040; /* secondary text */
+  --color-muted: #737373; /* helper text */
+  --color-faint: #a3a3a3;
+
+  --color-accent: #463077; /* SFSU purple */
+  --color-accent-soft: #f3f0fa;
+
+  /* status: always paired with an icon (see components/ui/StatusIcon) */
+  --color-pass: #15803d;
+  --color-pass-soft: #f0fdf4;
+  --color-warn: #b45309;
+  --color-warn-soft: #fffbeb;
+  --color-block: #b91c1c;
+  --color-block-soft: #fef2f2;
+  --color-escalate: #6d28d9;
+  --color-escalate-soft: #f5f3ff;
+  --color-info: #525252;
+  --color-info-soft: #f5f5f5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #ffffff;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@keyframes gs-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.gs-rise {
+  animation: gs-rise 240ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-rise { animation: none; }
 }
