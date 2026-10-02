@@ -111,6 +111,15 @@ describe("draftToFacts", () => {
     expect(draftToFacts(draft(), { text: "a community meetup", anchor: ANCHOR }).externalGuests.value).toBeNull();
   });
 
+  it("a field the extractor asked about is never defaulted", () => {
+    const f = draftToFacts(
+      draft({ ambiguities: [{ field: "weapons", question: "Will there be any weapons or combat robot parts?" }] }),
+      { text: "combat robotics info session for 8", anchor: ANCHOR },
+    );
+    expect(f.weapons).toEqual({ value: null, source: "ai" });
+    expect(f.alcohol.source).toBe("default"); // other fields still default
+  });
+
   it("text cues prevent a default", () => {
     const f = draftToFacts(draft(), { text: "study night with pizza and a DJ, open to the public, keynote by an alum", anchor: ANCHOR });
     expect(f.food.value).toBeNull();

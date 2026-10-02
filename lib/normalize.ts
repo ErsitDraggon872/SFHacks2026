@@ -11,6 +11,7 @@ import {
   type FactField,
   type HHMM,
   type ISODate,
+  type SafetyField,
   type UserCorrection,
 } from "./types";
 
@@ -121,6 +122,7 @@ const SMALL_EVENT = 25;
  *  - food: default false only for small events (≤25) with no cue.
  *  - externalGuests: default false for small events, or any size when the text says "members",
  *    with no guest cue.
+ * Never defaults a field the extractor raised a clarifying question about.
  */
 export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: ISODate } = {}): EventFacts {
   const text = `${opts.text ?? ""} ${draft.summary ?? ""} ${draft.foodDescription ?? ""}`;
@@ -129,8 +131,12 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
   const resolved: Partial<ResolvedWhen> | null = when;
   const small = draft.headcount !== null && draft.headcount <= SMALL_EVENT;
 
-  const tri = (v: boolean | null, canDefault: boolean): Fact<boolean | null> =>
-    v !== null ? f(v, "ai") : canDefault ? f(false, "default") : f(null, "ai");
+  // a field the extractor asked about is in doubt: ask the officer, never assume "no"
+  const asked = new Set(draft.ambiguities.map((a) => a.field));
+  const tri = (field: SafetyField, canDefault: boolean): Fact<boolean | null> => {
+    const v = draft[field];
+    return v !== null ? f(v, "ai") : canDefault && !asked.has(field) ? f(false, "default") : f(null, "ai");
+  };
 
   return {
     summary: f(draft.summary),
@@ -138,14 +144,14 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
     date: f(resolved?.date ?? null),
     startTime: f(resolved?.startTime ?? null),
     endTime: f(resolved?.endTime ?? null),
-    food: tri(draft.food, small && !CUES.food.test(text)),
+    food: tri("food", small && !CUES.food.test(text)),
     foodDescription: f(draft.foodDescription),
-    amplifiedSound: tri(draft.amplifiedSound, !CUES.amplifiedSound.test(text)),
-    externalGuests: tri(draft.externalGuests, (small || /\bmembers\b/i.test(text)) && !CUES.externalGuests.test(text)),
-    guestSpeakers: tri(draft.guestSpeakers, !CUES.guestSpeakers.test(text)),
-    alcohol: tri(draft.alcohol, true),
-    minors: tri(draft.minors, true),
-    weapons: tri(draft.weapons, !CUES.weapons.test(text)),
+    amplifiedSound: tri("amplifiedSound", !CUES.amplifiedSound.test(text)),
+    externalGuests: tri("externalGuests", (small || /\bmembers\b/i.test(text)) && !CUES.externalGuests.test(text)),
+    guestSpeakers: tri("guestSpeakers", !CUES.guestSpeakers.test(text)),
+    alcohol: tri("alcohol", true),
+    minors: tri("minors", true),
+    weapons: tri("weapons", !CUES.weapons.test(text)),
     avNeeds: f(draft.avNeeds),
     layout: f(draft.layout),
     preferredBuilding: f(draft.preferredBuilding),
