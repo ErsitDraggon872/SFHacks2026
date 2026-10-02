@@ -6,7 +6,9 @@
  *   Date (input type=date), Start / End (type=time), Attendees (number),
  *   Equipment (toggle pills for projector, display, microphone, speakers, whiteboard, computers),
  *   Building (Select of unique ROOMS buildings, "Any"),
- *   Food / Amplified sound / Non-SFSU guests / Guest speakers / Alcohol / Under 18 (TriToggle each),
+ *   Food / Amplified sound / Non-SFSU guests / Under 18 (TriToggle each).
+ *   Alcohol and guest speakers have no toggle: initialFilterFacts() sets them to an assumed "no"
+ *   that the officer attests to (and can still change from the fact chips).
  *   Accessible space (Checkbox).
  * Every change → onChange(nextFacts) via setFact() from lib/normalize.ts.
  * Primary "Find rooms" → onSubmit (the page then evaluates locally — instant, no network).
@@ -26,6 +28,8 @@ export interface QuickFiltersProps {
   onChange: (facts: EventFacts) => void;
   onSubmit: () => void;
 }
+
+const FILTER_SAFETY = SAFETY_FIELDS.filter((f) => f !== "alcohol" && f !== "guestSpeakers");
 
 const FILTER_AV: AvItem[] = [
   "projector",
@@ -133,7 +137,7 @@ export function QuickFilters({ value, onChange, onSubmit }: QuickFiltersProps) {
 
       {/* Tri-state safety fields */}
       <div className="grid grid-cols-1 gap-3 border-t border-line pt-3 sm:grid-cols-2">
-        {SAFETY_FIELDS.map((field) => (
+        {FILTER_SAFETY.map((field) => (
           <div key={field} className="flex items-center justify-between gap-2">
             <span className="text-sm text-ink-2">{FACT_LABEL[field]}</span>
             <TriToggle
