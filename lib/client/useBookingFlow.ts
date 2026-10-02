@@ -17,6 +17,7 @@ import type {
   CreateBookingResult,
   EventFacts,
   FactField,
+  PermitRequirement,
   PolicyDecision,
   RankedRoom,
   TriageResponse,
@@ -26,6 +27,12 @@ import { FIXTURES, fetchAvailability, fixtureFromUrl, submitBooking, triage } fr
 import type { SearchMode } from "@/components/SearchHero";
 
 export type Phase = "idle" | "loading" | "results";
+
+export interface BookingConfirmationData {
+  booking: Booking;
+  clubId: string;
+  permits: PermitRequirement[];
+}
 
 function addDays(iso: string, n: number) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -61,11 +68,17 @@ export function useBookingFlow() {
   const [aiMode, setAiMode] = useState<AiMode>("none");
 
   const [attested, setAttested] = useState(false);
+  /** What the officer calls the event (prefilled from the AI summary) + an optional description. */
+  const [eventName, setEventName] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<CreateBookingResult | null>(null);
   const [citeRuleId, setCiteRuleId] = useState<string | null>(null);
+  /** Set after a successful booking; the request flow is cleared and this card is shown instead. */
+  const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
 
   const load = useCallback((r: TriageResponse) => {
+    setConfirmation(null);
     setResponse(r);
     setOriginal(r.facts);
     setFacts(r.facts);
@@ -74,6 +87,8 @@ export function useBookingFlow() {
     setAiMode(r.aiMode);
     setAttested(false);
     setResult(null);
+    setEventName(r.facts.summary.value ?? "");
+    setEventDescription("");
     if (r.requestText) setText(r.requestText);
     setPhase("results");
   }, []);
@@ -146,12 +161,15 @@ export function useBookingFlow() {
 
   /** Filters tab: no AI at all, evaluate locally right away. */
   const runFilters = useCallback(() => {
+    setConfirmation(null);
     setResponse(null);
     setOriginal(null);
     setFacts(filterFacts);
     setAiMode("none");
     setAttested(false);
     setResult(null);
+    setEventName("");
+    setEventDescription("");
     setError(null);
     setPhase("results");
   }, [filterFacts]);
@@ -167,8 +185,22 @@ export function useBookingFlow() {
     if (decision?.suggestedRoomId) edit("requestedRoomId", decision.suggestedRoomId);
   }, [decision, edit]);
 
+  const reset = useCallback(() => {
+    setConfirmation(null);
+    setPhase("idle");
+    setResponse(null);
+    setFacts(null);
+    setOriginal(null);
+    setResult(null);
+    setError(null);
+    setText("");
+    setEventName("");
+    setEventDescription("");
+    setAiMode("none");
+  }, []);
+
   const submit = useCallback(async () => {
-    if (!facts || !decision?.targetRoomId) return;
+    if (!facts || !decision?.targetRoomId || !eventName.trim()) return;
     setSubmitting(true);
     try {
       const r = await submitBooking({
@@ -179,27 +211,25 @@ export function useBookingFlow() {
         requestText: response?.requestText ?? null,
         draft: response?.draft ?? null,
         writer,
+        eventName: eventName.trim(),
+        eventDescription: eventDescription.trim() || null,
       });
-      // keep the local bookings as-is: adding our own booking would make the decision flag
-      // the room as taken. The next search fetches fresh availability from the server.
-      setResult(r);
+      if (r.ok) {
+        // done: clear the request so it can't be submitted twice, and remember the booking
+        // locally so a Filters search on the same day sees the room as taken
+        const booking = r.booking;
+        reset();
+        setBookings((b) => (bookingsDate === booking.date ? [...b, booking] : b));
+        setConfirmation({ booking, clubId, permits: r.decision.permitsRequired });
+      } else {
+        setResult(r);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Booking failed");
     } finally {
       setSubmitting(false);
     }
-  }, [facts, decision, clubId, attested, response, writer]);
-
-  const reset = useCallback(() => {
-    setPhase("idle");
-    setResponse(null);
-    setFacts(null);
-    setOriginal(null);
-    setResult(null);
-    setError(null);
-    setText("");
-    setAiMode("none");
-  }, []);
+  }, [facts, decision, clubId, attested, response, writer, eventName, eventDescription, bookingsDate, reset]);
 
   return {
     // state
@@ -214,9 +244,12 @@ export function useBookingFlow() {
     filterFacts,
     aiMode,
     attested,
+    eventName,
+    eventDescription,
     submitting,
     result,
     citeRuleId,
+    confirmation,
     // derived
     decision,
     ranked,
@@ -229,6 +262,8 @@ export function useBookingFlow() {
     setText,
     setFilterFacts,
     setAttested,
+    setEventName,
+    setEventDescription,
     setCiteRuleId,
     runPreset,
     runText,
@@ -238,6 +273,7 @@ export function useBookingFlow() {
     fix,
     submit,
     reset,
+    dismissConfirmation: () => setConfirmation(null),
   };
 }
 

@@ -116,7 +116,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
 
   const startReject = (snap: DecisionSnapshot) => {
     const room = ROOM_BY_ID[snap.selectedRoomId]?.name ?? snap.selectedRoomId;
-    const eventName = snap.facts.summary.value ?? snap.requestText ?? "Your event";
+    const eventName = snap.eventName ?? snap.facts.summary.value ?? snap.requestText ?? "Your event";
     const dateStr = snap.facts.date.value ? fmtDate(snap.facts.date.value) : "your requested date";
     const defaultMsg = `Notice from Student Activities & Events: Your booking for "${eventName}" in ${room} on ${dateStr} has been rejected. Reason: `;
     setActiveAction({
@@ -128,7 +128,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
 
   const startApprove = (snap: DecisionSnapshot) => {
     const room = ROOM_BY_ID[snap.selectedRoomId]?.name ?? snap.selectedRoomId;
-    const eventName = snap.facts.summary.value ?? snap.requestText ?? "Your event";
+    const eventName = snap.eventName ?? snap.facts.summary.value ?? snap.requestText ?? "Your event";
     const dateStr = snap.facts.date.value ? fmtDate(snap.facts.date.value) : "your requested date";
     const defaultMsg = `Notice from Student Activities & Events: Your booking for "${eventName}" in ${room} on ${dateStr} has been reviewed and approved. Please ensure all campus safety policies and room reset guidelines are followed.`;
     setActiveAction({
@@ -170,7 +170,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
         const club = (CLUB_BY_ID[s.clubId]?.name ?? s.clubId).toLowerCase();
         const short = (CLUB_BY_ID[s.clubId]?.short ?? "").toLowerCase();
         const room = (ROOM_BY_ID[s.selectedRoomId]?.name ?? s.selectedRoomId).toLowerCase();
-        const summary = (s.facts.summary.value ?? s.requestText ?? "").toLowerCase();
+        const summary = (s.eventName ?? s.facts.summary.value ?? s.requestText ?? "").toLowerCase();
         return club.includes(q) || short.includes(q) || room.includes(q) || summary.includes(q);
       }
       return true;
@@ -430,7 +430,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
           {filteredSnapshots.map((snap) => {
             const club = CLUB_BY_ID[snap.clubId];
             const room = ROOM_BY_ID[snap.selectedRoomId];
-            const eventName = snap.facts.summary.value ?? snap.requestText ?? "Event";
+            const eventName = snap.eventName ?? snap.facts.summary.value ?? snap.requestText ?? "Event";
             const dateStr = snap.facts.date.value ? fmtDate(snap.facts.date.value) : "TBD";
             const timeStr =
               snap.facts.startTime.value && snap.facts.endTime.value
@@ -556,6 +556,14 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                 {/* Expandable Details & Audit Section */}
                 {isExpanded && (
                   <div className="gs-rise mt-4 space-y-4 border-t border-line pt-4 text-xs">
+                    {/* Officer-written description */}
+                    {snap.eventDescription && (
+                      <div className="space-y-1">
+                        <SectionLabel>Event Description</SectionLabel>
+                        <p className="whitespace-pre-line rounded-lg bg-sunken p-2.5 text-sm text-ink-2">{snap.eventDescription}</p>
+                      </div>
+                    )}
+
                     {/* Event Description Text */}
                     {snap.requestText && (
                       <div className="space-y-1">

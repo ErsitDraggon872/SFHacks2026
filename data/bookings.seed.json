@@ -1,5 +1,5 @@
 [
-  { "id": "seed-1", "roomId": "CCSC-204", "clubId": "study", "date": "2026-10-08", "startTime": "14:00", "endTime": "17:00", "durationMin": 180, "status": "confirmed", "title": "Dance workshop", "tier": 1, "snapshotId": null, "createdAt": "2026-10-01T17:00:00.000Z" },
+  { "id": "seed-1", "roomId": "CCSC-204", "clubId": "study", "date": "2026-10-05", "startTime": "14:00", "endTime": "17:00", "durationMin": 180, "status": "confirmed", "title": "Dance workshop", "tier": 1, "snapshotId": null, "createdAt": "2026-10-01T17:00:00.000Z" },
   { "id": "seed-2", "roomId": "BH-101", "clubId": "premed", "date": "2026-10-08", "startTime": "18:00", "endTime": "20:00", "durationMin": 120, "status": "confirmed", "title": "MCAT review", "tier": 1, "snapshotId": null, "createdAt": "2026-10-01T17:05:00.000Z" },
   { "id": "seed-3", "roomId": "HSS-306", "clubId": "study", "date": "2026-10-08", "startTime": "17:00", "endTime": "19:00", "durationMin": 120, "status": "confirmed", "title": "Midterm review", "tier": 1, "snapshotId": null, "createdAt": "2026-10-01T17:10:00.000Z" },
   { "id": "seed-4", "roomId": "TH-210", "clubId": "sfhacks", "date": "2026-10-08", "startTime": "12:00", "endTime": "14:00", "durationMin": 120, "status": "confirmed", "title": "Organizer sync", "tier": 1, "snapshotId": null, "createdAt": "2026-10-01T17:15:00.000Z" },

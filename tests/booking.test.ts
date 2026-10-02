@@ -45,6 +45,20 @@ describe("createBooking", () => {
     expect(bookings()).toEqual([res.booking]);
   });
 
+  it("stores the officer's event name and description, trimmed", () => {
+    const res = createBooking(req({ eventName: "  Fall kickoff  ", eventDescription: " Intro night for new members " }));
+    expect(res.ok && { title: res.booking.title, description: res.booking.description }).toEqual({
+      title: "Fall kickoff",
+      description: "Intro night for new members",
+    });
+  });
+
+  it("falls back to the extracted summary when the event name is blank", () => {
+    const res = createBooking(req({ eventName: "   ", eventDescription: "" }));
+    expect(res.ok && res.booking.title).toBe(cleanFacts().summary.value ?? "Student organization event");
+    expect(res.ok && res.booking.description).toBeNull();
+  });
+
   it("a food event in a food room becomes pending_permit", () => {
     const res = createBooking(req({ roomId: "CCSC-204", facts: cleanFacts({ headcount: 45, food: true }) }));
     expect(res.ok && res.booking.status).toBe("pending_permit");

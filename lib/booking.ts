@@ -10,6 +10,13 @@ import { evaluate } from "./policy";
 import { setFact } from "./normalize";
 import type { Booking, BookingRequest, CreateBookingResult } from "./types";
 
+/** Trim + cap free text from the client; blank or non-string → null. */
+function cleanText(v: unknown, max: number): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim().slice(0, max);
+  return t || null;
+}
+
 export function createBooking(req: BookingRequest): CreateBookingResult {
   const room = ROOMS.find((r) => r.id === req.roomId);
   if (!room) {
@@ -41,7 +48,8 @@ export function createBooking(req: BookingRequest): CreateBookingResult {
     endTime: facts.endTime.value!,
     durationMin: durationMin(facts.startTime.value, facts.endTime.value)!,
     status: decision.submitOutcome,
-    title: facts.summary.value ?? "Student organization event",
+    title: cleanText(req.eventName, 120) ?? facts.summary.value ?? "Student organization event",
+    description: cleanText(req.eventDescription, 1000),
     tier: decision.tier,
     snapshotId: null,
     createdAt: new Date().toISOString(),

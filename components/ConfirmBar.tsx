@@ -4,7 +4,7 @@
  * reviews the decision, rooms, and permit first, then attests and books.
  * Every enabled/disabled state comes from decision.canSubmit; this only renders it.
  */
-import { Button, Checkbox, Pill, StatusIcon } from "@/components/ui";
+import { Button, Checkbox, Field, Input, Pill, StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
 import { fmtDate, fmtTime } from "@/lib/client/format";
 import { ROOM_BY_ID } from "@/lib/data";
@@ -15,6 +15,10 @@ export interface ConfirmBarProps {
   targetRoom: Room | null;
   attested: boolean;
   onAttest: (v: boolean) => void;
+  eventName: string;
+  onEventName: (v: string) => void;
+  eventDescription: string;
+  onEventDescription: (v: string) => void;
   onSubmit: () => void;
   submitting: boolean;
   result: CreateBookingResult | null;
@@ -47,10 +51,23 @@ function blockedReason(d: PolicyDecision): string | null {
   return null;
 }
 
-export function ConfirmBar({ decision: d, targetRoom, attested, onAttest, onSubmit, submitting, result }: ConfirmBarProps) {
+export function ConfirmBar({
+  decision: d,
+  targetRoom,
+  attested,
+  onAttest,
+  eventName,
+  onEventName,
+  eventDescription,
+  onEventDescription,
+  onSubmit,
+  submitting,
+  result,
+}: ConfirmBarProps) {
   const booked = result?.ok ? result.booking : null;
   const needsAttest = d.defaultsToAttest.length > 0 && !attested;
-  const reason = blockedReason(d);
+  const needsName = !eventName.trim();
+  const reason = blockedReason(d) ?? (needsName ? "Give the event a name to continue" : null);
   const isReview = d.tier === 3;
 
   return (
@@ -75,6 +92,26 @@ export function ConfirmBar({ decision: d, targetRoom, attested, onAttest, onSubm
             </Pill>
           </div>
         ) : (
+          <>
+          <div className="mb-3 grid grid-cols-1 gap-3 border-b border-line pb-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+            <Field label="Event name">
+              <Input
+                value={eventName}
+                onChange={(e) => onEventName(e.target.value)}
+                maxLength={120}
+                placeholder="e.g. Fall general meeting"
+                required
+              />
+            </Field>
+            <Field label="Description (optional)">
+              <Input
+                value={eventDescription}
+                onChange={(e) => onEventDescription(e.target.value)}
+                maxLength={1000}
+                placeholder="What's the event about?"
+              />
+            </Field>
+          </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0 space-y-1.5">
               {d.defaultsToAttest.length > 0 && (
@@ -98,7 +135,7 @@ export function ConfirmBar({ decision: d, targetRoom, attested, onAttest, onSubm
             </div>
             <Button
               variant="primary"
-              disabled={!d.canSubmit || submitting}
+              disabled={!d.canSubmit || needsName || submitting}
               onClick={onSubmit}
               title={needsAttest && !reason ? "Confirm the assumed details first" : undefined}
               className="shrink-0"
@@ -112,6 +149,7 @@ export function ConfirmBar({ decision: d, targetRoom, attested, onAttest, onSubm
                     : "Book room"}
             </Button>
           </div>
+          </>
         )}
 
         {result && !result.ok && (

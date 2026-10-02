@@ -4,6 +4,7 @@
  * their props are already wired here, so C2 only edits component bodies.
  */
 import { AiModeBadge } from "@/components/AiModeBadge";
+import { BookingConfirmation } from "@/components/BookingConfirmation";
 import { ClarifyingQuestions } from "@/components/ClarifyingQuestions";
 import { ClubSwitcher } from "@/components/ClubSwitcher";
 import { ComplianceChecklist } from "@/components/ComplianceChecklist";
@@ -33,7 +34,7 @@ export default function Home() {
       <TopBar
         right={
           <>
-            <QuotaMeter usedMin={d && s.facts?.date.value ? d.clubMinutesUsed : null} requestMin={d?.requestMinutes ?? null} capMin={DAILY_CAP_MIN} />
+            <QuotaMeter usedMin={d && s.facts?.date.value ? d.clubMinutesUsed : null} requestMin={d?.requestMinutes ?? null} capMin={DAILY_CAP_MIN} date={s.facts?.date.value} />
             <ClubSwitcher clubs={CLUBS} clubId={s.clubId} onChange={s.setClubId} />
           </>
         }
@@ -41,6 +42,8 @@ export default function Home() {
       <PolicyBanner />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-24">
+        {s.confirmation && <BookingConfirmation data={s.confirmation} onDone={s.dismissConfirmation} />}
+
         <SearchHero
           mode={s.mode}
           onMode={s.setMode}
@@ -121,6 +124,10 @@ export default function Home() {
               targetRoom={s.targetRoom}
               attested={s.attested}
               onAttest={s.setAttested}
+              eventName={s.eventName}
+              onEventName={s.setEventName}
+              eventDescription={s.eventDescription}
+              onEventDescription={s.setEventDescription}
               onSubmit={s.submit}
               submitting={s.submitting}
               result={s.result}

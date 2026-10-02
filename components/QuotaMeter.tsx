@@ -7,15 +7,17 @@
  */
 import { StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
-import { fmtMinutes } from "@/lib/client/format";
+import { fmtDate, fmtMinutes } from "@/lib/client/format";
 
 export interface QuotaMeterProps {
   usedMin: number | null;
   requestMin: number | null;
   capMin: number;
+  /** The event date being counted (the cap is per org, per day). Omitted → "today". */
+  date?: string | null;
 }
 
-export function QuotaMeter({ usedMin, requestMin, capMin }: QuotaMeterProps) {
+export function QuotaMeter({ usedMin, requestMin, capMin, date }: QuotaMeterProps) {
   if (usedMin === null) {
     return (
       <span
@@ -32,8 +34,9 @@ export function QuotaMeter({ usedMin, requestMin, capMin }: QuotaMeterProps) {
   const over = total > capMin;
   const usedPct = Math.min(100, (usedMin / capMin) * 100);
   const reqPct = Math.min(100 - usedPct, (req / capMin) * 100);
-  const labelText = `${fmtMinutes(total)} / ${fmtMinutes(capMin)} today`;
-  const ariaLabel = `Daily booking quota: ${fmtMinutes(usedMin)} already booked plus ${fmtMinutes(req)} requested out of ${fmtMinutes(capMin)} daily limit${over ? " (exceeds daily limit)" : ""}`;
+  const day = date ? `on ${fmtDate(date)}` : "today";
+  const labelText = `${fmtMinutes(total)} / ${fmtMinutes(capMin)} ${day}`;
+  const ariaLabel = `Daily booking quota: ${fmtMinutes(usedMin)} already booked plus ${fmtMinutes(req)} requested out of ${fmtMinutes(capMin)} daily limit ${day}${over ? " (exceeds daily limit)" : ""}`;
 
   return (
     <span
