@@ -46,7 +46,7 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
 
   it("denying a seed snapshot never changes an unrelated booking", async () => {
     const before = readCollection<Booking>("bookings");
-    for (const snap of listSnapshots().filter((s) => s.id.startsWith("snap-seed-"))) {
+    for (const snap of listSnapshots().filter((s) => s.id.startsWith("snap-history-"))) {
       const req = new Request("http://localhost:3000/api/admin", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -55,6 +55,23 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
       expect((await adminPost(req)).status).toBe(200);
     }
     expect(readCollection<Booking>("bookings")).toEqual(before);
+  });
+
+  it("synthesized booking snapshots have unique ids and deny their own booking", async () => {
+    const snaps = listSnapshots();
+    expect(new Set(snaps.map((s) => s.id)).size).toBe(snaps.length);
+
+    const res = await adminPost(new Request("http://localhost:3000/api/admin", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ snapshotId: "snap-seed-4", action: "deny" }),
+    }));
+    expect(res.status).toBe(200);
+    const bookings = readCollection<Booking>("bookings");
+    expect(bookings.find((b) => b.id === "seed-4")?.status).toBe("denied");
+    expect(bookings.filter((b) => b.status === "denied").map((b) => b.id)).toEqual(["seed-4"]);
+    resetCollection("bookings");
+    resetCollection("snapshots");
   });
 
   it("denying a real booking's snapshot denies that booking", async () => {

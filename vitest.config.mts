@@ -4,9 +4,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-// Tests that hit the file-backed store get a fresh throwaway directory, never data/runtime.
-const runtimeDir = path.join(os.tmpdir(), "gatorspace-vitest-runtime");
-fs.rmSync(runtimeDir, { recursive: true, force: true });
+// Tests that hit the file-backed store get a fresh throwaway directory per run, never data/runtime.
+const runtimeDir = fs.mkdtempSync(path.join(os.tmpdir(), "gatorspace-vitest-"));
 
 export default defineConfig({
   resolve: {

@@ -1,6 +1,6 @@
 [
   {
-    "id": "snap-seed-1",
+    "id": "snap-history-1",
     "createdAt": "2026-10-01T17:20:00.000Z",
     "clubId": "study",
     "requestText": "Study group for 8 people on Wednesday 4-6pm, we just need a whiteboard. Library if possible.",
@@ -50,7 +50,7 @@
     "status": "auto_approved"
   },
   {
-    "id": "snap-seed-2",
+    "id": "snap-history-2",
     "createdAt": "2026-10-01T17:00:00.000Z",
     "clubId": "acm",
     "requestText": "ACM coding night for 45 members Thursday 6-9pm in Thornton. We'll have pizza and need a projector.",
@@ -112,7 +112,7 @@
     "status": "permit_pending"
   },
   {
-    "id": "snap-seed-3",
+    "id": "snap-history-3",
     "createdAt": "2026-10-01T17:05:00.000Z",
     "clubId": "premed",
     "requestText": "Pre-Med Society panel with 150 attendees and two guest speakers from UCSF, Tuesday 5-7pm. We need mics and a projector.",
