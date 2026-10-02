@@ -40,6 +40,8 @@ export function initialFilterFacts(): EventFacts {
   f = setFact(f, "startTime", "18:00");
   f = setFact(f, "endTime", "20:00");
   f = setFact(f, "headcount", 20);
+  // no alcohol / guest-speaker toggles in Filters: assumed "no", which the officer must attest to
+  f = { ...f, alcohol: { value: false, source: "default" }, guestSpeakers: { value: false, source: "default" } };
   return f;
 }
 
