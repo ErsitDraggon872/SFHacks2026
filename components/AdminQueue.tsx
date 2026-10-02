@@ -218,15 +218,15 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
         </div>
       )}
 
-      {/* Metrics & Time Saved Summary */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {/* Metrics Summary */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Card className="p-4">
           <SectionLabel>Auto-Confirmed</SectionLabel>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="text-2xl font-bold tracking-tight text-ink">{counts.auto}</span>
             <span className="text-xs text-pass font-medium">Auto-approved</span>
           </div>
-          <p className="mt-1 text-xs text-muted">Zero staff touchpoints</p>
+          <p className="mt-1 text-xs text-muted">Routine requests approved instantly</p>
         </Card>
 
         <Card className="p-4">
@@ -235,7 +235,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
             <span className="text-2xl font-bold tracking-tight text-escalate">{counts.pending}</span>
             <span className="text-xs text-escalate font-medium">Tier 3 queue</span>
           </div>
-          <p className="mt-1 text-xs text-muted">Prepared briefing attached</p>
+          <p className="mt-1 text-xs text-muted">Staff assessment &amp; briefing</p>
         </Card>
 
         <Card className="p-4">
@@ -244,17 +244,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
             <span className="text-2xl font-bold tracking-tight text-warn">{counts.permit}</span>
             <span className="text-xs text-warn font-medium">Pre-filled</span>
           </div>
-          <p className="mt-1 text-xs text-muted">EHS / Guest filings</p>
-        </Card>
-
-        <Card className="p-4 bg-accent-soft/40 border-accent/20">
-          <SectionLabel className="text-accent">Time Saved</SectionLabel>
-          <div className="mt-1 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold tracking-tight text-accent">
-              ~{counts.hoursSaved.toFixed(1)} hrs
-            </span>
-          </div>
-          <p className="mt-1 text-xs text-muted">Assumes 15 min manual triage</p>
+          <p className="mt-1 text-xs text-muted">EHS &amp; guest filings</p>
         </Card>
       </div>
 
