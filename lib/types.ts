@@ -111,6 +111,13 @@ export type FactField = keyof EventFacts;
 export const SAFETY_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const;
 export type SafetyField = (typeof SAFETY_FIELDS)[number];
 
+/**
+ * Taken as "no" without asking, showing, or attesting: an explicit mention still escalates, and a
+ * mention the extractor missed is still asked (normalize.ts). Everything else stays opt-in.
+ */
+export const IMPLIED_NO_FIELDS = ["alcohol", "weapons"] as const satisfies readonly SafetyField[];
+export const isImpliedNo = (f: FactField | null): boolean => (IMPLIED_NO_FIELDS as readonly (string | null)[]).includes(f);
+
 /** Fields required before any decision can be made. */
 export const REQUIRED_FIELDS = ["headcount", "date", "startTime", "endTime"] as const;
 

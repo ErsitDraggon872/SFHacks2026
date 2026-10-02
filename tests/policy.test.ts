@@ -228,9 +228,9 @@ describe("tri-state: unknown is never no", () => {
 
 describe("defaults need attestation", () => {
   it("a defaulted safety field blocks submission until the officer attests", () => {
-    const facts = asDefault(cleanFacts(), "alcohol");
+    const facts = asDefault(cleanFacts(), "minors");
     const unattested = run(facts);
-    expect(unattested.defaultsToAttest).toEqual(["alcohol"]);
+    expect(unattested.defaultsToAttest).toEqual(["minors"]);
     expect(unattested.tier).toBe(1);
     expect(unattested.canSubmit).toBe(false);
     expect(unattested.canAutoApprove).toBe(false);
@@ -238,6 +238,12 @@ describe("defaults need attestation", () => {
     const attested = run(facts, { attested: true });
     expect(attested.canSubmit).toBe(true);
     expect(attested.canAutoApprove).toBe(true);
+  });
+
+  it("assumed-no alcohol and weapons are a given: never attested, still auto-approvable", () => {
+    const d = run(asDefault(asDefault(cleanFacts(), "alcohol"), "weapons"));
+    expect(d.defaultsToAttest).toEqual([]);
+    expect(d.canAutoApprove).toBe(true);
   });
 
   it("a user-confirmed value needs no attestation", () => {

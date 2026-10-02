@@ -3,11 +3,11 @@
  * C3 supplies the draft (LLM extractor) and writer (LLM writer); everything between is code.
  */
 import { ROOMS } from "./data";
-import { draftToFacts, whenAmbiguity } from "./normalize";
+import { draftToFacts, findWhenPhrase, whenAmbiguity } from "./normalize";
 import { evaluate } from "./policy";
 import { rankRooms } from "./rank";
 import { requireNegationEvidence, sanitizeDraft } from "./sanitize";
-import type { AiMode, Booking, EventDraft, EventFacts, PolicyDecision, PresetId, TriageResponse, WriterOutput } from "./types";
+import { isImpliedNo, type AiMode, type Booking, type EventDraft, type EventFacts, type PolicyDecision, type PresetId, type TriageResponse, type WriterOutput } from "./types";
 
 /**
  * Step 1: draft → facts. Accepts raw extractor output: it is sanitized first (lib/sanitize.ts),
@@ -15,7 +15,14 @@ import type { AiMode, Booking, EventDraft, EventFacts, PolicyDecision, PresetId,
  * is added to the draft.
  */
 export function prepare(raw: unknown, text: string | null): { draft: EventDraft; facts: EventFacts } {
-  const { draft } = requireNegationEvidence(sanitizeDraft(raw).draft, text);
+  const guarded = requireNegationEvidence(sanitizeDraft(raw).draft, text).draft;
+  // alcohol / weapons are taken as "no" unless stated, so the AI's questions about them are dropped
+  const draft = {
+    ...guarded,
+    // no time phrase extracted (offline extractor, or a model miss): look for one in the text itself
+    whenPhrase: guarded.whenPhrase ?? (text ? findWhenPhrase(text) : null),
+    ambiguities: guarded.ambiguities.filter((a) => !isImpliedNo(a.field)),
+  };
   const amb = whenAmbiguity(draft);
   const full = amb ? { ...draft, ambiguities: [...draft.ambiguities, { field: amb.field, question: amb.ambiguity }] } : draft;
   return { draft: full, facts: draftToFacts(full, { text: text ?? undefined }) };

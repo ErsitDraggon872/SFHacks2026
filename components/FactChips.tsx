@@ -3,7 +3,7 @@
  * FactChips — OWNER: C2. "Here's what we understood" row under the search box.
  *
  * Renders one chip per meaningful fact: attendees, date + time, food, sound, guests, speakers,
- * equipment, building, plus alcohol/minors only when not false.
+ * equipment, building, plus minors only when not false, and alcohol/weapons only when yes, unknown or edited.
  * Three visual styles, chosen by `facts[field].source`:
  *   - "ai":      neutral pill
  *   - "user":    accent pill with a small pencil icon ("edited")
@@ -21,7 +21,7 @@ import { FACT_LABEL, fmtDate, fmtFactValue, fmtRange, fmtTime } from "@/lib/clie
 import type { EditFact } from "@/lib/client/uiTypes";
 import { ROOMS } from "@/lib/data";
 import { avLabel } from "@/lib/rank";
-import type { AvItem, EventFacts, FactField, Tri } from "@/lib/types";
+import { isImpliedNo, type AvItem, type EventFacts, type FactField, type Tri } from "@/lib/types";
 
 export interface FactChipsProps {
   facts: EventFacts;
@@ -139,7 +139,9 @@ export function FactChips({ facts, original, onEdit }: FactChipsProps) {
 
   const visibleTriFields = TRI_FIELDS.filter((field) => {
     const f = facts[field];
-    if (field === "alcohol" || field === "minors" || field === "weapons") {
+    // alcohol / weapons: a given "no" isn't worth a chip; show only a yes, an open question, or an edit
+    if (isImpliedNo(field)) return f.value !== false || f.source === "user";
+    if (field === "minors") {
       return f.value !== false || f.source === "default" || f.source === "user";
     }
     return true;
