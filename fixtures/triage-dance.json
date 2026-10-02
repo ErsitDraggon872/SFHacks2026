@@ -404,9 +404,7 @@
       "food",
       "externalGuests",
       "guestSpeakers",
-      "alcohol",
-      "minors",
-      "weapons"
+      "minors"
     ],
     "clubMinutesUsed": 0,
     "clubMinutesCap": 180,
@@ -1227,8 +1225,8 @@
     }
   ],
   "writer": {
-    "headline": "Move to a sound-isolated studio",
-    "explanation": "The Village community room is inside a residential area, so amplified sound must end by 8 PM (SOUND-02), and amplified sound after 9 PM needs a sound-isolated room (SOUND-01). Gymnasium 129 is a mirrored, sound-isolated dance studio open until 11 PM — a better fit for practice.",
+    "headline": "Almost there — switch to a sound-isolated space for late-night rehearsal",
+    "explanation": "Your dance practice fits well within campus capacity and scheduling guidelines, but the Village Community Room cannot host amplified sound after 8:00 PM due to residential quiet hours and general late-night sound restrictions after 9:00 PM. Relocating your reservation to Gymnasium 129 resolves both sound policy conflicts while accommodating your group size and schedule. No additional permits are required.",
     "permitNarrative": null,
     "briefing": null,
     "citedRuleIds": [

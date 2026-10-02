@@ -17,3 +17,28 @@ export function getRule(id: string): PolicyRule {
   if (!rule) throw new Error(`Unknown policy rule ${id}`);
   return rule;
 }
+
+/** Short, user-facing category for a rule id ("FOOD-02" → "Food"). Falls back to the raw id. */
+const RULE_LABEL: Record<string, string> = {
+  "CAP-01": "Capacity",
+  "FOOD-01": "Food",
+  "FOOD-02": "Food",
+  "SOUND-01": "Sound",
+  "SOUND-02": "Sound",
+  "GUEST-01": "Guests",
+  "GUEST-02": "Guests",
+  "SIZE-01": "Event size",
+  "SIZE-02": "Event size",
+  "ALC-01": "Alcohol",
+  "MINOR-01": "Minors",
+  "WEAPON-01": "Weapons",
+  "HOURS-01": "Building hours",
+  "ADA-01": "Accessibility",
+  "BOOK-01": "Availability",
+  "CAP-DAILY-01": "Daily limit",
+  "INFO-01": "Missing details",
+};
+
+export function ruleLabel(id: string): string {
+  return RULE_LABEL[id] ?? id;
+}

@@ -410,9 +410,7 @@
       "amplifiedSound",
       "externalGuests",
       "guestSpeakers",
-      "alcohol",
-      "minors",
-      "weapons"
+      "minors"
     ],
     "clubMinutesUsed": 0,
     "clubMinutesCap": 180,
@@ -1271,9 +1269,9 @@
     }
   ],
   "writer": {
-    "headline": "Almost there — move to a room that allows food",
-    "explanation": "Your coding night fits Thornton Hall 326 on size and equipment, but classrooms in Thornton don't allow food (FOOD-01). Cesar Chavez Student Center 204 seats 60, allows food, and has a projector, so everything else stays the same. Because you're serving pizza, a Temporary Food Permit (FOOD-02) is required — we've pre-filled it from your request.",
-    "permitNarrative": "ACM will host a coding night for approximately 45 student members. Pizza will be ordered from a licensed vendor and delivered ready to serve; no on-site cooking. Leftovers will be removed and the room reset by 9:00 PM.",
+    "headline": "Almost there — switch to a room that permits food",
+    "explanation": "Your event timing and headcount fit within campus guidelines, but food service is not permitted in Thornton Hall 326. Switching your reservation to Cesar Chavez Student Center 204 resolves this conflict. You will also need to submit a Temporary Food Permit to Environmental Health & Safety for the pizza service.",
+    "permitNarrative": "The Association for Computing Machinery is hosting an evening coding workshop for approximately 45 participants. Pizza sourced from a licensed commercial vendor will be served to attendees during the event in Cesar Chavez Student Center 204. All food will be handled and distributed in compliance with Environmental Health & Safety guidelines.",
     "briefing": null,
     "citedRuleIds": [
       "FOOD-01",

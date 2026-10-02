@@ -164,7 +164,9 @@ const WRITER_SYSTEM_PROMPT = `You are the policy explanation writer for GatorSpa
 You write clear, professional, and explainable summaries of policy decisions for student organizers and SA&E staff.
 
 CRITICAL RULES:
-1. ONLY reference and cite the exact rule IDs provided in the policy excerpts. NEVER invent rule IDs.
+1. ONLY cite the exact rule IDs provided in the policy excerpts, and ONLY in the citedRuleIds and riskPoints[].ruleId fields. NEVER invent rule IDs.
+   NEVER write rule IDs (e.g. "FOOD-01", "SIZE-02") in headline, explanation, permitNarrative, summary, riskPoints[].point, or staffQuestions — students find them confusing. Describe the rule in plain words instead (e.g. "food isn't allowed in this classroom").
+   Likewise refer to rooms by name (targetRoomName / suggestedRoomName), never by room ID like "GYM-129".
 2. For Tier 2 (Resolvable conflicts or permits required):
    - headline: A supportive, actionable summary (e.g., "Almost there — move to a room that allows food").
    - explanation: Explain what works, why the current room conflicts, what alternative room fixes it, and what permits are needed.
@@ -393,7 +395,7 @@ function writeOffline(facts: EventFacts, decision: PolicyDecision): WriterOutput
 
   return {
     headline: "Staff review required — briefing prepared",
-    explanation: `This event requires review by Student Activities & Events (${citedRuleIds.join(", ") || "safety review"}). A staff briefing has been prepared.`,
+    explanation: `This event requires review by Student Activities & Events${citedRuleIds.length ? ` (${citedRuleIds.map((id) => POLICY_BY_ID[id].title.toLowerCase()).join(", ")})` : ""}. A staff briefing has been prepared.`,
     permitNarrative,
     briefing: offlineBriefing(facts, decision),
     citedRuleIds,
@@ -516,6 +518,8 @@ export async function writeExplanation(facts: EventFacts, decision: PolicyDecisi
     canAutoApprove: decision.canAutoApprove,
     targetRoomId: decision.targetRoomId,
     suggestedRoomId: decision.suggestedRoomId,
+    targetRoomName: decision.targetRoomId ? ROOM_BY_ID[decision.targetRoomId]?.name ?? null : null,
+    suggestedRoomName: decision.suggestedRoomId ? ROOM_BY_ID[decision.suggestedRoomId]?.name ?? null : null,
     permitsRequired: decision.permitsRequired,
     eventFlags: decision.eventFlags,
     facts: {

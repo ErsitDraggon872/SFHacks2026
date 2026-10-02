@@ -227,9 +227,7 @@
       "amplifiedSound",
       "externalGuests",
       "guestSpeakers",
-      "alcohol",
-      "minors",
-      "weapons"
+      "minors"
     ],
     "clubMinutesUsed": 0,
     "clubMinutesCap": 180,
