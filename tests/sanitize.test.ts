@@ -178,6 +178,22 @@ describe("prepare() guards the engine", () => {
     expect(d.unresolved.map((u) => u.field)).toContain("weapons");
   });
 
+  it("the AI's questions about alcohol or weapons are dropped, so nothing about them is shown", () => {
+    const { draft, facts } = prepare(
+      { ...emptyDraft(), headcount: 8, whenPhrase: "Tuesday 3-5pm", ambiguities: [
+        { field: "weapons", question: "Will there be combat robot parts?" },
+        { field: "alcohol", question: "Will alcohol be served?" },
+        { field: "food", question: "Will there be snacks?" },
+      ] },
+      "combat robotics info session for 8",
+    );
+    expect(draft.ambiguities.map((a) => a.field)).toEqual(["food"]);
+    const d = decide(facts, [], "acm");
+    expect(d.unresolved.map((u) => u.field)).not.toContain("weapons");
+    expect(d.defaultsToAttest).not.toContain("weapons");
+    expect(d.defaultsToAttest).not.toContain("alcohol");
+  });
+
   it("an extracted weapon escalates to University Police review", () => {
     const { facts } = prepare({ ...emptyDraft(), headcount: 40, whenPhrase: "October 10 6-8pm", weapons: true }, "can i bring gun to 40 person event");
     const d = decide(facts, [], "premed", true);

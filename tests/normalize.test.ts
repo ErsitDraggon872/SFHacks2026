@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diffCorrections, draftToFacts, emptyFacts, resolveWhen, setFact } from "@/lib/normalize";
+import { diffCorrections, draftToFacts, emptyFacts, findWhenPhrase, resolveWhen, setFact } from "@/lib/normalize";
 import type { EventDraft } from "@/lib/types";
 
 const ANCHOR = "2026-10-05"; // Monday
@@ -76,6 +76,21 @@ const draft = (p: Partial<EventDraft> = {}): EventDraft => ({
   ...p,
 });
 
+describe("findWhenPhrase", () => {
+  it.each([
+    ["combat robotics info session for 8 current members with potentially 20 guests on october 24 2026", "2026-10-24"],
+    ["ACM coding night for 45 members Thursday 6-9pm in Thornton", "2026-10-08"],
+  ])("%j → a phrase resolving to %s", (text, date) => {
+    const phrase = findWhenPhrase(text, ANCHOR);
+    expect(phrase).not.toBeNull();
+    expect(resolveWhen(phrase!, ANCHOR)).toMatchObject({ date });
+  });
+
+  it("numbers without a day are not dates", () => {
+    expect(findWhenPhrase("study session for 8 people, need a whiteboard", ANCHOR)).toBeNull();
+  });
+});
+
 describe("draftToFacts", () => {
   it("resolves the time phrase and marks extracted values as ai", () => {
     const f = draftToFacts(draft(), { anchor: ANCHOR });
@@ -113,11 +128,26 @@ describe("draftToFacts", () => {
 
   it("a field the extractor asked about is never defaulted", () => {
     const f = draftToFacts(
-      draft({ ambiguities: [{ field: "weapons", question: "Will there be any weapons or combat robot parts?" }] }),
-      { text: "combat robotics info session for 8", anchor: ANCHOR },
+      draft({ ambiguities: [{ field: "minors", question: "Will any high school students attend?" }] }),
+      { text: "robotics info session for 8", anchor: ANCHOR },
     );
-    expect(f.weapons).toEqual({ value: null, source: "ai" });
-    expect(f.alcohol.source).toBe("default"); // other fields still default
+    expect(f.minors).toEqual({ value: null, source: "ai" });
+    expect(f.food.source).toBe("default"); // other fields still default
+  });
+
+  it("alcohol and weapons are a given \"no\" unless the text mentions them", () => {
+    const plain = draftToFacts(draft({ ambiguities: [{ field: "weapons", question: "Will combat robot parts count?" }] }), {
+      text: "combat robotics info session for 8",
+      anchor: ANCHOR,
+    });
+    expect(plain.weapons).toEqual({ value: false, source: "default" }); // AI questions don't stop it
+    expect(plain.alcohol).toEqual({ value: false, source: "default" });
+    // a mention the AI didn't flag is still asked
+    const mentioned = draftToFacts(draft(), { text: "study night, bring your own beer and a pocket knife", anchor: ANCHOR });
+    expect(mentioned.alcohol.value).toBeNull();
+    expect(mentioned.weapons.value).toBeNull();
+    // the AI saying yes always wins
+    expect(draftToFacts(draft({ alcohol: true }), { anchor: ANCHOR }).alcohol).toEqual({ value: true, source: "ai" });
   });
 
   it("text cues prevent a default", () => {

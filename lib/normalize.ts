@@ -5,6 +5,7 @@
 import * as chrono from "chrono-node";
 import {
   DEFAULT_ANCHOR_DATE,
+  type IMPLIED_NO_FIELDS,
   type EventDraft,
   type EventFacts,
   type Fact,
@@ -65,6 +66,17 @@ export function resolveWhen(phrase: string, anchor: ISODate = anchorDate()): Res
   return { date, startTime, endTime, durationMin: dur };
 }
 
+/**
+ * The date/time phrase as written in free text ("on october 24 2026", "Thursday 6-9pm"), or null.
+ * Only a phrase that names a day counts: a bare number ("for 8 people") is never read as a time.
+ */
+export function findWhenPhrase(text: string, anchor: ISODate = anchorDate()): string | null {
+  const ref = new Date(`${anchor}T09:00:00`);
+  const hit = chrono.parse(text.replace(/[–—]/g, "-"), ref, { forwardDate: true })
+    .find((r) => r.start.isCertain("day") || r.start.isCertain("weekday"));
+  return hit ? hit.text : null;
+}
+
 function fmtDay(s: chrono.ParsedComponents) {
   return `${s.get("month")}/${s.get("day")}`;
 }
@@ -107,17 +119,19 @@ const CUES = {
   // "speaker" means a loudspeaker here, not a guest speaker
   amplifiedSound: /\b(dj|music|(?<!guest )speakers?(?! from)|sound system|concert|performance|band|karaoke|party|dance)\b/i,
   guestSpeakers: /\b(guest speakers?|keynote|panel(ists?)?|speaker from|invited speaker|talk by)\b/i,
-  // code-side backstop: any mention means the AI's answer is needed, never an assumed "no"
+  // code-side backstops for the implied-"no" fields: a mention the AI didn't flag gets asked
   weapons: WEAPON_CUE,
+  alcohol: /\b(alcohol(?:ic)?|beer|wine|cocktails?|liquor|booze|keg|bartender|byob|open bar|bar service|drinking)\b/i,
 };
 
 const SMALL_EVENT = 25;
 
 /**
  * LLM draft → EventFacts. Applies contextual defaults (source "default") so small, plain
- * events can reach Tier 1 — the officer must attest to every defaulted value.
- *  - alcohol, minors: default false unless mentioned.
- *  - weapons: default false when nothing in the text mentions one.
+ * events can reach Tier 1 — the officer must attest to every defaulted value, except:
+ *  - alcohol, weapons (IMPLIED_NO_FIELDS): false unless the AI says yes, never attested; a
+ *    mention in the text the AI didn't flag stays null and gets asked.
+ *  - minors: default false unless mentioned.
  *  - amplifiedSound, guestSpeakers: default false when no cue in the text.
  *  - food: default false only for small events (≤25) with no cue.
  *  - externalGuests: default false for small events, or any size when the text says "members",
@@ -137,6 +151,11 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
     const v = draft[field];
     return v !== null ? f(v, "ai") : canDefault && !asked.has(field) ? f(false, "default") : f(null, "ai");
   };
+  // alcohol/weapons: "no" unless the AI says yes; AI questions about them are dropped (prepare())
+  const impliedNo = (field: (typeof IMPLIED_NO_FIELDS)[number]): Fact<boolean | null> => {
+    const v = draft[field];
+    return v !== null ? f(v, "ai") : CUES[field].test(text) ? f(null, "ai") : f(false, "default");
+  };
 
   return {
     summary: f(draft.summary),
@@ -149,9 +168,9 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
     amplifiedSound: tri("amplifiedSound", !CUES.amplifiedSound.test(text)),
     externalGuests: tri("externalGuests", (small || /\bmembers\b/i.test(text)) && !CUES.externalGuests.test(text)),
     guestSpeakers: tri("guestSpeakers", !CUES.guestSpeakers.test(text)),
-    alcohol: tri("alcohol", true),
+    alcohol: impliedNo("alcohol"),
     minors: tri("minors", true),
-    weapons: tri("weapons", !CUES.weapons.test(text)),
+    weapons: impliedNo("weapons"),
     avNeeds: f(draft.avNeeds),
     layout: f(draft.layout),
     preferredBuilding: f(draft.preferredBuilding),

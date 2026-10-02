@@ -21,7 +21,7 @@ import { FACT_LABEL } from "@/lib/client/format";
 import { ROOMS } from "@/lib/data";
 import { setFact } from "@/lib/normalize";
 import { avLabel } from "@/lib/rank";
-import { SAFETY_FIELDS, type AvItem, type EventFacts } from "@/lib/types";
+import { SAFETY_FIELDS, isImpliedNo, type AvItem, type EventFacts } from "@/lib/types";
 
 export interface QuickFiltersProps {
   value: EventFacts;
@@ -29,7 +29,7 @@ export interface QuickFiltersProps {
   onSubmit: () => void;
 }
 
-const FILTER_SAFETY = SAFETY_FIELDS.filter((f) => f !== "alcohol" && f !== "guestSpeakers");
+const FILTER_SAFETY = SAFETY_FIELDS.filter((f) => !isImpliedNo(f) && f !== "guestSpeakers");
 
 const FILTER_AV: AvItem[] = [
   "projector",

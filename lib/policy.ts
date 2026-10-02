@@ -10,6 +10,7 @@ import {
   DAILY_CAP_MIN,
   REQUIRED_FIELDS,
   SAFETY_FIELDS,
+  isImpliedNo,
   type Booking,
   type EvaluateContext,
   type EventFacts,
@@ -161,7 +162,8 @@ export function evaluate(facts: EventFacts, ctx: EvaluateContext): PolicyDecisio
     if (facts[field].value === null) unresolved.push({ field, question: QUESTIONS[field] });
   }
   if (reqMin !== null && reqMin <= 0) unresolved.push({ field: "endTime", question: "The end time is before the start time. When does it end?" });
-  const defaultsToAttest = SAFETY_FIELDS.filter((k) => facts[k].source === "default");
+  // alcohol / weapons defaults are a given (IMPLIED_NO_FIELDS), not something the officer attests to
+  const defaultsToAttest = SAFETY_FIELDS.filter((k) => facts[k].source === "default" && !isImpliedNo(k));
 
   // ---- event-scope flags ----
   const eventFlags: PolicyFlag[] = [];
