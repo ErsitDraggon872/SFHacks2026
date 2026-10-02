@@ -1,14 +1,15 @@
 /**
- * POST /api/triage — OWNER: C3 (C1 wrote this working stub).
- * Presets: served from data/demo-cache.json through the real deterministic pipeline.
- * Free text: TODO(C3) — call extractEvent() / writeExplanation() from lib/llm.ts, keep the shapes.
+ * POST /api/triage — OWNER: C3.
+ * Presets: served from data/demo-cache.json (or live when key is present), through the deterministic pipeline.
+ * Free text: calls extractEvent() and writeExplanation() from lib/llm.ts.
  */
 import demoCache from "@/data/demo-cache.json";
-import type { Booking, EventDraft, PresetId, TriageRequest, WriterOutput } from "@/lib/types";
 import { readCollection } from "@/lib/db";
+import { extractEvent, writeExplanation } from "@/lib/llm";
 import { assemble, decide, prepare } from "@/lib/triagePipeline";
+import type { AiMode, Booking, EventDraft, PresetId, TriageRequest, WriterOutput } from "@/lib/types";
 
-type CacheEntry = { input: string; clubId: string; draft: EventDraft; writer: WriterOutput | null };
+type CacheEntry = { input: string; clubId: string; expectedTier?: number; draft: EventDraft; writer: WriterOutput | null };
 const CACHE = demoCache as unknown as Record<PresetId, CacheEntry>;
 
 export async function POST(request: Request) {
@@ -20,21 +21,71 @@ export async function POST(request: Request) {
   if (body.presetId) {
     const entry = CACHE[body.presetId];
     if (!entry) return Response.json({ error: `Unknown preset ${body.presetId}` }, { status: 400 });
-    const { draft, facts } = prepare(entry.draft, entry.input);
+
+    let draft: EventDraft = entry.draft;
+    let writer: WriterOutput | null = entry.writer;
+    let aiMode: AiMode = "fallback";
+
+    // If API key is present, attempt live extraction on preset text
+    if (process.env.GEMINI_API_KEY) {
+      try {
+        const liveExtract = await extractEvent(entry.input);
+        if (liveExtract.aiMode === "live") {
+          draft = liveExtract.draft;
+          aiMode = "live";
+        }
+      } catch (err) {
+        console.warn("Live preset extraction failed, using cache:", err);
+      }
+    }
+
+    const { draft: preparedDraft, facts } = prepare(draft, entry.input);
     const decision = decide(facts, bookings, body.clubId, body.attested ?? false);
+
+    if (aiMode === "live" && decision.tier > 1) {
+      try {
+        writer = await writeExplanation(facts, decision);
+      } catch (err) {
+        console.warn("Live preset writer failed, using cache writer:", err);
+        writer = entry.writer;
+      }
+    }
+
     return Response.json(
-      assemble({ requestText: entry.input, presetId: body.presetId, draft, facts, decision, writer: entry.writer, bookings, aiMode: "fallback" }),
+      assemble({
+        requestText: entry.input,
+        presetId: body.presetId,
+        draft: preparedDraft,
+        facts,
+        decision,
+        writer,
+        bookings,
+        aiMode,
+      }),
     );
   }
 
   if (body.text?.trim()) {
-    // TODO(C3): const { draft, aiMode } = await extractEvent(body.text) → prepare → decide →
-    //           writer = tier > 1 ? await writeExplanation(facts, decision) : null → assemble
+    const text = body.text.trim();
+    const { draft, aiMode } = await extractEvent(text);
+    const { draft: preparedDraft, facts } = prepare(draft, text);
+    const decision = decide(facts, bookings, body.clubId, body.attested ?? false);
+    const writer = decision.tier > 1 ? await writeExplanation(facts, decision) : null;
+
     return Response.json(
-      { error: "Free-text understanding isn't connected yet. Try an example or the Filters tab." },
-      { status: 501 },
+      assemble({
+        requestText: text,
+        presetId: null,
+        draft: preparedDraft,
+        facts,
+        decision,
+        writer,
+        bookings,
+        aiMode,
+      }),
     );
   }
 
   return Response.json({ error: "Provide text or presetId" }, { status: 400 });
 }
+
