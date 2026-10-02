@@ -15,6 +15,7 @@ import { Button, Card, Pill, StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
 import { avLabel } from "@/lib/rank";
 import type { RankedRoom } from "@/lib/types";
+import { ruleLabel } from "@/lib/data";
 
 export type RoomCardVariant = "best" | "row" | "unavailable";
 
@@ -139,8 +140,8 @@ export function RoomCard({ ranked, variant, isTarget, onSelect }: RoomCardProps)
             <span key={`${c.ruleId}-${idx}`} className="inline-flex items-center gap-1.5 text-xs text-block">
               <StatusIcon status="block" className="h-3.5 w-3.5" />
               <span>{c.message}</span>
-              <Pill tone="block" className="font-mono text-[11px]">
-                {c.ruleId}
+              <Pill tone="block" className="text-[11px]">
+                {ruleLabel(c.ruleId)}
               </Pill>
             </span>
           ))}

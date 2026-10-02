@@ -11,6 +11,7 @@
 import { StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
 import type { PolicyRuleResult, RuleStatus } from "@/lib/types";
+import { ruleLabel } from "@/lib/data";
 
 export interface ComplianceChecklistProps {
   results: PolicyRuleResult[];
@@ -53,10 +54,10 @@ export function ComplianceChecklist({ results, onCite }: ComplianceChecklistProp
           <button
             type="button"
             onClick={() => onCite(r.ruleId)}
-            aria-label={`View policy rule ${r.ruleId}`}
-            className="shrink-0 rounded-md px-2 py-0.5 font-mono text-xs font-medium text-ink-2 underline decoration-line-strong underline-offset-2 transition-colors hover:bg-sunken hover:text-ink"
+            aria-label={`View ${ruleLabel(r.ruleId)} policy`}
+            className="shrink-0 rounded-md px-2 py-0.5 text-xs font-medium text-ink-2 underline decoration-line-strong underline-offset-2 transition-colors hover:bg-sunken hover:text-ink"
           >
-            {r.ruleId}
+            {ruleLabel(r.ruleId)}
           </button>
         </li>
       ))}

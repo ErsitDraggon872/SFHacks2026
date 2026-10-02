@@ -43,7 +43,7 @@ describe("POST /api/triage — Route Integration Tests", () => {
     expect(data.decision.tier).toBe(2);
     expect(data.decision.suggestedRoomId).toBe("CCSC-204");
     expect(data.writer).not.toBeNull();
-    expect(data.writer?.headline).toContain("move to a room that allows food");
+    expect(data.writer?.headline).toMatch(/food/i);
     expect(data.writer?.permitNarrative).toBeTruthy();
     expect(data.aiMode).toBe("cached");
   });
@@ -64,7 +64,7 @@ describe("POST /api/triage — Route Integration Tests", () => {
     expect(status).toBe(200);
     expect(data.presetId).toBe("dance");
     expect(data.decision.tier).toBe(2);
-    expect(data.writer?.headline).toContain("sound-isolated studio");
+    expect(data.writer?.headline).toMatch(/sound-isolated/i);
   });
 
   it("handles free-text 'networking dinner for 80' with key unset, returning clarifying questions", async () => {

@@ -7,7 +7,7 @@
 import { Button, Checkbox, Field, Input, Pill, StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
 import { fmtDate, fmtTime } from "@/lib/client/format";
-import { ROOM_BY_ID } from "@/lib/data";
+import { ROOM_BY_ID, ruleLabel } from "@/lib/data";
 import type { CreateBookingResult, PolicyDecision, Room, SafetyField } from "@/lib/types";
 
 export interface ConfirmBarProps {
@@ -159,7 +159,7 @@ export function ConfirmBar({
               <li key={`${err.ruleId}-${i}`} className="flex items-start gap-2">
                 <StatusIcon status="block" className="mt-0.5" />
                 <span>
-                  <strong className="font-mono text-xs">{err.ruleId}:</strong> {err.message}
+                  <strong className="text-xs">{ruleLabel(err.ruleId)}:</strong> {err.message}
                 </span>
               </li>
             ))}

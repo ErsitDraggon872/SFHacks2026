@@ -1,12 +1,12 @@
 "use client";
 /**
  * PolicyExcerptModal — OWNER: C2. Opens when a rule id citation is clicked.
- * Uses the Modal primitive: title "<id> · <title>", the excerpt text, office, effect as a Pill
+ * Uses the Modal primitive: title "<label> · <title>", the excerpt text, office, effect as a Pill
  * (BLOCK_ROOM "Room restriction", BLOCK_REQUEST "Request limit", REQUIRE_PERMIT "Permit",
  * WARN "Advisory", ESCALATE "Staff review"), and the illustrative-policy note.
  */
 import { Modal, Pill, type PillTone } from "@/components/ui";
-import { POLICY_BY_ID } from "@/lib/data";
+import { POLICY_BY_ID, ruleLabel } from "@/lib/data";
 import type { PolicyEffect } from "@/lib/types";
 
 const EFFECT_META: Record<PolicyEffect, { label: string; tone: PillTone }> = {
@@ -22,7 +22,7 @@ export function PolicyExcerptModal({ ruleId, onClose }: { ruleId: string | null;
   const meta = rule ? EFFECT_META[rule.effect] : null;
 
   return (
-    <Modal open={!!rule} onClose={onClose} title={rule ? `${rule.id} · ${rule.title}` : ""}>
+    <Modal open={!!rule} onClose={onClose} title={rule ? `${ruleLabel(rule.id)} · ${rule.title}` : ""}>
       {rule && meta && (
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">

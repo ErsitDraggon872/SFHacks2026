@@ -23,7 +23,7 @@ import { useMemo, useState } from "react";
 import { Button, Card, Pill, SectionLabel, StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
 import { FACT_LABEL, fmtDate, fmtFactValue, fmtTime } from "@/lib/client/format";
-import { CLUB_BY_ID, ROOM_BY_ID } from "@/lib/data";
+import { CLUB_BY_ID, ROOM_BY_ID, ruleLabel } from "@/lib/data";
 import type { AdminResponse, DecisionSnapshot, FactField, SnapshotStatus } from "@/lib/types";
 
 /** Labeled assumption, not a measurement: staff minutes to read and check one request by hand. */
@@ -594,7 +594,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                             <ul className="list-disc list-inside space-y-0.5 text-ink-2">
                               {snap.writer.briefing.riskPoints.map((rp, i) => (
                                 <li key={i}>
-                                  <strong>{rp.ruleId}:</strong> {rp.point}
+                                  <strong>{ruleLabel(rp.ruleId)}:</strong> {rp.point}
                                 </li>
                               ))}
                             </ul>

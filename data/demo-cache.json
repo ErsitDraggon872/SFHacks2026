@@ -54,9 +54,9 @@
       "whenPhrase": "Thursday 6-9pm"
     },
     "writer": {
-      "headline": "Almost there — move to a room that allows food",
-      "explanation": "Your coding night fits Thornton Hall 326 on size and equipment, but classrooms in Thornton don't allow food (FOOD-01). Cesar Chavez Student Center 204 seats 60, allows food, and has a projector, so everything else stays the same. Because you're serving pizza, a Temporary Food Permit (FOOD-02) is required — we've pre-filled it from your request.",
-      "permitNarrative": "ACM will host a coding night for approximately 45 student members. Pizza will be ordered from a licensed vendor and delivered ready to serve; no on-site cooking. Leftovers will be removed and the room reset by 9:00 PM.",
+      "headline": "Almost there — switch to a room that permits food",
+      "explanation": "Your event timing and headcount fit within campus guidelines, but food service is not permitted in Thornton Hall 326. Switching your reservation to Cesar Chavez Student Center 204 resolves this conflict. You will also need to submit a Temporary Food Permit to Environmental Health & Safety for the pizza service.",
+      "permitNarrative": "The Association for Computing Machinery is hosting an evening coding workshop for approximately 45 participants. Pizza sourced from a licensed commercial vendor will be served to attendees during the event in Cesar Chavez Student Center 204. All food will be handled and distributed in compliance with Environmental Health & Safety guidelines.",
       "briefing": null,
       "citedRuleIds": [
         "FOOD-01",
@@ -97,34 +97,39 @@
     },
     "writer": {
       "headline": "Staff review required — briefing prepared",
-      "explanation": "This panel is larger than 100 people (SIZE-02) and includes speakers from outside SFSU (GUEST-01), so it needs a staff review before confirmation. We've prepared a briefing for Student Activities & Events and pre-filled the speaker registration (GUEST-02).",
-      "permitNarrative": "Two guest speakers from UCSF will present on careers in medicine, followed by audience Q&A.",
+      "explanation": "Your reservation requires staff review before confirmation because the expected attendance of 150 participants exceeds the threshold for large events and the event welcomes non-SFSU guests. Additionally, external guest speakers must be registered with Student Activities & Events, and confirmation is needed regarding whether any food or beverages will be provided in Business Building 120.",
+      "permitNarrative": "Pre-Med Society is hosting a career-focused panel discussion featuring visiting medical professionals in Business Building 120. The event will run for two hours, welcoming up to 150 campus and community members with microphone and projection support.",
       "briefing": {
-        "summary": "Pre-Med Society requests a 2-hour speaker panel on Tuesday, Oct 6 (5–7 PM) for ~150 attendees with two external speakers from UCSF. Business Building 120 fits on capacity and AV.",
+        "summary": "Pre-Med Society has requested Business Building 120 on October 6, 2026, from 5:00 PM to 7:00 PM for a speaker panel of 150 attendees. While the venue fits the fire capacity, the presence of outside attendees, guest speakers, and crowd scale requires administrative coordination.",
         "riskPoints": [
           {
             "ruleId": "SIZE-02",
-            "point": "150 expected attendees — confirm staffing and check-in plan."
+            "point": "The expected attendance of 150 exceeds the 100-attendee mark, requiring staff assessment for crowd flow, accessibility, and facility supervision."
           },
           {
             "ruleId": "GUEST-01",
-            "point": "External speakers on campus — confirm whether the event is open to the public."
+            "point": "Attendance is open to individuals not affiliated with SFSU, requiring a campus safety review before the reservation can proceed."
           },
           {
             "ruleId": "GUEST-02",
-            "point": "Speaker registration pre-filled; speaker names still needed."
+            "point": "External guest speakers must be identified and registered with Student Activities & Events."
+          },
+          {
+            "ruleId": "INFO-01",
+            "point": "The organizer has not yet confirmed whether food or refreshments will be present, which is restricted in classroom facilities."
           }
         ],
         "staffQuestions": [
-          "Is the event open to non-SFSU attendees beyond the two speakers?",
-          "Will refreshments be served? (Not stated in the request.)",
-          "Who is the on-site event lead?"
+          "Can the organizer provide the names and affiliations of the invited guest speakers?",
+          "Will any food or beverages be provided during the event?",
+          "What check-in and crowd management procedures are planned for non-university attendees?"
         ]
       },
       "citedRuleIds": [
         "SIZE-02",
         "GUEST-01",
-        "GUEST-02"
+        "GUEST-02",
+        "INFO-01"
       ]
     }
   },
@@ -152,8 +157,8 @@
       "whenPhrase": "Thursday 9:30-11pm"
     },
     "writer": {
-      "headline": "Move to a sound-isolated studio",
-      "explanation": "The Village community room is inside a residential area, so amplified sound must end by 8 PM (SOUND-02), and amplified sound after 9 PM needs a sound-isolated room (SOUND-01). Gymnasium 129 is a mirrored, sound-isolated dance studio open until 11 PM — a better fit for practice.",
+      "headline": "Almost there — switch to a sound-isolated space for late-night rehearsal",
+      "explanation": "Your dance practice fits well within campus capacity and scheduling guidelines, but the Village Community Room cannot host amplified sound after 8:00 PM due to residential quiet hours and general late-night sound restrictions after 9:00 PM. Relocating your reservation to Gymnasium 129 resolves both sound policy conflicts while accommodating your group size and schedule. No additional permits are required.",
       "permitNarrative": null,
       "briefing": null,
       "citedRuleIds": [

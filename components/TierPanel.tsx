@@ -32,7 +32,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button, Card, Checkbox, Pill, SectionLabel, StatusIcon } from "@/components/ui";
 import { cn } from "@/lib/client/cn";
 import { FACT_LABEL, fmtDate, fmtTime } from "@/lib/client/format";
-import { ROOM_BY_ID } from "@/lib/data";
+import { ROOM_BY_ID, ruleLabel } from "@/lib/data";
 import { avLabel } from "@/lib/rank";
 import type { CreateBookingResult, PolicyDecision, Room, RuleStatus, WriterOutput } from "@/lib/types";
 
@@ -144,8 +144,8 @@ export function TierPanel({
                 <StatusIcon status="block" className="mt-0.5" />
                 <span className="font-medium">{b.message}</span>
               </div>
-              <Pill tone="block" className="shrink-0 font-mono">
-                {b.ruleId}
+              <Pill tone="block" className="shrink-0">
+                {ruleLabel(b.ruleId)}
               </Pill>
             </div>
           ))}
@@ -191,8 +191,8 @@ export function TierPanel({
               <div className="text-xs font-medium text-muted">Policy citations</div>
               <div className="mt-1 flex flex-wrap gap-1">
                 {decision.eventFlags.map((f) => (
-                  <Pill key={f.ruleId} tone="escalate" className="font-mono">
-                    {f.ruleId}
+                  <Pill key={f.ruleId} tone="escalate">
+                    {ruleLabel(f.ruleId)}
                   </Pill>
                 ))}
               </div>
@@ -205,8 +205,8 @@ export function TierPanel({
               <ul className="space-y-1 text-sm text-ink-2">
                 {writer.briefing.riskPoints.map((rp, idx) => (
                   <li key={`${rp.ruleId}-${idx}`} className="flex items-start gap-2">
-                    <Pill tone="escalate" className="mt-0.5 shrink-0 font-mono">
-                      {rp.ruleId}
+                    <Pill tone="escalate" className="mt-0.5 shrink-0">
+                      {ruleLabel(rp.ruleId)}
                     </Pill>
                     <span>{rp.point}</span>
                   </li>
@@ -296,7 +296,7 @@ export function TierPanel({
                 <li key={`${err.ruleId}-${i}`} className="flex items-start gap-2">
                   <StatusIcon status="block" className="mt-0.5" />
                   <span>
-                    <strong className="font-mono text-xs">{err.ruleId}:</strong> {err.message}
+                    <strong className="text-xs">{ruleLabel(err.ruleId)}:</strong> {err.message}
                   </span>
                 </li>
               ))}

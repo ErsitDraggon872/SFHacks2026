@@ -83,17 +83,6 @@ export default function Home() {
 
         {s.phase === "results" && s.facts && d && (
           <div className="gs-rise mt-6 space-y-5">
-            <FactChips facts={s.facts} original={s.original} onEdit={s.edit} />
-
-            {d.unresolved.length > 0 && (
-              <ClarifyingQuestions
-                questions={d.unresolved}
-                ambiguities={s.response?.draft?.ambiguities ?? []}
-                facts={s.facts}
-                onAnswer={s.edit}
-              />
-            )}
-
             <TierPanel
               decision={d}
               targetRoom={s.targetRoom}
@@ -107,6 +96,17 @@ export default function Home() {
               result={s.result}
               showActions={false}
             />
+
+            <FactChips facts={s.facts} original={s.original} onEdit={s.edit} />
+
+            {d.unresolved.length > 0 && (
+              <ClarifyingQuestions
+                questions={d.unresolved}
+                ambiguities={s.response?.draft?.ambiguities ?? []}
+                facts={s.facts}
+                onAnswer={s.edit}
+              />
+            )}
 
             <ResultsList ranked={s.ranked} targetRoomId={d.targetRoomId} onSelect={s.selectRoom} />
 

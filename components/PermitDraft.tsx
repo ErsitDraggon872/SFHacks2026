@@ -11,6 +11,7 @@
 import { FileText } from "lucide-react";
 import { Card, Pill } from "@/components/ui";
 import type { PermitRequirement } from "@/lib/types";
+import { ruleLabel } from "@/lib/data";
 
 export interface PermitDraftProps {
   permit: PermitRequirement;
@@ -25,7 +26,7 @@ export function PermitDraft({ permit, narrative }: PermitDraftProps) {
           <FileText className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden />
           <div>
             <h3 className="text-sm font-semibold text-ink">{permit.name}</h3>
-            <p className="text-xs text-muted">{permit.office} · {permit.ruleId}</p>
+            <p className="text-xs text-muted">{permit.office} · {ruleLabel(permit.ruleId)}</p>
           </div>
         </div>
         <Pill tone="neutral">Pre-filled by GatorSpace</Pill>
