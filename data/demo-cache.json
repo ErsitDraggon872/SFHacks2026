@@ -1,0 +1,161 @@
+{
+  "study": {
+    "input": "Study group for 8 people on Wednesday 4-6pm, we just need a whiteboard. Library if possible.",
+    "clubId": "study",
+    "expectedTier": 1,
+    "draft": {
+      "food": null,
+      "foodDescription": null,
+      "amplifiedSound": null,
+      "externalGuests": null,
+      "guestSpeakers": null,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": [
+        "whiteboard"
+      ],
+      "layout": null,
+      "roomTypeHints": [
+        "study_room"
+      ],
+      "preferredBuilding": "J. Paul Leonard Library",
+      "missingRequiredFields": [],
+      "ambiguities": [],
+      "summary": "Study group",
+      "headcount": 8,
+      "whenPhrase": "Wednesday 4-6pm"
+    },
+    "writer": null
+  },
+  "pizza": {
+    "input": "ACM coding night for 45 members Thursday 6-9pm in Thornton. We'll have pizza and need a projector.",
+    "clubId": "acm",
+    "expectedTier": 2,
+    "draft": {
+      "food": true,
+      "foodDescription": "Pizza",
+      "amplifiedSound": null,
+      "externalGuests": false,
+      "guestSpeakers": null,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": [
+        "projector"
+      ],
+      "layout": null,
+      "roomTypeHints": [],
+      "preferredBuilding": "Thornton Hall",
+      "missingRequiredFields": [],
+      "ambiguities": [],
+      "summary": "ACM coding night",
+      "headcount": 45,
+      "whenPhrase": "Thursday 6-9pm"
+    },
+    "writer": {
+      "headline": "Almost there — move to a room that allows food",
+      "explanation": "Your coding night fits Thornton Hall 326 on size and equipment, but classrooms in Thornton don't allow food (FOOD-01). Cesar Chavez Student Center 204 seats 60, allows food, and has a projector, so everything else stays the same. Because you're serving pizza, a Temporary Food Permit (FOOD-02) is required — we've pre-filled it from your request.",
+      "permitNarrative": "ACM will host a coding night for approximately 45 student members. Pizza will be ordered from a licensed vendor and delivered ready to serve; no on-site cooking. Leftovers will be removed and the room reset by 9:00 PM.",
+      "briefing": null,
+      "citedRuleIds": [
+        "FOOD-01",
+        "FOOD-02"
+      ]
+    }
+  },
+  "speaker": {
+    "input": "Pre-Med Society panel with 150 attendees and two guest speakers from UCSF, Tuesday 5-7pm. We need mics and a projector.",
+    "clubId": "premed",
+    "expectedTier": 3,
+    "draft": {
+      "food": null,
+      "foodDescription": null,
+      "amplifiedSound": true,
+      "externalGuests": true,
+      "guestSpeakers": true,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": [
+        "microphone",
+        "projector"
+      ],
+      "layout": "lecture",
+      "roomTypeHints": [],
+      "preferredBuilding": null,
+      "missingRequiredFields": [],
+      "ambiguities": [
+        {
+          "field": "food",
+          "question": "Will food or refreshments be served at the panel?"
+        }
+      ],
+      "summary": "Pre-Med Society speaker panel",
+      "headcount": 150,
+      "whenPhrase": "Tuesday 5-7pm"
+    },
+    "writer": {
+      "headline": "Staff review required — briefing prepared",
+      "explanation": "This panel is larger than 100 people (SIZE-02) and includes speakers from outside SFSU (GUEST-01), so it needs a staff review before confirmation. We've prepared a briefing for Student Activities & Events and pre-filled the speaker registration (GUEST-02).",
+      "permitNarrative": "Two guest speakers from UCSF will present on careers in medicine, followed by audience Q&A.",
+      "briefing": {
+        "summary": "Pre-Med Society requests a 2-hour speaker panel on Tuesday, Oct 6 (5–7 PM) for ~150 attendees with two external speakers from UCSF. Business Building 120 fits on capacity and AV.",
+        "riskPoints": [
+          {
+            "ruleId": "SIZE-02",
+            "point": "150 expected attendees — confirm staffing and check-in plan."
+          },
+          {
+            "ruleId": "GUEST-01",
+            "point": "External speakers on campus — confirm whether the event is open to the public."
+          },
+          {
+            "ruleId": "GUEST-02",
+            "point": "Speaker registration pre-filled; speaker names still needed."
+          }
+        ],
+        "staffQuestions": [
+          "Is the event open to non-SFSU attendees beyond the two speakers?",
+          "Will refreshments be served? (Not stated in the request.)",
+          "Who is the on-site event lead?"
+        ]
+      },
+      "citedRuleIds": [
+        "SIZE-02",
+        "GUEST-01",
+        "GUEST-02"
+      ]
+    }
+  },
+  "dance": {
+    "input": "Dance practice for 25 of our members Thursday 9:30-11pm at the Village community room, we'll bring a speaker for music.",
+    "clubId": "dance",
+    "expectedTier": 2,
+    "draft": {
+      "food": null,
+      "foodDescription": null,
+      "amplifiedSound": true,
+      "externalGuests": false,
+      "guestSpeakers": null,
+      "alcohol": null,
+      "minors": null,
+      "avNeeds": [],
+      "layout": null,
+      "roomTypeHints": [],
+      "preferredBuilding": "Village at Centennial Square",
+      "missingRequiredFields": [],
+      "ambiguities": [],
+      "summary": "Dance practice",
+      "headcount": 25,
+      "whenPhrase": "Thursday 9:30-11pm"
+    },
+    "writer": {
+      "headline": "Move to a sound-isolated studio",
+      "explanation": "The Village community room is inside a residential area, so amplified sound must end by 8 PM (SOUND-02), and amplified sound after 9 PM needs a sound-isolated room (SOUND-01). Gymnasium 129 is a mirrored, sound-isolated dance studio open until 11 PM — a better fit for practice.",
+      "permitNarrative": null,
+      "briefing": null,
+      "citedRuleIds": [
+        "SOUND-01",
+        "SOUND-02"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1327 @@
+{
+  "requestText": "ACM coding night for 45 members Thursday 6-9pm in Thornton. We'll have pizza and need a projector.",
+  "presetId": "pizza",
+  "draft": {
+    "food": true,
+    "foodDescription": "Pizza",
+    "amplifiedSound": null,
+    "externalGuests": false,
+    "guestSpeakers": null,
+    "alcohol": null,
+    "minors": null,
+    "avNeeds": [
+      "projector"
+    ],
+    "layout": null,
+    "roomTypeHints": [],
+    "preferredBuilding": "Thornton Hall",
+    "missingRequiredFields": [],
+    "ambiguities": [],
+    "summary": "ACM coding night",
+    "headcount": 45,
+    "whenPhrase": "Thursday 6-9pm"
+  },
+  "facts": {
+    "summary": {
+      "value": "ACM coding night",
+      "source": "ai"
+    },
+    "headcount": {
+      "value": 45,
+      "source": "ai"
+    },
+    "date": {
+      "value": "2026-10-08",
+      "source": "ai"
+    },
+    "startTime": {
+      "value": "18:00",
+      "source": "ai"
+    },
+    "endTime": {
+      "value": "21:00",
+      "source": "ai"
+    },
+    "food": {
+      "value": true,
+      "source": "ai"
+    },
+    "foodDescription": {
+      "value": "Pizza",
+      "source": "ai"
+    },
+    "amplifiedSound": {
+      "value": false,
+      "source": "default"
+    },
+    "externalGuests": {
+      "value": false,
+      "source": "ai"
+    },
+    "guestSpeakers": {
+      "value": false,
+      "source": "default"
+    },
+    "alcohol": {
+      "value": false,
+      "source": "default"
+    },
+    "minors": {
+      "value": false,
+      "source": "default"
+    },
+    "avNeeds": {
+      "value": [
+        "projector"
+      ],
+      "source": "ai"
+    },
+    "layout": {
+      "value": null,
+      "source": "ai"
+    },
+    "preferredBuilding": {
+      "value": "Thornton Hall",
+      "source": "ai"
+    },
+    "requestedRoomId": {
+      "value": "CCSC-204",
+      "source": "user"
+    },
+    "adaRequired": {
+      "value": false,
+      "source": "ai"
+    }
+  },
+  "decision": {
+    "tier": 2,
+    "canAutoApprove": false,
+    "needsInfo": false,
+    "eventFlags": [
+      {
+        "ruleId": "FOOD-02",
+        "effect": "REQUIRE_PERMIT",
+        "scope": "event",
+        "message": "Serving food requires a Temporary Food Permit"
+      }
+    ],
+    "hardBlocks": [],
+    "rooms": [
+      {
+        "roomId": "TH-326",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Thornton Hall 326",
+            "roomId": "TH-326"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "TH-411",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 35-person fire capacity of Thornton Hall 411",
+            "roomId": "TH-411"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Thornton Hall 411",
+            "roomId": "TH-411"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "TH-210",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 24-person fire capacity of Thornton Hall 210",
+            "roomId": "TH-210"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Thornton Hall 210",
+            "roomId": "TH-210"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-204",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-150",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-212",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212",
+            "roomId": "CCSC-212"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "LIB-286",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "LIB-460",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 34-person fire capacity of J. Paul Leonard Library 460",
+            "roomId": "LIB-460"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in J. Paul Leonard Library 460",
+            "roomId": "LIB-460"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "HSS-306",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in HSS Building 306",
+            "roomId": "HSS-306"
+          },
+          {
+            "ruleId": "BOOK-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Already booked 17:00–19:00",
+            "roomId": "HSS-306"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "BUS-120",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Business Building 120",
+            "roomId": "BUS-120"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "BH-101",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 40-person fire capacity of Burk Hall 101",
+            "roomId": "BH-101"
+          },
+          {
+            "ruleId": "BOOK-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Already booked 18:00–20:00",
+            "roomId": "BH-101"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "FA-290",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Fine Arts 290",
+            "roomId": "FA-290"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "GYM-129",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Gymnasium 129",
+            "roomId": "GYM-129"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "VCS-CR",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      }
+    ],
+    "targetRoomId": "CCSC-204",
+    "suggestedRoomId": null,
+    "permitsRequired": [
+      {
+        "permitId": "EHS_TEMP_FOOD",
+        "ruleId": "FOOD-02",
+        "name": "Temporary Food Permit",
+        "office": "Environmental Health & Safety",
+        "fields": [
+          {
+            "label": "Event",
+            "value": "ACM coding night"
+          },
+          {
+            "label": "Organization",
+            "value": "Association for Computing Machinery"
+          },
+          {
+            "label": "Date & time",
+            "value": "2026-10-08 · 18:00–21:00"
+          },
+          {
+            "label": "Location",
+            "value": "Cesar Chavez Student Center 204"
+          },
+          {
+            "label": "Expected attendance",
+            "value": "45"
+          },
+          {
+            "label": "Food served",
+            "value": "Pizza"
+          },
+          {
+            "label": "Food source",
+            "value": "Licensed vendor (to be confirmed by organizer)"
+          }
+        ]
+      }
+    ],
+    "applicableRules": [
+      {
+        "ruleId": "CAP-01",
+        "title": "Fire marshal capacity",
+        "status": "pass",
+        "detail": "45 attendees ≤ 70 fire capacity"
+      },
+      {
+        "ruleId": "FOOD-01",
+        "title": "Food in designated rooms only",
+        "status": "pass",
+        "detail": "Food permitted in Cesar Chavez Student Center 204"
+      },
+      {
+        "ruleId": "HOURS-01",
+        "title": "Building hours",
+        "status": "pass",
+        "detail": "Within Cesar Chavez Student Center hours (07:00–23:00)"
+      },
+      {
+        "ruleId": "BOOK-01",
+        "title": "Room availability",
+        "status": "pass",
+        "detail": "Room is free at this time"
+      },
+      {
+        "ruleId": "FOOD-02",
+        "title": "Temporary food permit",
+        "status": "permit",
+        "detail": "Serving food requires a Temporary Food Permit"
+      },
+      {
+        "ruleId": "CAP-DAILY-01",
+        "title": "Daily booking limit",
+        "status": "pass",
+        "detail": "3 hrs of 3 hrs daily limit"
+      }
+    ],
+    "unresolved": [],
+    "defaultsToAttest": [
+      "amplifiedSound",
+      "guestSpeakers",
+      "alcohol",
+      "minors"
+    ],
+    "clubMinutesUsed": 0,
+    "clubMinutesCap": 180,
+    "requestMinutes": 180,
+    "canSubmit": false,
+    "submitOutcome": null,
+    "headline": "Ready to book: Temporary Food Permit will be filed for you"
+  },
+  "ranked": [
+    {
+      "room": {
+        "id": "CCSC-204",
+        "name": "Cesar Chavez Student Center 204",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 60,
+        "fireCapacity": 70,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "CCSC-204",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 1,
+      "reasons": [
+        {
+          "label": "Seats 60 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "Food permitted",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 60 for your 45 · Food permitted · Projector · Accessible"
+    },
+    {
+      "room": {
+        "id": "CCSC-150",
+        "name": "Cesar Chavez Student Center 150",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 220,
+        "fireCapacity": 250,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        },
+        "notes": "Large multipurpose room"
+      },
+      "evaluation": {
+        "roomId": "CCSC-150",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 2,
+      "reasons": [
+        {
+          "label": "Seats 220 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "Food permitted",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 220 for your 45 · Food permitted · Projector · Accessible"
+    },
+    {
+      "room": {
+        "id": "VCS-CR",
+        "name": "Village Community Room",
+        "building": "Village at Centennial Square",
+        "buildingCode": "VCS",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 40,
+        "fireCapacity": 45,
+        "av": [
+          "display",
+          "speakers"
+        ],
+        "foodAllowed": true,
+        "nearResidence": true,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "23:00"
+        },
+        "notes": "Inside a residential community"
+      },
+      "evaluation": {
+        "roomId": "VCS-CR",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 3,
+      "reasons": [
+        {
+          "label": "Only 40 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "Food permitted",
+          "kind": "fit"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "projector"
+      ],
+      "why": "Food permitted · Accessible"
+    },
+    {
+      "room": {
+        "id": "TH-326",
+        "name": "Thornton Hall 326",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 48,
+        "fireCapacity": 52,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-326",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Thornton Hall 326",
+            "roomId": "TH-326"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 48 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "In Thornton Hall",
+          "kind": "pref"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Food isn't allowed in Thornton Hall 326"
+    },
+    {
+      "room": {
+        "id": "HSS-306",
+        "name": "HSS Building 306",
+        "building": "HSS Building",
+        "buildingCode": "HSS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 80,
+        "fireCapacity": 90,
+        "av": [
+          "projector",
+          "microphone"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "HSS-306",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in HSS Building 306",
+            "roomId": "HSS-306"
+          },
+          {
+            "ruleId": "BOOK-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Already booked 17:00–19:00",
+            "roomId": "HSS-306"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 80 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Food isn't allowed in HSS Building 306 · Already booked 17:00–19:00"
+    },
+    {
+      "room": {
+        "id": "BUS-120",
+        "name": "Business Building 120",
+        "building": "Business Building",
+        "buildingCode": "BUS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 160,
+        "fireCapacity": 180,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BUS-120",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Business Building 120",
+            "roomId": "BUS-120"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 160 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Food isn't allowed in Business Building 120"
+    },
+    {
+      "room": {
+        "id": "FA-290",
+        "name": "Fine Arts 290",
+        "building": "Fine Arts Building",
+        "buildingCode": "FA",
+        "type": "studio",
+        "layout": "studio",
+        "seats": 50,
+        "fireCapacity": 60,
+        "av": [
+          "speakers",
+          "piano"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "23:00"
+        },
+        "notes": "Rehearsal studio"
+      },
+      "evaluation": {
+        "roomId": "FA-290",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Fine Arts 290",
+            "roomId": "FA-290"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 50 for your 45",
+          "kind": "fit"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "projector"
+      ],
+      "why": "Food isn't allowed in Fine Arts 290"
+    },
+    {
+      "room": {
+        "id": "BH-101",
+        "name": "Burk Hall 101",
+        "building": "Burk Hall",
+        "buildingCode": "BH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 36,
+        "fireCapacity": 40,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": false,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BH-101",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 40-person fire capacity of Burk Hall 101",
+            "roomId": "BH-101"
+          },
+          {
+            "ruleId": "BOOK-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Already booked 18:00–20:00",
+            "roomId": "BH-101"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 36 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "Food permitted",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        }
+      ],
+      "avMissing": [],
+      "why": "45 attendees exceeds the 40-person fire capacity of Burk Hall 101 · Already booked 18:00–20:00"
+    },
+    {
+      "room": {
+        "id": "TH-411",
+        "name": "Thornton Hall 411",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "lab",
+        "layout": "lab",
+        "seats": 30,
+        "fireCapacity": 35,
+        "av": [
+          "computers",
+          "projector"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        },
+        "notes": "Computer lab"
+      },
+      "evaluation": {
+        "roomId": "TH-411",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 35-person fire capacity of Thornton Hall 411",
+            "roomId": "TH-411"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Thornton Hall 411",
+            "roomId": "TH-411"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 30 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "In Thornton Hall",
+          "kind": "pref"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "45 attendees exceeds the 35-person fire capacity of Thornton Hall 411 · Food isn't allowed in Thornton Hall 411"
+    },
+    {
+      "room": {
+        "id": "LIB-460",
+        "name": "J. Paul Leonard Library 460",
+        "building": "J. Paul Leonard Library",
+        "buildingCode": "LIB",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 30,
+        "fireCapacity": 34,
+        "av": [
+          "projector",
+          "video_conf",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "LIB-460",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 34-person fire capacity of J. Paul Leonard Library 460",
+            "roomId": "LIB-460"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in J. Paul Leonard Library 460",
+            "roomId": "LIB-460"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 30 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "45 attendees exceeds the 34-person fire capacity of J. Paul Leonard Library 460 · Food isn't allowed in J. Paul Leonard Library 460"
+    },
+    {
+      "room": {
+        "id": "GYM-129",
+        "name": "Gymnasium 129",
+        "building": "Gymnasium",
+        "buildingCode": "GYM",
+        "type": "studio",
+        "layout": "studio",
+        "seats": 40,
+        "fireCapacity": 50,
+        "av": [
+          "speakers"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        },
+        "notes": "Mirrored dance studio"
+      },
+      "evaluation": {
+        "roomId": "GYM-129",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Gymnasium 129",
+            "roomId": "GYM-129"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 40 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "projector"
+      ],
+      "why": "Food isn't allowed in Gymnasium 129"
+    },
+    {
+      "room": {
+        "id": "TH-210",
+        "name": "Thornton Hall 210",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 20,
+        "fireCapacity": 24,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-210",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 24-person fire capacity of Thornton Hall 210",
+            "roomId": "TH-210"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in Thornton Hall 210",
+            "roomId": "TH-210"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 20 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "In Thornton Hall",
+          "kind": "pref"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "projector"
+      ],
+      "why": "45 attendees exceeds the 24-person fire capacity of Thornton Hall 210 · Food isn't allowed in Thornton Hall 210"
+    },
+    {
+      "room": {
+        "id": "CCSC-212",
+        "name": "Cesar Chavez Student Center 212",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 16,
+        "fireCapacity": 18,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "CCSC-212",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212",
+            "roomId": "CCSC-212"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 16 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "Food permitted",
+          "kind": "fit"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "projector"
+      ],
+      "why": "45 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212"
+    },
+    {
+      "room": {
+        "id": "LIB-286",
+        "name": "J. Paul Leonard Library 286",
+        "building": "J. Paul Leonard Library",
+        "buildingCode": "LIB",
+        "type": "study_room",
+        "layout": "seminar",
+        "seats": 10,
+        "fireCapacity": 12,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "22:00"
+        },
+        "notes": "Group study room"
+      },
+      "evaluation": {
+        "roomId": "LIB-286",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "45 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          },
+          {
+            "ruleId": "FOOD-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Food isn't allowed in J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 10 seats for 45",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "projector"
+      ],
+      "why": "45 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286 · Food isn't allowed in J. Paul Leonard Library 286"
+    }
+  ],
+  "writer": {
+    "headline": "Almost there — move to a room that allows food",
+    "explanation": "Your coding night fits Thornton Hall 326 on size and equipment, but classrooms in Thornton don't allow food (FOOD-01). Cesar Chavez Student Center 204 seats 60, allows food, and has a projector, so everything else stays the same. Because you're serving pizza, a Temporary Food Permit (FOOD-02) is required — we've pre-filled it from your request.",
+    "permitNarrative": "ACM will host a coding night for approximately 45 student members. Pizza will be ordered from a licensed vendor and delivered ready to serve; no on-site cooking. Leftovers will be removed and the room reset by 9:00 PM.",
+    "briefing": null,
+    "citedRuleIds": [
+      "FOOD-01",
+      "FOOD-02"
+    ]
+  },
+  "bookingsForDate": [
+    {
+      "id": "seed-1",
+      "roomId": "CCSC-204",
+      "clubId": "study",
+      "date": "2026-10-08",
+      "startTime": "14:00",
+      "endTime": "17:00",
+      "durationMin": 180,
+      "status": "confirmed",
+      "title": "Dance workshop",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:00:00.000Z"
+    },
+    {
+      "id": "seed-2",
+      "roomId": "BH-101",
+      "clubId": "premed",
+      "date": "2026-10-08",
+      "startTime": "18:00",
+      "endTime": "20:00",
+      "durationMin": 120,
+      "status": "confirmed",
+      "title": "MCAT review",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:05:00.000Z"
+    },
+    {
+      "id": "seed-3",
+      "roomId": "HSS-306",
+      "clubId": "study",
+      "date": "2026-10-08",
+      "startTime": "17:00",
+      "endTime": "19:00",
+      "durationMin": 120,
+      "status": "confirmed",
+      "title": "Midterm review",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:10:00.000Z"
+    },
+    {
+      "id": "seed-4",
+      "roomId": "TH-210",
+      "clubId": "sfhacks",
+      "date": "2026-10-08",
+      "startTime": "12:00",
+      "endTime": "14:00",
+      "durationMin": 120,
+      "status": "confirmed",
+      "title": "Organizer sync",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:15:00.000Z"
+    }
+  ],
+  "aiMode": "fallback"
+}

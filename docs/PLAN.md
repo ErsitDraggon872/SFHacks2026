@@ -71,6 +71,19 @@ This is the one authoritative function, server-side only, and it runs as one syn
   - Counts: "12 auto-approved · 4 permit-assisted · 2 escalated."
   - "Estimated manual review avoided: N requests × assumed 15 min ≈ X hrs," with the assumption labeled.
 
+## Visual direction (revision: Devin-style, clean & mostly white)
+Reference is devin.ai: white background, near-black text, large tight sans headline, black pill primary button + outlined secondary, hairline gray borders, generous whitespace, small muted helper text. No gradients and no heavy color.
+- **Tokens:** `bg-white`, text `neutral-950` / muted `neutral-500`, borders `neutral-200`, primary button `bg-neutral-950 text-white rounded-full`. Font is Geist (already in the scaffold). SFSU purple `#463077` is used **only** as a small accent (logo mark, focus ring, selected tab underline). Status colors are muted green/amber/red, always paired with an icon.
+- **Single centered column** (`max-w-3xl mx-auto`), with one thing to look at at a time.
+- **Top bar** (thin bottom border): `GatorSpace` wordmark on the left. On the right, the club switcher, quota pill ("2.0 / 3.0 hrs"), and an "Admin" link. The illustrative-policy disclaimer is one small muted line under the top bar.
+- **Empty state (hero):** headline "Book a room for your event." plus a one-line muted subhead. Below that is a **big centered search box**, which is the focal point: rounded-2xl, border, subtle shadow, a multiline textarea that grows, and a black "Find rooms →" button inside it. A small `Describe | Filters` segmented toggle sits above the box, and the 4 presets are gray pills below it.
+- **Results state:** the search box animates up to the top (stays editable), and below it, in order:
+  1. **"Understood" chip row**: AI / edited / assumed styles, click a chip to edit.
+  2. A **one-line tier banner** with an icon, e.g. "⚠ Needs one change: food isn't allowed in Thornton 326," plus a Fix It button.
+  3. **Ranked list**: #1 is a larger card ("Best match," "Why #1" reasons, Book button, collapsible compliance checklist with rule-id citations). #2–#5 are compact rows (name · building · capacity · one-line why · Book). Ineligible rooms are folded into a "3 rooms unavailable — show why" disclosure.
+  4. Permit draft (T2) or "Staff review required" panel (T3), placed below the list.
+- `/admin` uses the same language: a white table-like list with hairline dividers and a muted metadata row.
+
 ## Key files
 ```
 lib/types.ts normalize.ts policy.ts rank.ts booking.ts db.ts llm.ts snapshot.ts
@@ -103,6 +116,14 @@ Protected: extraction, human correction, deterministic rules, explainable rankin
 
 ## Team split (3 machines)
 **First step after approval (this machine is Computer 1):** commit this plan as `docs/PLAN.md` and the three handoffs below as `docs/handoff-1-engine.md`, `docs/handoff-2-frontend.md`, `docs/handoff-3-ai-admin.md`. Each teammate pastes their handoff into their own agent. Every handoff starts with "Read `docs/PLAN.md` first."
+
+**Next steps on C1 after this revision (foundation first, so C2 and C3 are never blocked):**
+- (a) Re-sync `docs/PLAN.md` + regenerate the handoffs on PR #1.
+- (b) Contract: `lib/types.ts` with all types, engine stubs, seed data, and all 5 fixtures.
+- (c) Frontend foundation: tokens, primitives, shell (TopBar, SearchHero, ResultsList), page state machine + `triageClient`, mounted typed stubs, the `/dev` gallery, and `docs/frontend-guide.md`.
+- (d) For C3: API route stubs returning fixtures with the contract shapes, so `/api/triage` works on day one and C3 replaces the internals. Ownership of `app/api/**` passes to C3 once the stubs are merged. `lib/client/*` and `app/dev/*` stay with C1.
+- (e) Typecheck + `next build` green, merge to `main`, tell the team.
+- (f) Then the engine + tests.
 
 ### Shared rules (included in every handoff)
 - **File ownership is strict.** Only edit files you own. If you need a change in someone else's file, ask that owner.
@@ -142,13 +163,48 @@ At T+15m, C1 also commits `fixtures/triage-{study,pizza,speaker,dance}.json`, wh
 4. `normalize.ts`: chrono-node pinned to `DEMO_ANCHOR_DATE=2026-10-05` (forwardDate), validation, and contextual defaults.
 5. `db.ts` + `booking.ts`: synchronous read-validate-write. It rechecks overlap, the fire cap, room rules, and the ≤180 min/club/day cap.
 6. vitest: one test per rule, tri-state null blocks Tier 1, event vs room separation, tier matrix, cap rejects the 181st minute, overlap, booking-time revalidation, "Thursday 6–9pm" → 2026-10-08 18:00–21:00. **Done =** `npm test` green and all 4 fixtures reproduce from `evaluate()`.
-7. Afterwards: help integrate, write `README.md` (including the responsible-AI section and the disclaimer).
+7. **Frontend shell** (right after step 1, before steps 2–6): the files listed under "C1 owns" in Frontend split, built per Visual direction and pushed to `main` so C2 can slot components in.
+8. Afterwards: help integrate, write `README.md` (including the responsible-AI section and the disclaimer).
 
-### Handoff 2: Computer 2 (Gemini) — Frontend & Hero Demo Lead
-**Owns:** `app/layout.tsx`, `app/page.tsx`, `app/globals.css`, `components/*` (PolicyBanner, ClubSwitcher, QuotaMeter, QuickFilters, FactChips, ComplianceChecklist, RoomCard, TierPanel, PermitDraft, AiModeBadge).
-1. Until T+15m: sketch the layout and design tokens (SFSU purple `#463077` / gold `#C99700`).
-2. Build against `fixtures/*.json`, then switch to `POST /api/triage` once C3 ships it.
-3. Page layout: illustrative-policy banner, club switcher + quota meter ("2.0 / 3.0 hrs today"), tabs [Describe your event | Quick Filters], 4 preset buttons (Study Group T1, **Pizza Night (Hero) T2**, 150-Guest Speaker T3, Late Dance), fact chips (AI / user-corrected / assumed-default each styled differently, editable), clarifying-question card, compliance checklist (✓/⚠/⛔ + clickable rule-id excerpt), ranked room cards ("Why #1", ineligible rooms grayed out with reason), and the tier panel.
+### Frontend split (revision)
+**C1 builds the shell + design system first** (after the T+15m contract push, about 45 min). That way the look stays consistent, and C2 fills it in.
+- **C1 owns:** `app/layout.tsx`, `app/globals.css` (tokens), `app/page.tsx` (page state machine: empty hero → results, layout slots), `components/ui/*` (Button, Pill, Card, Segmented, Disclosure, StatusIcon primitives), `components/TopBar.tsx`, `components/SearchHero.tsx` (centered box + presets + Describe/Filters toggle), `components/ResultsList.tsx` (#1 card + compact rows + unavailable disclosure, rendering `RankedRoom[]` from fixtures).
+- **C2 owns** the detailed components that slot into the shell, built only from `components/ui/*` primitives: FactChips, ComplianceChecklist, RoomCard detail (Why #1 + Book), TierPanel (T1 attestation / T2 Fix It / T3 staff review), PermitDraft, QuickFilters, ClubSwitcher, QuotaMeter, AiModeBadge, PolicyBanner. C2 also wires client-side re-evaluation and the booking flow.
+- Until the C1 shell lands, C2 builds its components in isolation against `fixtures/*.json`.
+
+### Frontend foundation C1 delivers, so C2 only fills in component bodies
+
+> **Status: delivered.** The final prop signatures are in `docs/frontend-guide.md` and in each component file. They supersede the sketch below (e.g. `RoomCard` takes `variant` + `onSelect`, and `TierPanel` takes `onSubmit` + `result`).
+1. **Typed component stubs, already mounted.** Every C2 component exists as a file with its final props interface, a JSDoc comment saying exactly what it renders and which interactions it has, and a placeholder body (`<Placeholder name="FactChips" />`, a dashed gray box). Each stub is already imported and placed in the right slot in `app/page.tsx`, with props passed from page state. C2 never edits the page or the wiring, only the component bodies.
+   ```ts
+   FactChips({ facts, draft, onEdit(field, value) })
+   ClarifyingQuestions({ questions, onAnswer(field, value) })
+   TierPanel({ decision, topRoom, fixRoom, attested, onAttest, onFix, onBook })
+   ComplianceChecklist({ results: PolicyRuleResult[], onCite(ruleId) })
+   RoomCard({ ranked: RankedRoom, rank, onBook })   // #1 large variant via rank===1
+   PermitDraft({ permit: PermitRequirement, writer })
+   QuickFilters({ value: EventFacts, onChange })
+   ClubSwitcher({ clubs, clubId, onChange }) · QuotaMeter({ usedMin, capMin }) · AiModeBadge({ mode }) · PolicyExcerptModal({ ruleId, onClose })
+   ```
+2. **Page state machine already working** (`app/page.tsx`, a client component): `idle → loading → results`. Results are loaded from `fixtures/` through `lib/client/triageClient.ts`. Its `triage()` function reads the fixture when `?fixture=` is present or when `NEXT_PUBLIC_USE_FIXTURES=1`, and otherwise calls `POST /api/triage`, so switching to the real API is just a flag. Handlers (`onEdit`, `onFix`, `onBook`, `onAttest`) are implemented in the page against the engine stubs.
+3. **UI primitives** in `components/ui/`: Button (primary/secondary/ghost), Pill, Card, Segmented, Disclosure, StatusIcon (pass/warn/block/escalate → icon + color + aria-label), Field, Modal, Placeholder. All are styled with the tokens, and C2 composes only from these.
+4. **Component gallery** at `/dev`: renders every component × each of the 4 fixtures side by side, so C2 can work on one component at a time without clicking through the flow.
+5. **`docs/frontend-guide.md`** covers:
+   - tokens and do/don't
+   - the primitives API
+   - the prop contract table above
+   - how to run against fixtures (`npm run dev` → `/?fixture=pizza`, `/dev`)
+   - a per-component **acceptance checklist** (e.g. TierPanel T2 shows Fix It naming the room; T3 has no Fix It; T1 Book is disabled until attested)
+   - the hero-flow click script C2 must make pass
+6. **Fixtures cover every UI state:** study (T1 with defaults), pizza (T2 with FOOD-01 + permit), speaker (T3), dance (SOUND-01 + unavailable rooms), plus `pizza-fixed` (the state after Fix It), so the UI can be built before the engine exists.
+
+**C2's execution path:** pull `main` → open `/dev` → replace each placeholder body in the order FactChips → TierPanel → RoomCard → ComplianceChecklist → PermitDraft → rest → tick each acceptance checklist → run the hero click script on `/?fixture=pizza` → flip `NEXT_PUBLIC_USE_FIXTURES=0` once C3's API is live.
+
+### Handoff 2: Computer 2 (Gemini) — Frontend Components & Hero Demo Lead
+**Owns:** the component list under **C2 owns** above. Don't restyle the shell or primitives. If you need a primitive, ask C1 to add it.
+1. Read **Visual direction** and `docs/frontend-guide.md`. C1 has already built the shell, primitives, and page wiring, with your components mounted as typed placeholder stubs. Follow **C2's execution path** above.
+2. Build against `fixtures/*.json` (`/dev` gallery and `/?fixture=pizza`), then set `NEXT_PUBLIC_USE_FIXTURES=0` once C3's API is live.
+3. What your components must show: illustrative-policy banner, club switcher + quota meter ("2.0 / 3.0 hrs today"), tabs [Describe your event | Quick Filters], 4 preset buttons (Study Group T1, **Pizza Night (Hero) T2**, 150-Guest Speaker T3, Late Dance), fact chips (AI / user-corrected / assumed-default each styled differently, editable), clarifying-question card, compliance checklist (✓/⚠/⛔ + clickable rule-id excerpt), ranked room cards ("Why #1", ineligible rooms grayed out with reason), and the tier panel.
 4. **Client-side re-evaluation:** a chip edit or Quick Filter change calls `evaluate()` + `rankRooms()` from `lib/` directly, using `bookingsForDate`. There's no API call.
 5. TierPanel: T1 attestation checkbox → Book. T2 **Fix It: Switch to <room>** → checklist turns green → PermitDraft → Book. T3 is a distinct "Staff review required" panel listing what was prepared, with no Fix It.
 6. Accessibility: keyboard navigable, ARIA labels, icon + color on every status. Mobile-friendly.

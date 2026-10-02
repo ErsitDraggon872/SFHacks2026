@@ -1,0 +1,1279 @@
+{
+  "requestText": "Dance practice for 25 of our members Thursday 9:30-11pm at the Village community room, we'll bring a speaker for music.",
+  "presetId": "dance",
+  "draft": {
+    "food": null,
+    "foodDescription": null,
+    "amplifiedSound": true,
+    "externalGuests": false,
+    "guestSpeakers": null,
+    "alcohol": null,
+    "minors": null,
+    "avNeeds": [],
+    "layout": null,
+    "roomTypeHints": [],
+    "preferredBuilding": "Village at Centennial Square",
+    "missingRequiredFields": [],
+    "ambiguities": [],
+    "summary": "Dance practice",
+    "headcount": 25,
+    "whenPhrase": "Thursday 9:30-11pm"
+  },
+  "facts": {
+    "summary": {
+      "value": "Dance practice",
+      "source": "ai"
+    },
+    "headcount": {
+      "value": 25,
+      "source": "ai"
+    },
+    "date": {
+      "value": "2026-10-08",
+      "source": "ai"
+    },
+    "startTime": {
+      "value": "21:30",
+      "source": "ai"
+    },
+    "endTime": {
+      "value": "23:00",
+      "source": "ai"
+    },
+    "food": {
+      "value": false,
+      "source": "default"
+    },
+    "foodDescription": {
+      "value": null,
+      "source": "ai"
+    },
+    "amplifiedSound": {
+      "value": true,
+      "source": "ai"
+    },
+    "externalGuests": {
+      "value": false,
+      "source": "ai"
+    },
+    "guestSpeakers": {
+      "value": false,
+      "source": "default"
+    },
+    "alcohol": {
+      "value": false,
+      "source": "default"
+    },
+    "minors": {
+      "value": false,
+      "source": "default"
+    },
+    "avNeeds": {
+      "value": [],
+      "source": "ai"
+    },
+    "layout": {
+      "value": null,
+      "source": "ai"
+    },
+    "preferredBuilding": {
+      "value": "Village at Centennial Square",
+      "source": "ai"
+    },
+    "requestedRoomId": {
+      "value": null,
+      "source": "ai"
+    },
+    "adaRequired": {
+      "value": false,
+      "source": "ai"
+    }
+  },
+  "decision": {
+    "tier": 2,
+    "canAutoApprove": false,
+    "needsInfo": false,
+    "eventFlags": [],
+    "hardBlocks": [],
+    "rooms": [
+      {
+        "roomId": "TH-326",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "TH-326"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Thornton Hall is open 07:00–22:00",
+            "roomId": "TH-326"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "TH-411",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "TH-411"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Thornton Hall is open 07:00–22:00",
+            "roomId": "TH-411"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "TH-210",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "25 attendees exceeds the 24-person fire capacity of Thornton Hall 210",
+            "roomId": "TH-210"
+          },
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "TH-210"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Thornton Hall is open 07:00–22:00",
+            "roomId": "TH-210"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-204",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "CCSC-204"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-150",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-212",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "25 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212",
+            "roomId": "CCSC-212"
+          },
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "CCSC-212"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "LIB-286",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "25 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          },
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "LIB-286"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "J. Paul Leonard Library is open 08:00–22:00",
+            "roomId": "LIB-286"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "LIB-460",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "LIB-460"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "J. Paul Leonard Library is open 08:00–22:00",
+            "roomId": "LIB-460"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "HSS-306",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "HSS-306"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "HSS Building is open 07:00–22:00",
+            "roomId": "HSS-306"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "BUS-120",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "BUS-120"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Business Building is open 07:00–22:00",
+            "roomId": "BUS-120"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "BH-101",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "BH-101"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Burk Hall is open 07:00–22:00",
+            "roomId": "BH-101"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "FA-290",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "GYM-129",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "VCS-CR",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "VCS-CR"
+          },
+          {
+            "ruleId": "SOUND-02",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Village Community Room is in a residential area — no amplified sound after 8 PM",
+            "roomId": "VCS-CR"
+          }
+        ],
+        "warnings": []
+      }
+    ],
+    "targetRoomId": "VCS-CR",
+    "suggestedRoomId": "GYM-129",
+    "permitsRequired": [],
+    "applicableRules": [
+      {
+        "ruleId": "CAP-01",
+        "title": "Fire marshal capacity",
+        "status": "pass",
+        "detail": "25 attendees ≤ 45 fire capacity"
+      },
+      {
+        "ruleId": "SOUND-01",
+        "title": "Amplified sound after 9 PM",
+        "status": "block",
+        "detail": "Amplified sound after 9 PM needs a sound-isolated room"
+      },
+      {
+        "ruleId": "SOUND-02",
+        "title": "Residential quiet hours",
+        "status": "block",
+        "detail": "Village Community Room is in a residential area — no amplified sound after 8 PM"
+      },
+      {
+        "ruleId": "HOURS-01",
+        "title": "Building hours",
+        "status": "pass",
+        "detail": "Within Village at Centennial Square hours (08:00–23:00)"
+      },
+      {
+        "ruleId": "BOOK-01",
+        "title": "Room availability",
+        "status": "pass",
+        "detail": "Room is free at this time"
+      },
+      {
+        "ruleId": "CAP-DAILY-01",
+        "title": "Daily booking limit",
+        "status": "pass",
+        "detail": "1.5 hrs of 3 hrs daily limit"
+      }
+    ],
+    "unresolved": [],
+    "defaultsToAttest": [
+      "food",
+      "guestSpeakers",
+      "alcohol",
+      "minors"
+    ],
+    "clubMinutesUsed": 0,
+    "clubMinutesCap": 180,
+    "requestMinutes": 90,
+    "canSubmit": false,
+    "submitOutcome": null,
+    "headline": "Needs one change: amplified sound after 9 PM needs a sound-isolated room"
+  },
+  "ranked": [
+    {
+      "room": {
+        "id": "GYM-129",
+        "name": "Gymnasium 129",
+        "building": "Gymnasium",
+        "buildingCode": "GYM",
+        "type": "studio",
+        "layout": "studio",
+        "seats": 40,
+        "fireCapacity": 50,
+        "av": [
+          "speakers"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        },
+        "notes": "Mirrored dance studio"
+      },
+      "evaluation": {
+        "roomId": "GYM-129",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 1,
+      "reasons": [
+        {
+          "label": "Seats 40 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Sound-isolated",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 40 for your 25 · Sound-isolated · Accessible"
+    },
+    {
+      "room": {
+        "id": "FA-290",
+        "name": "Fine Arts 290",
+        "building": "Fine Arts Building",
+        "buildingCode": "FA",
+        "type": "studio",
+        "layout": "studio",
+        "seats": 50,
+        "fireCapacity": 60,
+        "av": [
+          "speakers",
+          "piano"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "23:00"
+        },
+        "notes": "Rehearsal studio"
+      },
+      "evaluation": {
+        "roomId": "FA-290",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 2,
+      "reasons": [
+        {
+          "label": "Seats 50 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Sound-isolated",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 50 for your 25 · Sound-isolated · Accessible"
+    },
+    {
+      "room": {
+        "id": "CCSC-150",
+        "name": "Cesar Chavez Student Center 150",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 220,
+        "fireCapacity": 250,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        },
+        "notes": "Large multipurpose room"
+      },
+      "evaluation": {
+        "roomId": "CCSC-150",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 3,
+      "reasons": [
+        {
+          "label": "Seats 220 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Sound-isolated",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 220 for your 25 · Sound-isolated · Accessible"
+    },
+    {
+      "room": {
+        "id": "LIB-460",
+        "name": "J. Paul Leonard Library 460",
+        "building": "J. Paul Leonard Library",
+        "buildingCode": "LIB",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 30,
+        "fireCapacity": 34,
+        "av": [
+          "projector",
+          "video_conf",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "LIB-460",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "LIB-460"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "J. Paul Leonard Library is open 08:00–22:00",
+            "roomId": "LIB-460"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 30 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · J. Paul Leonard Library is open 08:00–22:00"
+    },
+    {
+      "room": {
+        "id": "TH-411",
+        "name": "Thornton Hall 411",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "lab",
+        "layout": "lab",
+        "seats": 30,
+        "fireCapacity": 35,
+        "av": [
+          "computers",
+          "projector"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        },
+        "notes": "Computer lab"
+      },
+      "evaluation": {
+        "roomId": "TH-411",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "TH-411"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Thornton Hall is open 07:00–22:00",
+            "roomId": "TH-411"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 30 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · Thornton Hall is open 07:00–22:00"
+    },
+    {
+      "room": {
+        "id": "BH-101",
+        "name": "Burk Hall 101",
+        "building": "Burk Hall",
+        "buildingCode": "BH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 36,
+        "fireCapacity": 40,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": false,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BH-101",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "BH-101"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Burk Hall is open 07:00–22:00",
+            "roomId": "BH-101"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 36 for your 25",
+          "kind": "fit"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · Burk Hall is open 07:00–22:00"
+    },
+    {
+      "room": {
+        "id": "VCS-CR",
+        "name": "Village Community Room",
+        "building": "Village at Centennial Square",
+        "buildingCode": "VCS",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 40,
+        "fireCapacity": 45,
+        "av": [
+          "display",
+          "speakers"
+        ],
+        "foodAllowed": true,
+        "nearResidence": true,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "23:00"
+        },
+        "notes": "Inside a residential community"
+      },
+      "evaluation": {
+        "roomId": "VCS-CR",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "VCS-CR"
+          },
+          {
+            "ruleId": "SOUND-02",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Village Community Room is in a residential area — no amplified sound after 8 PM",
+            "roomId": "VCS-CR"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 40 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "In Village at Centennial Square",
+          "kind": "pref"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · Village Community Room is in a residential area — no amplified sound after 8 PM"
+    },
+    {
+      "room": {
+        "id": "TH-326",
+        "name": "Thornton Hall 326",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 48,
+        "fireCapacity": 52,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-326",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "TH-326"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Thornton Hall is open 07:00–22:00",
+            "roomId": "TH-326"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 48 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · Thornton Hall is open 07:00–22:00"
+    },
+    {
+      "room": {
+        "id": "CCSC-204",
+        "name": "Cesar Chavez Student Center 204",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 60,
+        "fireCapacity": 70,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "CCSC-204",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "CCSC-204"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 60 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room"
+    },
+    {
+      "room": {
+        "id": "HSS-306",
+        "name": "HSS Building 306",
+        "building": "HSS Building",
+        "buildingCode": "HSS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 80,
+        "fireCapacity": 90,
+        "av": [
+          "projector",
+          "microphone"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "HSS-306",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "HSS-306"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "HSS Building is open 07:00–22:00",
+            "roomId": "HSS-306"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 80 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · HSS Building is open 07:00–22:00"
+    },
+    {
+      "room": {
+        "id": "BUS-120",
+        "name": "Business Building 120",
+        "building": "Business Building",
+        "buildingCode": "BUS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 160,
+        "fireCapacity": 180,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BUS-120",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "BUS-120"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Business Building is open 07:00–22:00",
+            "roomId": "BUS-120"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Seats 160 for your 25",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Amplified sound after 9 PM needs a sound-isolated room · Business Building is open 07:00–22:00"
+    },
+    {
+      "room": {
+        "id": "TH-210",
+        "name": "Thornton Hall 210",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 20,
+        "fireCapacity": 24,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-210",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "25 attendees exceeds the 24-person fire capacity of Thornton Hall 210",
+            "roomId": "TH-210"
+          },
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "TH-210"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Thornton Hall is open 07:00–22:00",
+            "roomId": "TH-210"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 20 seats for 25",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "25 attendees exceeds the 24-person fire capacity of Thornton Hall 210 · Amplified sound after 9 PM needs a sound-isolated room · Thornton Hall is open 07:00–22:00"
+    },
+    {
+      "room": {
+        "id": "CCSC-212",
+        "name": "Cesar Chavez Student Center 212",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 16,
+        "fireCapacity": 18,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "CCSC-212",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "25 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212",
+            "roomId": "CCSC-212"
+          },
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "CCSC-212"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 16 seats for 25",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "25 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212 · Amplified sound after 9 PM needs a sound-isolated room"
+    },
+    {
+      "room": {
+        "id": "LIB-286",
+        "name": "J. Paul Leonard Library 286",
+        "building": "J. Paul Leonard Library",
+        "buildingCode": "LIB",
+        "type": "study_room",
+        "layout": "seminar",
+        "seats": 10,
+        "fireCapacity": 12,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "22:00"
+        },
+        "notes": "Group study room"
+      },
+      "evaluation": {
+        "roomId": "LIB-286",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "25 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          },
+          {
+            "ruleId": "SOUND-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "Amplified sound after 9 PM needs a sound-isolated room",
+            "roomId": "LIB-286"
+          },
+          {
+            "ruleId": "HOURS-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "J. Paul Leonard Library is open 08:00–22:00",
+            "roomId": "LIB-286"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 10 seats for 25",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "25 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286 · Amplified sound after 9 PM needs a sound-isolated room · J. Paul Leonard Library is open 08:00–22:00"
+    }
+  ],
+  "writer": {
+    "headline": "Move to a sound-isolated studio",
+    "explanation": "The Village community room is inside a residential area, so amplified sound must end by 8 PM (SOUND-02), and amplified sound after 9 PM needs a sound-isolated room (SOUND-01). Gymnasium 129 is a mirrored, sound-isolated dance studio open until 11 PM — a better fit for practice.",
+    "permitNarrative": null,
+    "briefing": null,
+    "citedRuleIds": [
+      "SOUND-01",
+      "SOUND-02"
+    ]
+  },
+  "bookingsForDate": [
+    {
+      "id": "seed-1",
+      "roomId": "CCSC-204",
+      "clubId": "study",
+      "date": "2026-10-08",
+      "startTime": "14:00",
+      "endTime": "17:00",
+      "durationMin": 180,
+      "status": "confirmed",
+      "title": "Dance workshop",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:00:00.000Z"
+    },
+    {
+      "id": "seed-2",
+      "roomId": "BH-101",
+      "clubId": "premed",
+      "date": "2026-10-08",
+      "startTime": "18:00",
+      "endTime": "20:00",
+      "durationMin": 120,
+      "status": "confirmed",
+      "title": "MCAT review",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:05:00.000Z"
+    },
+    {
+      "id": "seed-3",
+      "roomId": "HSS-306",
+      "clubId": "study",
+      "date": "2026-10-08",
+      "startTime": "17:00",
+      "endTime": "19:00",
+      "durationMin": 120,
+      "status": "confirmed",
+      "title": "Midterm review",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:10:00.000Z"
+    },
+    {
+      "id": "seed-4",
+      "roomId": "TH-210",
+      "clubId": "sfhacks",
+      "date": "2026-10-08",
+      "startTime": "12:00",
+      "endTime": "14:00",
+      "durationMin": 120,
+      "status": "confirmed",
+      "title": "Organizer sync",
+      "tier": 1,
+      "snapshotId": null,
+      "createdAt": "2026-10-01T17:15:00.000Z"
+    }
+  ],
+  "aiMode": "fallback"
+}

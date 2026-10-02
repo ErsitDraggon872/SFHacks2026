@@ -2,6 +2,7 @@
 
 > **Read `docs/PLAN.md` first.** It is the full spec. This file is your slice. Pull `main` before starting.
 
+
 ### Shared rules (included in every handoff)
 - **File ownership is strict.** Only edit files you own. If you need a change in someone else's file, ask that owner.
 - **Contract = `lib/types.ts`.** It's owned by C1 and frozen at T+15m. Any change after that gets announced to the team.
@@ -45,3 +46,4 @@ At T+15m, C1 also commits `fixtures/triage-{study,pizza,speaker,dance}.json`, wh
 6. `npm run demo:reset`: restores bookings + snapshots from seed.
 7. **Done =** all 4 presets work with the key unset, and live free text "networking dinner for 80" returns clarifying questions.
 
+> Note: C1 merges working stub routes in `app/api/**` that return fixtures in the contract shapes. Replace their internals; keep the request/response shapes.
