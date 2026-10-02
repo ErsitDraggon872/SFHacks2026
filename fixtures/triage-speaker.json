@@ -2,6 +2,9 @@
   "requestText": "Pre-Med Society panel with 150 attendees and two guest speakers from UCSF, Tuesday 5-7pm. We need mics and a projector.",
   "presetId": "speaker",
   "draft": {
+    "summary": "Pre-Med Society speaker panel",
+    "headcount": 150,
+    "whenPhrase": "Tuesday 5-7pm",
     "food": null,
     "foodDescription": null,
     "amplifiedSound": true,
@@ -22,10 +25,7 @@
         "field": "food",
         "question": "Will food or refreshments be served at the panel?"
       }
-    ],
-    "summary": "Pre-Med Society speaker panel",
-    "headcount": 150,
-    "whenPhrase": "Tuesday 5-7pm"
+    ]
   },
   "facts": {
     "summary": {

@@ -2,6 +2,9 @@
   "requestText": "Study group for 8 people on Wednesday 4-6pm, we just need a whiteboard. Library if possible.",
   "presetId": "study",
   "draft": {
+    "summary": "Study group",
+    "headcount": 8,
+    "whenPhrase": "Wednesday 4-6pm",
     "food": null,
     "foodDescription": null,
     "amplifiedSound": null,
@@ -18,10 +21,7 @@
     ],
     "preferredBuilding": "J. Paul Leonard Library",
     "missingRequiredFields": [],
-    "ambiguities": [],
-    "summary": "Study group",
-    "headcount": 8,
-    "whenPhrase": "Wednesday 4-6pm"
+    "ambiguities": []
   },
   "facts": {
     "summary": {

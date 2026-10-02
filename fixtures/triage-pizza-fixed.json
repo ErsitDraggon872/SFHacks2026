@@ -2,6 +2,9 @@
   "requestText": "ACM coding night for 45 members Thursday 6-9pm in Thornton. We'll have pizza and need a projector.",
   "presetId": "pizza",
   "draft": {
+    "summary": "ACM coding night",
+    "headcount": 45,
+    "whenPhrase": "Thursday 6-9pm",
     "food": true,
     "foodDescription": "Pizza",
     "amplifiedSound": null,
@@ -16,10 +19,7 @@
     "roomTypeHints": [],
     "preferredBuilding": "Thornton Hall",
     "missingRequiredFields": [],
-    "ambiguities": [],
-    "summary": "ACM coding night",
-    "headcount": 45,
-    "whenPhrase": "Thursday 6-9pm"
+    "ambiguities": []
   },
   "facts": {
     "summary": {
