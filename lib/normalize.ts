@@ -87,6 +87,7 @@ export function emptyFacts(): EventFacts {
     guestSpeakers: f<boolean | null>(null, "user"),
     alcohol: f<boolean | null>(null, "user"),
     minors: f<boolean | null>(null, "user"),
+    weapons: f<boolean | null>(null, "user"),
     avNeeds: f([], "user"),
     layout: f(null, "user"),
     preferredBuilding: f<string | null>(null, "user"),
@@ -95,12 +96,18 @@ export function emptyFacts(): EventFacts {
   };
 }
 
+/** Shared with the offline extractor. Broad on purpose: a false hit only asks the officer. */
+export const WEAPON_CUE =
+  /\b(guns?|firearms?|rifles?|pistols?|handguns?|shotguns?|weapons?|knife|knives|blades?|swords?|machetes?|tasers?|stun guns?|pepper spray|mace|ammo|ammunition|explosives?|airsoft|paintball|replicas?)\b/i;
+
 const CUES = {
   food: /\b(food|pizza|snacks?|dinner|lunch|breakfast|brunch|cater(ing|ed)?|potluck|boba|coffee|donuts?|refreshments|bbq|tacos?)\b/i,
   externalGuests: /\b(public|open to (all|everyone)|community(?!\s+(room|center|centre))|alumni|recruiters?|guests?|visitors?|other schools|networking|mixer|career fair|families|parents)\b/i,
   // "speaker" means a loudspeaker here, not a guest speaker
   amplifiedSound: /\b(dj|music|(?<!guest )speakers?(?! from)|sound system|concert|performance|band|karaoke|party|dance)\b/i,
   guestSpeakers: /\b(guest speakers?|keynote|panel(ists?)?|speaker from|invited speaker|talk by)\b/i,
+  // code-side backstop: any mention means the AI's answer is needed, never an assumed "no"
+  weapons: WEAPON_CUE,
 };
 
 const SMALL_EVENT = 25;
@@ -109,6 +116,7 @@ const SMALL_EVENT = 25;
  * LLM draft → EventFacts. Applies contextual defaults (source "default") so small, plain
  * events can reach Tier 1 — the officer must attest to every defaulted value.
  *  - alcohol, minors: default false unless mentioned.
+ *  - weapons: default false when nothing in the text mentions one.
  *  - amplifiedSound, guestSpeakers: default false when no cue in the text.
  *  - food: default false only for small events (≤25) with no cue.
  *  - externalGuests: default false for small events, or any size when the text says "members",
@@ -137,6 +145,7 @@ export function draftToFacts(draft: EventDraft, opts: { text?: string; anchor?: 
     guestSpeakers: tri(draft.guestSpeakers, !CUES.guestSpeakers.test(text)),
     alcohol: tri(draft.alcohol, true),
     minors: tri(draft.minors, true),
+    weapons: tri(draft.weapons, !CUES.weapons.test(text)),
     avNeeds: f(draft.avNeeds),
     layout: f(draft.layout),
     preferredBuilding: f(draft.preferredBuilding),

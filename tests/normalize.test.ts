@@ -66,6 +66,7 @@ const draft = (p: Partial<EventDraft> = {}): EventDraft => ({
   guestSpeakers: null,
   alcohol: null,
   minors: null,
+  weapons: null,
   avNeeds: [],
   layout: null,
   roomTypeHints: [],
@@ -85,7 +86,7 @@ describe("draftToFacts", () => {
 
   it("small, plain events get every safety field defaulted to false (for attestation)", () => {
     const f = draftToFacts(draft(), { text: "Study session for 8", anchor: ANCHOR });
-    for (const k of ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const) {
+    for (const k of ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const) {
       expect(f[k]).toEqual({ value: false, source: "default" });
     }
   });

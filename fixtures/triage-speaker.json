@@ -12,6 +12,7 @@
     "guestSpeakers": true,
     "alcohol": null,
     "minors": null,
+    "weapons": null,
     "avNeeds": [
       "microphone",
       "projector"
@@ -73,6 +74,10 @@
       "source": "default"
     },
     "minors": {
+      "value": false,
+      "source": "default"
+    },
+    "weapons": {
       "value": false,
       "source": "default"
     },
@@ -419,7 +424,8 @@
     ],
     "defaultsToAttest": [
       "alcohol",
-      "minors"
+      "minors",
+      "weapons"
     ],
     "clubMinutesUsed": 0,
     "clubMinutesCap": 180,

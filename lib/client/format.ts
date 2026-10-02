@@ -44,6 +44,7 @@ export const FACT_LABEL: Record<FactField, string> = {
   guestSpeakers: "Guest speakers",
   alcohol: "Alcohol",
   minors: "Under 18",
+  weapons: "Weapons",
   avNeeds: "Equipment",
   layout: "Layout",
   preferredBuilding: "Building",

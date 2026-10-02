@@ -12,6 +12,7 @@
     "guestSpeakers": null,
     "alcohol": null,
     "minors": null,
+    "weapons": null,
     "avNeeds": [
       "whiteboard"
     ],
@@ -69,6 +70,10 @@
       "source": "default"
     },
     "minors": {
+      "value": false,
+      "source": "default"
+    },
+    "weapons": {
       "value": false,
       "source": "default"
     },
@@ -223,7 +228,8 @@
       "externalGuests",
       "guestSpeakers",
       "alcohol",
-      "minors"
+      "minors",
+      "weapons"
     ],
     "clubMinutesUsed": 0,
     "clubMinutesCap": 180,

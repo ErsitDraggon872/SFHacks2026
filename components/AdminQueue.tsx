@@ -634,6 +634,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                             "guestSpeakers",
                             "alcohol",
                             "minors",
+                            "weapons",
                             "avNeeds",
                             "layout",
                           ] as FactField[]
@@ -641,7 +642,8 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                           <div key={field} className="rounded-lg bg-sunken p-2">
                             <div className="text-[10px] text-muted">{FACT_LABEL[field]}</div>
                             <div className="font-medium text-ink">
-                              {fmtFactValue(field, snap.facts[field].value)}
+                              {/* older snapshots predate some fields */}
+                              {snap.facts[field] ? fmtFactValue(field, snap.facts[field].value) : "—"}
                             </div>
                           </div>
                         ))}

@@ -22,9 +22,9 @@ const LAYOUTS: Layout[] = ["lecture", "classroom", "seminar", "open", "lab", "st
 const ROOM_TYPES: RoomType[] = ["lecture_hall", "classroom", "seminar", "multipurpose", "lab", "study_room", "studio"];
 const FACT_FIELDS: FactField[] = [
   "summary", "headcount", "date", "startTime", "endTime", "food", "foodDescription", "amplifiedSound", "externalGuests",
-  "guestSpeakers", "alcohol", "minors", "avNeeds", "layout", "preferredBuilding", "requestedRoomId", "adaRequired",
+  "guestSpeakers", "alcohol", "minors", "weapons", "avNeeds", "layout", "preferredBuilding", "requestedRoomId", "adaRequired",
 ];
-const TRI_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const;
+const TRI_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const;
 
 export const MAX_HEADCOUNT = 2000;
 const MAX_AMBIGUITIES = 5;
@@ -54,6 +54,7 @@ export function emptyDraft(): EventDraft {
     guestSpeakers: null,
     alcohol: null,
     minors: null,
+    weapons: null,
     avNeeds: [],
     layout: null,
     roomTypeHints: [],
@@ -165,6 +166,7 @@ const NEGATION_EVIDENCE: Record<(typeof TRI_FIELDS)[number], RegExp> = {
   guestSpeakers: new RegExp(`${NEG}\\b(guest )?speakers?\\b`, "i"),
   alcohol: new RegExp(`${NEG}\\b(alcohol|drinking|beer|wine|booze)\\b|\\b(alcohol[- ]free|dry event)\\b`, "i"),
   minors: new RegExp(`${NEG}\\b(minors|kids|children|under[- ]18s?)\\b|\\b(18\\+|21\\+|adults only)`, "i"),
+  weapons: new RegExp(`${NEG}\\b(weapons?|guns?|firearms?|knives|props?)\\b|\\bweapon[- ]free\\b`, "i"),
 };
 
 /**

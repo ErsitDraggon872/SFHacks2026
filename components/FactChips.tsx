@@ -48,6 +48,7 @@ const TRI_FIELDS: FactField[] = [
   "guestSpeakers",
   "alcohol",
   "minors",
+  "weapons",
 ];
 
 type ChipId =
@@ -59,6 +60,7 @@ type ChipId =
   | "guestSpeakers"
   | "alcohol"
   | "minors"
+  | "weapons"
   | "avNeeds"
   | "preferredBuilding"
   | "requestedRoomId";
@@ -137,7 +139,7 @@ export function FactChips({ facts, original, onEdit }: FactChipsProps) {
 
   const visibleTriFields = TRI_FIELDS.filter((field) => {
     const f = facts[field];
-    if (field === "alcohol" || field === "minors") {
+    if (field === "alcohol" || field === "minors" || field === "weapons") {
       return f.value !== false || f.source === "default" || f.source === "user";
     }
     return true;

@@ -129,8 +129,8 @@ describe("matchBuilding", () => {
 });
 
 describe("requireNegationEvidence", () => {
-  const TRI = ["alcohol", "amplifiedSound", "externalGuests", "food", "guestSpeakers", "minors"] as const;
-  const allNo = { ...emptyDraft(), food: false, amplifiedSound: false, externalGuests: false, guestSpeakers: false, alcohol: false, minors: false };
+  const TRI = ["alcohol", "amplifiedSound", "externalGuests", "food", "guestSpeakers", "minors", "weapons"] as const;
+  const allNo = { ...emptyDraft(), food: false, amplifiedSound: false, externalGuests: false, guestSpeakers: false, alcohol: false, minors: false, weapons: false };
   /** Which AI "no" answers survive for this text. */
   const kept = (text: string | null) => {
     const { draft } = requireNegationEvidence(allNo, text);
@@ -154,6 +154,7 @@ describe("requireNegationEvidence", () => {
     ["a dry event", "alcohol"],
     ["adults only, 18+", "minors"],
     ["quiet study, no speakers needed", "amplifiedSound"],
+    ["no weapons or props", "weapons"],
   ])("%j backs %s", (text, field) => {
     expect(kept(text)).toContain(field);
   });
@@ -165,6 +166,25 @@ describe("requireNegationEvidence", () => {
 });
 
 describe("prepare() guards the engine", () => {
+  it.each([
+    "can i bring gun to 40 person event on october 10",
+    "stage combat workshop for 10 with replica swords, Tuesday 3-5pm",
+  ])("a weapon mention is never assumed away: %j", (text) => {
+    // even if the extractor says "no", the weapon cue keeps the field open (asked or escalated)
+    const { facts } = prepare({ ...emptyDraft(), headcount: 10, whenPhrase: "Tuesday 3-5pm", weapons: false }, text);
+    expect(facts.weapons.value).toBeNull();
+    const d = decide(facts, [], "acm", true);
+    expect(d.canSubmit).toBe(false);
+    expect(d.unresolved.map((u) => u.field)).toContain("weapons");
+  });
+
+  it("an extracted weapon escalates to University Police review", () => {
+    const { facts } = prepare({ ...emptyDraft(), headcount: 40, whenPhrase: "October 10 6-8pm", weapons: true }, "can i bring gun to 40 person event");
+    const d = decide(facts, [], "premed", true);
+    expect(d.tier).toBe(3);
+    expect(d.eventFlags.map((f) => f.ruleId)).toContain("WEAPON-01");
+  });
+
   it("the hero pizza preset lands on Fix It: food conflict in Thornton, no open questions", () => {
     const e = (demoCache as Record<string, { input: string; draft: unknown }>).pizza;
     const { facts } = prepare(e.draft, e.input);

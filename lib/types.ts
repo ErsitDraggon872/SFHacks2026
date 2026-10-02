@@ -97,6 +97,7 @@ export interface EventFacts {
   guestSpeakers: Fact<Tri>;
   alcohol: Fact<Tri>;
   minors: Fact<Tri>;
+  weapons: Fact<Tri>;
   avNeeds: Fact<AvItem[]>;
   layout: Fact<Layout | null>;
   preferredBuilding: Fact<string | null>; // building name, e.g. "Thornton Hall"
@@ -107,7 +108,7 @@ export interface EventFacts {
 export type FactField = keyof EventFacts;
 
 /** Policy-sensitive fields: null blocks auto-approval. */
-export const SAFETY_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors"] as const;
+export const SAFETY_FIELDS = ["food", "amplifiedSound", "externalGuests", "guestSpeakers", "alcohol", "minors", "weapons"] as const;
 export type SafetyField = (typeof SAFETY_FIELDS)[number];
 
 /** Fields required before any decision can be made. */
@@ -131,6 +132,7 @@ export interface EventDraft {
   guestSpeakers: Tri;
   alcohol: Tri;
   minors: Tri;
+  weapons: Tri;
   avNeeds: AvItem[];
   layout: Layout | null;
   roomTypeHints: RoomType[];

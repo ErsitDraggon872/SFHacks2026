@@ -48,6 +48,7 @@ describe("Deterministic Policy Engine & Normalization Tests", () => {
     facts = setFact(facts, "guestSpeakers", false);
     facts = setFact(facts, "alcohol", false);
     facts = setFact(facts, "minors", false);
+    facts = setFact(facts, "weapons", false);
     facts = setFact(facts, "requestedRoomId", "TH-326"); // Thornton room blocks food
 
     const bookings: Booking[] = [];
@@ -77,6 +78,7 @@ describe("Deterministic Policy Engine & Normalization Tests", () => {
     facts = setFact(facts, "guestSpeakers", false);
     facts = setFact(facts, "alcohol", false);
     facts = setFact(facts, "minors", false);
+    facts = setFact(facts, "weapons", false);
     facts = setFact(facts, "requestedRoomId", "LIB-460");
 
     // Existing booking of 120 min on the same date for the same club

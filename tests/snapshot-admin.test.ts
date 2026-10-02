@@ -122,6 +122,7 @@ describe("Snapshots & Admin API — Computer 3 Deliverable", () => {
         guestSpeakers: { value: false, source: "user" },
         alcohol: { value: false, source: "user" },
         minors: { value: false, source: "user" },
+        weapons: { value: false, source: "user" },
         avNeeds: { value: [], source: "user" },
         layout: { value: null, source: "user" },
         preferredBuilding: { value: null, source: "user" },
