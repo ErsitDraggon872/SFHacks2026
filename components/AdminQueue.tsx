@@ -179,6 +179,98 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
     });
   }, [snapshots, tab, search]);
 
+  // Rendered inside the card whose Reject / Approve button opened it, right below that button.
+  const actionPanel = activeAction && (
+    <div
+      role="dialog"
+      aria-labelledby="message-dialog-title"
+      className="gs-rise mt-4 rounded-2xl border border-line-strong bg-surface p-5 shadow-lg space-y-4"
+    >
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <h3 id="message-dialog-title" className="text-base font-semibold text-ink">
+            {activeAction.action === "approve"
+              ? `Approve & Send Confirmation to ${CLUB_BY_ID[activeAction.snapshot.clubId]?.name ?? activeAction.snapshot.clubId}`
+              : `Reject & Send Notice to ${CLUB_BY_ID[activeAction.snapshot.clubId]?.name ?? activeAction.snapshot.clubId}`}
+          </h3>
+          <p className="text-xs text-muted">
+            {activeAction.action === "approve"
+              ? "This will confirm the reservation and dispatch your note to the student organization."
+              : "This will revoke/deny the room reservation and notify the student organization with your reason."}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setActiveAction(null)}
+          className="rounded-full p-1 text-muted hover:bg-sunken hover:text-ink"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
+      {activeAction.action === "deny" && (
+        <div className="space-y-1.5">
+          <span className="text-xs font-medium text-muted">Insert common rejection reason:</span>
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              "Maintenance / repair scheduled in room",
+              "Fire capacity exceeded for planned layout",
+              "Quiet hours policy in residential area",
+              "Priority university academic event override",
+            ].map((reason) => (
+              <button
+                key={reason}
+                type="button"
+                onClick={() =>
+                  setActiveAction((prev) =>
+                    prev ? { ...prev, message: `${prev.message.trim()} ${reason}.` } : null,
+                  )
+                }
+                className="rounded-full border border-line bg-subtle px-2.5 py-1 text-xs text-ink-2 hover:bg-sunken"
+              >
+                + {reason}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-1.5">
+        <label htmlFor="admin-message-input" className="text-xs font-medium text-ink-2">
+          Message to organization organizer
+        </label>
+        <textarea
+          id="admin-message-input"
+          rows={3}
+          value={activeAction.message}
+          onChange={(e) =>
+            setActiveAction((prev) => (prev ? { ...prev, message: e.target.value } : null))
+          }
+          className="w-full rounded-xl border border-line bg-surface p-3 text-sm text-ink outline-none focus:border-ink-2"
+        />
+      </div>
+
+      <div className="flex items-center justify-end gap-2">
+        <Button variant="ghost" size="sm" onClick={() => setActiveAction(null)}>
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          disabled={submitting || !activeAction.message.trim()}
+          onClick={handleAction}
+          className={activeAction.action === "deny" ? "bg-block hover:bg-block/90 text-white" : ""}
+        >
+          {submitting
+            ? "Sending..."
+            : activeAction.action === "approve"
+              ? "Approve & Send Confirmation"
+              : "Reject & Send Notice"}
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       {/* Top Banner Alert when a message was just sent to the booking party */}
@@ -334,98 +426,6 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
         </div>
       </div>
 
-      {/* Modal / Inline Drawer for Sending Approval / Rejection Message */}
-      {activeAction && (
-        <div
-          role="dialog"
-          aria-labelledby="message-dialog-title"
-          className="gs-rise rounded-2xl border border-line-strong bg-surface p-5 shadow-lg space-y-4"
-        >
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <h3 id="message-dialog-title" className="text-base font-semibold text-ink">
-                {activeAction.action === "approve"
-                  ? `Approve & Send Confirmation to ${CLUB_BY_ID[activeAction.snapshot.clubId]?.name ?? activeAction.snapshot.clubId}`
-                  : `Reject & Send Notice to ${CLUB_BY_ID[activeAction.snapshot.clubId]?.name ?? activeAction.snapshot.clubId}`}
-              </h3>
-              <p className="text-xs text-muted">
-                {activeAction.action === "approve"
-                  ? "This will confirm the reservation and dispatch your note to the student organization."
-                  : "This will revoke/deny the room reservation and notify the student organization with your reason."}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setActiveAction(null)}
-              className="rounded-full p-1 text-muted hover:bg-sunken hover:text-ink"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          {activeAction.action === "deny" && (
-            <div className="space-y-1.5">
-              <span className="text-xs font-medium text-muted">Insert common rejection reason:</span>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  "Maintenance / repair scheduled in room",
-                  "Fire capacity exceeded for planned layout",
-                  "Quiet hours policy in residential area",
-                  "Priority university academic event override",
-                ].map((reason) => (
-                  <button
-                    key={reason}
-                    type="button"
-                    onClick={() =>
-                      setActiveAction((prev) =>
-                        prev ? { ...prev, message: `${prev.message.trim()} ${reason}.` } : null,
-                      )
-                    }
-                    className="rounded-full border border-line bg-subtle px-2.5 py-1 text-xs text-ink-2 hover:bg-sunken"
-                  >
-                    + {reason}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-1.5">
-            <label htmlFor="admin-message-input" className="text-xs font-medium text-ink-2">
-              Message to organization organizer
-            </label>
-            <textarea
-              id="admin-message-input"
-              rows={3}
-              value={activeAction.message}
-              onChange={(e) =>
-                setActiveAction((prev) => (prev ? { ...prev, message: e.target.value } : null))
-              }
-              className="w-full rounded-xl border border-line bg-surface p-3 text-sm text-ink outline-none focus:border-ink-2"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setActiveAction(null)}>
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              disabled={submitting || !activeAction.message.trim()}
-              onClick={handleAction}
-              className={activeAction.action === "deny" ? "bg-block hover:bg-block/90 text-white" : ""}
-            >
-              {submitting
-                ? "Sending..."
-                : activeAction.action === "approve"
-                  ? "Approve & Send Confirmation"
-                  : "Reject & Send Notice"}
-            </Button>
-          </div>
-        </div>
-      )}
-
       {/* Bookings List */}
       {filteredSnapshots.length === 0 ? (
         <Card className="p-8 text-center text-muted">
@@ -559,6 +559,8 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
                     )}
                   </div>
                 </div>
+
+                {activeAction?.snapshot.id === snap.id && activeAction.snapshot.bookingId === snap.bookingId && actionPanel}
 
                 {/* Expandable Details & Audit Section */}
                 {isExpanded && (
