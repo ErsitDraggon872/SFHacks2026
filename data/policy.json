@@ -1,0 +1,130 @@
+[
+  {
+    "id": "CAP-01",
+    "title": "Fire marshal capacity",
+    "excerpt": "Attendance may not exceed the posted fire marshal occupancy rating for the room at any time during the event.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Fire Safety"
+  },
+  {
+    "id": "FOOD-01",
+    "title": "Food in designated rooms only",
+    "excerpt": "Food and beverages other than water are permitted only in rooms designated for food service. Instructional classrooms, labs, and library spaces are not designated.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Facilities"
+  },
+  {
+    "id": "FOOD-02",
+    "title": "Temporary food permit",
+    "excerpt": "Any event serving or distributing food to attendees requires an approved Temporary Food Permit from Environmental Health & Safety, submitted with the event's date, location, headcount, and food source.",
+    "effect": "REQUIRE_PERMIT",
+    "scope": "event",
+    "office": "Environmental Health & Safety"
+  },
+  {
+    "id": "SOUND-01",
+    "title": "Amplified sound after 9 PM",
+    "excerpt": "Amplified sound after 9:00 PM is permitted only in sound-isolated rooms such as rehearsal studios and designated multipurpose rooms.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "SOUND-02",
+    "title": "Residential quiet hours",
+    "excerpt": "Rooms inside or adjacent to residential communities may not host amplified sound after 8:00 PM.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Housing & Residential Education"
+  },
+  {
+    "id": "GUEST-01",
+    "title": "Non-affiliated guests",
+    "excerpt": "Events open to individuals not affiliated with the university require a campus safety review before confirmation.",
+    "effect": "ESCALATE",
+    "scope": "event",
+    "office": "University Police / Campus Safety"
+  },
+  {
+    "id": "GUEST-02",
+    "title": "Guest speaker registration",
+    "excerpt": "Student organizations hosting a guest speaker must register the speaker with Student Activities & Events.",
+    "effect": "REQUIRE_PERMIT",
+    "scope": "event",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "SIZE-01",
+    "title": "Mid-size event notice",
+    "excerpt": "Events with more than 50 expected attendees should designate an on-site event lead responsible for crowd flow and room reset.",
+    "effect": "WARN",
+    "scope": "event",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "SIZE-02",
+    "title": "Large event review",
+    "excerpt": "Events with more than 100 expected attendees require review by Student Activities & Events for staffing, security, and accessibility planning.",
+    "effect": "ESCALATE",
+    "scope": "event",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "ALC-01",
+    "title": "Alcohol",
+    "excerpt": "Any event at which alcohol will be present requires prior written approval and cannot be confirmed through self-service booking.",
+    "effect": "ESCALATE",
+    "scope": "event",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "MINOR-01",
+    "title": "Minors on campus",
+    "excerpt": "Events that include participants under 18 must follow the youth protection program and require staff review.",
+    "effect": "ESCALATE",
+    "scope": "event",
+    "office": "Risk Management"
+  },
+  {
+    "id": "HOURS-01",
+    "title": "Building hours",
+    "excerpt": "Events must begin and end within the building's posted operating hours.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Facilities"
+  },
+  {
+    "id": "ADA-01",
+    "title": "Accessible space",
+    "excerpt": "When an organizer indicates that an attendee needs an accessible space, only rooms with an accessible route, entrance, and seating may be assigned.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Disability Programs & Resource Center"
+  },
+  {
+    "id": "BOOK-01",
+    "title": "Room availability",
+    "excerpt": "A room may hold only one confirmed or pending reservation for any given time.",
+    "effect": "BLOCK_ROOM",
+    "scope": "room",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "CAP-DAILY-01",
+    "title": "Daily booking limit",
+    "excerpt": "To keep space available to all organizations, each organization may reserve at most 3 hours of space per day.",
+    "effect": "BLOCK_REQUEST",
+    "scope": "event",
+    "office": "Student Activities & Events"
+  },
+  {
+    "id": "INFO-01",
+    "title": "Safety details confirmed",
+    "excerpt": "A request can be confirmed only after the organizer has stated whether the event involves food, amplified sound, outside guests, guest speakers, alcohol, or minors.",
+    "effect": "WARN",
+    "scope": "event",
+    "office": "Student Activities & Events"
+  }
+]

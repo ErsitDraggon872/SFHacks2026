@@ -1,0 +1,1378 @@
+{
+  "requestText": "Pre-Med Society panel with 150 attendees and two guest speakers from UCSF, Tuesday 5-7pm. We need mics and a projector.",
+  "presetId": "speaker",
+  "draft": {
+    "food": null,
+    "foodDescription": null,
+    "amplifiedSound": true,
+    "externalGuests": true,
+    "guestSpeakers": true,
+    "alcohol": null,
+    "minors": null,
+    "avNeeds": [
+      "microphone",
+      "projector"
+    ],
+    "layout": "lecture",
+    "roomTypeHints": [],
+    "preferredBuilding": null,
+    "missingRequiredFields": [],
+    "ambiguities": [
+      {
+        "field": "food",
+        "question": "Will food or refreshments be served at the panel?"
+      }
+    ],
+    "summary": "Pre-Med Society speaker panel",
+    "headcount": 150,
+    "whenPhrase": "Tuesday 5-7pm"
+  },
+  "facts": {
+    "summary": {
+      "value": "Pre-Med Society speaker panel",
+      "source": "ai"
+    },
+    "headcount": {
+      "value": 150,
+      "source": "ai"
+    },
+    "date": {
+      "value": "2026-10-06",
+      "source": "ai"
+    },
+    "startTime": {
+      "value": "17:00",
+      "source": "ai"
+    },
+    "endTime": {
+      "value": "19:00",
+      "source": "ai"
+    },
+    "food": {
+      "value": null,
+      "source": "ai"
+    },
+    "foodDescription": {
+      "value": null,
+      "source": "ai"
+    },
+    "amplifiedSound": {
+      "value": true,
+      "source": "ai"
+    },
+    "externalGuests": {
+      "value": true,
+      "source": "ai"
+    },
+    "guestSpeakers": {
+      "value": true,
+      "source": "ai"
+    },
+    "alcohol": {
+      "value": false,
+      "source": "default"
+    },
+    "minors": {
+      "value": false,
+      "source": "default"
+    },
+    "avNeeds": {
+      "value": [
+        "microphone",
+        "projector"
+      ],
+      "source": "ai"
+    },
+    "layout": {
+      "value": "lecture",
+      "source": "ai"
+    },
+    "preferredBuilding": {
+      "value": null,
+      "source": "ai"
+    },
+    "requestedRoomId": {
+      "value": null,
+      "source": "ai"
+    },
+    "adaRequired": {
+      "value": false,
+      "source": "ai"
+    }
+  },
+  "decision": {
+    "tier": 3,
+    "canAutoApprove": false,
+    "needsInfo": true,
+    "eventFlags": [
+      {
+        "ruleId": "GUEST-02",
+        "effect": "REQUIRE_PERMIT",
+        "scope": "event",
+        "message": "Guest speakers must be registered"
+      },
+      {
+        "ruleId": "GUEST-01",
+        "effect": "ESCALATE",
+        "scope": "event",
+        "message": "Non-SFSU guests require a campus safety review"
+      },
+      {
+        "ruleId": "SIZE-02",
+        "effect": "ESCALATE",
+        "scope": "event",
+        "message": "150 attendees requires large-event review"
+      },
+      {
+        "ruleId": "INFO-01",
+        "effect": "WARN",
+        "scope": "event",
+        "message": "1 detail still need an answer"
+      }
+    ],
+    "hardBlocks": [],
+    "rooms": [
+      {
+        "roomId": "TH-326",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 52-person fire capacity of Thornton Hall 326",
+            "roomId": "TH-326"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "TH-411",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 35-person fire capacity of Thornton Hall 411",
+            "roomId": "TH-411"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "TH-210",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 24-person fire capacity of Thornton Hall 210",
+            "roomId": "TH-210"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-204",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 70-person fire capacity of Cesar Chavez Student Center 204",
+            "roomId": "CCSC-204"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-150",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "CCSC-212",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212",
+            "roomId": "CCSC-212"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "LIB-286",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "LIB-460",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 34-person fire capacity of J. Paul Leonard Library 460",
+            "roomId": "LIB-460"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "HSS-306",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 90-person fire capacity of HSS Building 306",
+            "roomId": "HSS-306"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "BUS-120",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      {
+        "roomId": "BH-101",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 40-person fire capacity of Burk Hall 101",
+            "roomId": "BH-101"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "FA-290",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 60-person fire capacity of Fine Arts 290",
+            "roomId": "FA-290"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "GYM-129",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 50-person fire capacity of Gymnasium 129",
+            "roomId": "GYM-129"
+          }
+        ],
+        "warnings": []
+      },
+      {
+        "roomId": "VCS-CR",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 45-person fire capacity of Village Community Room",
+            "roomId": "VCS-CR"
+          }
+        ],
+        "warnings": []
+      }
+    ],
+    "targetRoomId": "BUS-120",
+    "suggestedRoomId": null,
+    "permitsRequired": [
+      {
+        "permitId": "GUEST_SPEAKER",
+        "ruleId": "GUEST-02",
+        "name": "Guest Speaker Registration",
+        "office": "Student Activities & Events",
+        "fields": [
+          {
+            "label": "Event",
+            "value": "Pre-Med Society speaker panel"
+          },
+          {
+            "label": "Organization",
+            "value": "Pre-Med Society"
+          },
+          {
+            "label": "Date & time",
+            "value": "2026-10-06 · 17:00–19:00"
+          },
+          {
+            "label": "Location",
+            "value": "Business Building 120"
+          },
+          {
+            "label": "Expected attendance",
+            "value": "150"
+          },
+          {
+            "label": "Speaker(s)",
+            "value": "To be provided by organizer"
+          }
+        ]
+      }
+    ],
+    "applicableRules": [
+      {
+        "ruleId": "CAP-01",
+        "title": "Fire marshal capacity",
+        "status": "pass",
+        "detail": "150 attendees ≤ 180 fire capacity"
+      },
+      {
+        "ruleId": "FOOD-01",
+        "title": "Food in designated rooms only",
+        "status": "info",
+        "detail": "Food not confirmed"
+      },
+      {
+        "ruleId": "SOUND-01",
+        "title": "Amplified sound after 9 PM",
+        "status": "pass",
+        "detail": "Amplified sound allowed at this time and place"
+      },
+      {
+        "ruleId": "HOURS-01",
+        "title": "Building hours",
+        "status": "pass",
+        "detail": "Within Business Building hours (07:00–22:00)"
+      },
+      {
+        "ruleId": "BOOK-01",
+        "title": "Room availability",
+        "status": "pass",
+        "detail": "Room is free at this time"
+      },
+      {
+        "ruleId": "GUEST-02",
+        "title": "Guest speaker registration",
+        "status": "permit",
+        "detail": "Guest speakers must be registered"
+      },
+      {
+        "ruleId": "GUEST-01",
+        "title": "Non-affiliated guests",
+        "status": "escalate",
+        "detail": "Non-SFSU guests require a campus safety review"
+      },
+      {
+        "ruleId": "SIZE-02",
+        "title": "Large event review",
+        "status": "escalate",
+        "detail": "150 attendees requires large-event review"
+      },
+      {
+        "ruleId": "INFO-01",
+        "title": "Safety details confirmed",
+        "status": "warn",
+        "detail": "1 detail still need an answer"
+      },
+      {
+        "ruleId": "CAP-DAILY-01",
+        "title": "Daily booking limit",
+        "status": "pass",
+        "detail": "2 hrs of 3 hrs daily limit"
+      }
+    ],
+    "unresolved": [
+      {
+        "field": "food",
+        "question": "Will food or drinks (other than water) be served?"
+      }
+    ],
+    "defaultsToAttest": [
+      "alcohol",
+      "minors"
+    ],
+    "clubMinutesUsed": 0,
+    "clubMinutesCap": 180,
+    "requestMinutes": 120,
+    "canSubmit": false,
+    "submitOutcome": null,
+    "headline": "Staff review required: non-SFSU guests require a campus safety review; 150 attendees requires large-event review"
+  },
+  "ranked": [
+    {
+      "room": {
+        "id": "BUS-120",
+        "name": "Business Building 120",
+        "building": "Business Building",
+        "buildingCode": "BUS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 160,
+        "fireCapacity": 180,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BUS-120",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 1,
+      "reasons": [
+        {
+          "label": "Seats 160 for your 150",
+          "kind": "fit"
+        },
+        {
+          "label": "Microphone",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Lecture layout",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 160 for your 150 · Microphone · Projector · Lecture layout"
+    },
+    {
+      "room": {
+        "id": "CCSC-150",
+        "name": "Cesar Chavez Student Center 150",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 220,
+        "fireCapacity": 250,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers",
+          "video_conf"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        },
+        "notes": "Large multipurpose room"
+      },
+      "evaluation": {
+        "roomId": "CCSC-150",
+        "eligible": true,
+        "conflicts": [],
+        "warnings": []
+      },
+      "rank": 2,
+      "reasons": [
+        {
+          "label": "Seats 220 for your 150",
+          "kind": "fit"
+        },
+        {
+          "label": "Microphone",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Sound-isolated",
+          "kind": "fit"
+        },
+        {
+          "label": "Open layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "Seats 220 for your 150 · Microphone · Projector · Sound-isolated"
+    },
+    {
+      "room": {
+        "id": "HSS-306",
+        "name": "HSS Building 306",
+        "building": "HSS Building",
+        "buildingCode": "HSS",
+        "type": "lecture_hall",
+        "layout": "lecture",
+        "seats": 80,
+        "fireCapacity": 90,
+        "av": [
+          "projector",
+          "microphone"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "HSS-306",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 90-person fire capacity of HSS Building 306",
+            "roomId": "HSS-306"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 80 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "Microphone",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Lecture layout",
+          "kind": "fit"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "150 attendees exceeds the 90-person fire capacity of HSS Building 306"
+    },
+    {
+      "room": {
+        "id": "CCSC-204",
+        "name": "Cesar Chavez Student Center 204",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 60,
+        "fireCapacity": 70,
+        "av": [
+          "projector",
+          "microphone",
+          "speakers"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "CCSC-204",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 70-person fire capacity of Cesar Chavez Student Center 204",
+            "roomId": "CCSC-204"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 60 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "Microphone",
+          "kind": "fit"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "Open layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [],
+      "why": "150 attendees exceeds the 70-person fire capacity of Cesar Chavez Student Center 204"
+    },
+    {
+      "room": {
+        "id": "TH-326",
+        "name": "Thornton Hall 326",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 48,
+        "fireCapacity": 52,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-326",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 52-person fire capacity of Thornton Hall 326",
+            "roomId": "TH-326"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 48 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "Classroom layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone"
+      ],
+      "why": "150 attendees exceeds the 52-person fire capacity of Thornton Hall 326"
+    },
+    {
+      "room": {
+        "id": "BH-101",
+        "name": "Burk Hall 101",
+        "building": "Burk Hall",
+        "buildingCode": "BH",
+        "type": "classroom",
+        "layout": "classroom",
+        "seats": 36,
+        "fireCapacity": 40,
+        "av": [
+          "projector",
+          "whiteboard"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": false,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "BH-101",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 40-person fire capacity of Burk Hall 101",
+            "roomId": "BH-101"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 36 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "Classroom layout",
+          "kind": "miss"
+        }
+      ],
+      "avMissing": [
+        "microphone"
+      ],
+      "why": "150 attendees exceeds the 40-person fire capacity of Burk Hall 101"
+    },
+    {
+      "room": {
+        "id": "LIB-460",
+        "name": "J. Paul Leonard Library 460",
+        "building": "J. Paul Leonard Library",
+        "buildingCode": "LIB",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 30,
+        "fireCapacity": 34,
+        "av": [
+          "projector",
+          "video_conf",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "LIB-460",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 34-person fire capacity of J. Paul Leonard Library 460",
+            "roomId": "LIB-460"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 30 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "Seminar layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone"
+      ],
+      "why": "150 attendees exceeds the 34-person fire capacity of J. Paul Leonard Library 460"
+    },
+    {
+      "room": {
+        "id": "TH-411",
+        "name": "Thornton Hall 411",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "lab",
+        "layout": "lab",
+        "seats": 30,
+        "fireCapacity": 35,
+        "av": [
+          "computers",
+          "projector"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        },
+        "notes": "Computer lab"
+      },
+      "evaluation": {
+        "roomId": "TH-411",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 35-person fire capacity of Thornton Hall 411",
+            "roomId": "TH-411"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 30 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "Projector",
+          "kind": "fit"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "Lab layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone"
+      ],
+      "why": "150 attendees exceeds the 35-person fire capacity of Thornton Hall 411"
+    },
+    {
+      "room": {
+        "id": "FA-290",
+        "name": "Fine Arts 290",
+        "building": "Fine Arts Building",
+        "buildingCode": "FA",
+        "type": "studio",
+        "layout": "studio",
+        "seats": 50,
+        "fireCapacity": 60,
+        "av": [
+          "speakers",
+          "piano"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "23:00"
+        },
+        "notes": "Rehearsal studio"
+      },
+      "evaluation": {
+        "roomId": "FA-290",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 60-person fire capacity of Fine Arts 290",
+            "roomId": "FA-290"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 50 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Sound-isolated",
+          "kind": "fit"
+        },
+        {
+          "label": "Studio layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone",
+        "projector"
+      ],
+      "why": "150 attendees exceeds the 60-person fire capacity of Fine Arts 290"
+    },
+    {
+      "room": {
+        "id": "GYM-129",
+        "name": "Gymnasium 129",
+        "building": "Gymnasium",
+        "buildingCode": "GYM",
+        "type": "studio",
+        "layout": "studio",
+        "seats": 40,
+        "fireCapacity": 50,
+        "av": [
+          "speakers"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": true,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        },
+        "notes": "Mirrored dance studio"
+      },
+      "evaluation": {
+        "roomId": "GYM-129",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 50-person fire capacity of Gymnasium 129",
+            "roomId": "GYM-129"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 40 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Sound-isolated",
+          "kind": "fit"
+        },
+        {
+          "label": "Studio layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone",
+        "projector"
+      ],
+      "why": "150 attendees exceeds the 50-person fire capacity of Gymnasium 129"
+    },
+    {
+      "room": {
+        "id": "VCS-CR",
+        "name": "Village Community Room",
+        "building": "Village at Centennial Square",
+        "buildingCode": "VCS",
+        "type": "multipurpose",
+        "layout": "open",
+        "seats": 40,
+        "fireCapacity": 45,
+        "av": [
+          "display",
+          "speakers"
+        ],
+        "foodAllowed": true,
+        "nearResidence": true,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "23:00"
+        },
+        "notes": "Inside a residential community"
+      },
+      "evaluation": {
+        "roomId": "VCS-CR",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 45-person fire capacity of Village Community Room",
+            "roomId": "VCS-CR"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 40 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Open layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone",
+        "projector"
+      ],
+      "why": "150 attendees exceeds the 45-person fire capacity of Village Community Room"
+    },
+    {
+      "room": {
+        "id": "TH-210",
+        "name": "Thornton Hall 210",
+        "building": "Thornton Hall",
+        "buildingCode": "TH",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 20,
+        "fireCapacity": 24,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "22:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "TH-210",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 24-person fire capacity of Thornton Hall 210",
+            "roomId": "TH-210"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 20 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Seminar layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone",
+        "projector"
+      ],
+      "why": "150 attendees exceeds the 24-person fire capacity of Thornton Hall 210"
+    },
+    {
+      "room": {
+        "id": "CCSC-212",
+        "name": "Cesar Chavez Student Center 212",
+        "building": "Cesar Chavez Student Center",
+        "buildingCode": "CCSC",
+        "type": "seminar",
+        "layout": "seminar",
+        "seats": 16,
+        "fireCapacity": 18,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": true,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "07:00",
+          "close": "23:00"
+        }
+      },
+      "evaluation": {
+        "roomId": "CCSC-212",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212",
+            "roomId": "CCSC-212"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 16 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Seminar layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone",
+        "projector"
+      ],
+      "why": "150 attendees exceeds the 18-person fire capacity of Cesar Chavez Student Center 212"
+    },
+    {
+      "room": {
+        "id": "LIB-286",
+        "name": "J. Paul Leonard Library 286",
+        "building": "J. Paul Leonard Library",
+        "buildingCode": "LIB",
+        "type": "study_room",
+        "layout": "seminar",
+        "seats": 10,
+        "fireCapacity": 12,
+        "av": [
+          "display",
+          "whiteboard"
+        ],
+        "foodAllowed": false,
+        "nearResidence": false,
+        "soundIsolated": false,
+        "adaAccessible": true,
+        "hours": {
+          "open": "08:00",
+          "close": "22:00"
+        },
+        "notes": "Group study room"
+      },
+      "evaluation": {
+        "roomId": "LIB-286",
+        "eligible": false,
+        "conflicts": [
+          {
+            "ruleId": "CAP-01",
+            "effect": "BLOCK_ROOM",
+            "scope": "room",
+            "message": "150 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286",
+            "roomId": "LIB-286"
+          }
+        ],
+        "warnings": []
+      },
+      "rank": null,
+      "reasons": [
+        {
+          "label": "Only 10 seats for 150",
+          "kind": "miss"
+        },
+        {
+          "label": "No microphone",
+          "kind": "miss"
+        },
+        {
+          "label": "No projector",
+          "kind": "miss"
+        },
+        {
+          "label": "Seminar layout",
+          "kind": "miss"
+        },
+        {
+          "label": "Accessible",
+          "kind": "pref"
+        }
+      ],
+      "avMissing": [
+        "microphone",
+        "projector"
+      ],
+      "why": "150 attendees exceeds the 12-person fire capacity of J. Paul Leonard Library 286"
+    }
+  ],
+  "writer": {
+    "headline": "Staff review required — briefing prepared",
+    "explanation": "This panel is larger than 100 people (SIZE-02) and includes speakers from outside SFSU (GUEST-01), so it needs a staff review before confirmation. We've prepared a briefing for Student Activities & Events and pre-filled the speaker registration (GUEST-02).",
+    "permitNarrative": "Two guest speakers from UCSF will present on careers in medicine, followed by audience Q&A.",
+    "briefing": {
+      "summary": "Pre-Med Society requests a 2-hour speaker panel on Tuesday, Oct 6 (5–7 PM) for ~150 attendees with two external speakers from UCSF. Business Building 120 fits on capacity and AV.",
+      "riskPoints": [
+        {
+          "ruleId": "SIZE-02",
+          "point": "150 expected attendees — confirm staffing and check-in plan."
+        },
+        {
+          "ruleId": "GUEST-01",
+          "point": "External speakers on campus — confirm whether the event is open to the public."
+        },
+        {
+          "ruleId": "GUEST-02",
+          "point": "Speaker registration pre-filled; speaker names still needed."
+        }
+      ],
+      "staffQuestions": [
+        "Is the event open to non-SFSU attendees beyond the two speakers?",
+        "Will refreshments be served? (Not stated in the request.)",
+        "Who is the on-site event lead?"
+      ]
+    },
+    "citedRuleIds": [
+      "SIZE-02",
+      "GUEST-01",
+      "GUEST-02"
+    ]
+  },
+  "bookingsForDate": [],
+  "aiMode": "fallback"
+}

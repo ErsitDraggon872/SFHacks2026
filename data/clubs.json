@@ -1,0 +1,7 @@
+[
+  { "id": "acm", "name": "Association for Computing Machinery", "short": "ACM" },
+  { "id": "sfhacks", "name": "SF Hacks", "short": "SF Hacks" },
+  { "id": "premed", "name": "Pre-Med Society", "short": "Pre-Med" },
+  { "id": "dance", "name": "Hip-Hop Dance Collective", "short": "Dance" },
+  { "id": "study", "name": "CS Study Circle", "short": "Study Circle" }
+]
