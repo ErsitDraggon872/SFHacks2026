@@ -7,6 +7,7 @@ import { AiModeBadge } from "@/components/AiModeBadge";
 import { ClarifyingQuestions } from "@/components/ClarifyingQuestions";
 import { ClubSwitcher } from "@/components/ClubSwitcher";
 import { ComplianceChecklist } from "@/components/ComplianceChecklist";
+import { ConfirmBar } from "@/components/ConfirmBar";
 import { FactChips } from "@/components/FactChips";
 import { PermitDraft } from "@/components/PermitDraft";
 import { PolicyBanner } from "@/components/PolicyBanner";
@@ -101,17 +102,29 @@ export default function Home() {
               onSubmit={s.submit}
               submitting={s.submitting}
               result={s.result}
+              showActions={false}
             />
-
-            <Disclosure summary={`Policy checklist · ${d.applicableRules.length} rules checked`}>
-              <ComplianceChecklist results={d.applicableRules} onCite={s.setCiteRuleId} />
-            </Disclosure>
 
             <ResultsList ranked={s.ranked} targetRoomId={d.targetRoomId} onSelect={s.selectRoom} />
 
             {d.permitsRequired.map((p) => (
               <PermitDraft key={p.permitId} permit={p} narrative={s.writer?.permitNarrative ?? null} />
             ))}
+
+            <Disclosure summary={`Policy checklist · ${d.applicableRules.length} rules checked`}>
+              <ComplianceChecklist results={d.applicableRules} onCite={s.setCiteRuleId} />
+            </Disclosure>
+
+            {/* commit step last: decide → choose room → review permit → attest + book */}
+            <ConfirmBar
+              decision={d}
+              targetRoom={s.targetRoom}
+              attested={s.attested}
+              onAttest={s.setAttested}
+              onSubmit={s.submit}
+              submitting={s.submitting}
+              result={s.result}
+            />
           </div>
         )}
       </main>

@@ -47,6 +47,8 @@ export interface TierPanelProps {
   onSubmit: () => void;
   submitting: boolean;
   result: CreateBookingResult | null;
+  /** Render the attestation, submit button, and booking result here. The request page passes false and uses ConfirmBar instead. */
+  showActions?: boolean;
 }
 
 function bannerStatus(decision: PolicyDecision): RuleStatus {
@@ -82,6 +84,7 @@ export function TierPanel({
   onSubmit,
   submitting,
   result,
+  showActions = true,
 }: TierPanelProps) {
   const isTier3 = decision.tier === 3;
   const status = bannerStatus(decision);
@@ -226,7 +229,7 @@ export function TierPanel({
       )}
 
       {/* Attestation & Primary Submit Action (hidden if hardBlocks) */}
-      {!hasHardBlocks && (
+      {showActions && !hasHardBlocks && (
         <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1.5">
             {decision.defaultsToAttest.length > 0 && (
@@ -243,7 +246,7 @@ export function TierPanel({
 
           <Button
             variant="primary"
-            disabled={!decision.canSubmit || submitting}
+            disabled={!decision.canSubmit || submitting || !!result?.ok}
             onClick={onSubmit}
             className="shrink-0"
           >
@@ -259,7 +262,7 @@ export function TierPanel({
       )}
 
       {/* Post-submit Result */}
-      {result && (
+      {showActions && result && (
         <div
           role="status"
           className={cn(
