@@ -441,7 +441,7 @@ export function AdminQueue({ initialData }: AdminQueueProps) {
 
             return (
               <Card
-                key={snap.id}
+                key={`${snap.id}-${snap.bookingId}`}
                 className={cn(
                   "p-4 transition-all",
                   snap.status === "pending_review" && "border-escalate/30 bg-escalate-soft/20",
