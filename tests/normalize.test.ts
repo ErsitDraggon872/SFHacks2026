@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { diffCorrections, draftToFacts, emptyFacts, findWhenPhrase, resolveWhen, setFact } from "@/lib/normalize";
+import { prepare } from "@/lib/triagePipeline";
 import type { EventDraft } from "@/lib/types";
 
 const ANCHOR = "2026-10-05"; // Monday
@@ -53,6 +54,22 @@ describe("resolveWhen", () => {
   it("rejects ranges longer than 6 hours", () => {
     expect(resolveWhen("Thursday 9am-5pm", ANCHOR)).toHaveProperty("ambiguity");
   });
+
+  // chrono splits these into several matches; the day and both times must all be kept
+  it.each([
+    ["next Wednesday starting at 4pm and going until 7pm", "2026-10-14", "16:00", "19:00"],
+    ["Oct 24 starting at 6pm until 9pm", "2026-10-24", "18:00", "21:00"],
+    ["October 24 at 6 pm, ending at 9 pm", "2026-10-24", "18:00", "21:00"],
+    ["October 24 6pm, ends 9pm", "2026-10-24", "18:00", "21:00"],
+    ["Oct 24 between 6 and 9pm", "2026-10-24", "18:00", "21:00"],
+    ["October 24. It starts at 6 and ends at 9pm", "2026-10-24", "18:00", "21:00"],
+    ["Saturday the 24th 6-9pm", "2026-10-24", "18:00", "21:00"],
+    ["the 24th from 6-9pm", "2026-10-24", "18:00", "21:00"],
+    ["Thursday the 15th at 5-7pm", "2026-10-15", "17:00", "19:00"],
+    ["Oct 24 for 3 hours starting at 6pm", "2026-10-24", "18:00", "21:00"],
+  ])("%j → %s %s–%s", (phrase, date, startTime, endTime) => {
+    expect(resolveWhen(phrase, ANCHOR)).toMatchObject({ date, startTime, endTime });
+  });
 });
 
 const draft = (p: Partial<EventDraft> = {}): EventDraft => ({
@@ -84,6 +101,11 @@ describe("findWhenPhrase", () => {
     const phrase = findWhenPhrase(text, ANCHOR);
     expect(phrase).not.toBeNull();
     expect(resolveWhen(phrase!, ANCHOR)).toMatchObject({ date });
+  });
+
+  it("keeps times written apart from the date", () => {
+    const phrase = findWhenPhrase("Pizza night for 20 members on October 24. It starts at 6pm and ends at 9pm.", ANCHOR);
+    expect(resolveWhen(phrase!, ANCHOR)).toMatchObject({ date: "2026-10-24", startTime: "18:00", endTime: "21:00" });
   });
 
   it("numbers without a day are not dates", () => {
@@ -208,5 +230,27 @@ describe("corrections", () => {
     const f = emptyFacts();
     expect(Object.values(f).every((x) => x.source === "user")).toBe(true);
     expect(f.food.value).toBeNull();
+  });
+});
+
+describe("prepare: date and time", () => {
+  it("drops the AI's date/time questions once the code resolves them", () => {
+    const { facts, draft: d } = prepare(
+      draft({
+        whenPhrase: "October 24 from 6pm to 9pm",
+        ambiguities: [{ field: "date", question: "What date is the event?" }, { field: "headcount", question: "How many?" }],
+      }),
+      "Pizza night on October 24 from 6pm to 9pm",
+    );
+    expect([facts.date.value, facts.startTime.value, facts.endTime.value]).toEqual(["2026-10-24", "18:00", "21:00"]);
+    expect(d.ambiguities.map((a) => a.field)).toEqual(["headcount"]);
+  });
+
+  it("an AI phrase missing the times falls back to the times in the text", () => {
+    const { facts } = prepare(
+      draft({ whenPhrase: "October 24" }),
+      "Pizza night for 20 members on October 24. It starts at 6pm and ends at 9pm.",
+    );
+    expect([facts.date.value, facts.startTime.value, facts.endTime.value]).toEqual(["2026-10-24", "18:00", "21:00"]);
   });
 });
